@@ -1,162 +1,154 @@
-# PPChat — chat sobre o Projeto Pedagógico de Curso
+<div align="center">
 
-Assistente que responde perguntas sobre o PPC do Bacharelado em Engenharia de Software do IFSP São Carlos:
-disciplinas, ementas, cargas horárias, pré-requisitos, estágio, TCC, extensão e regras do curso. Também
-monta sequências de matrícula e estima a dificuldade de cada disciplina.
+# PPChat — Assistente Inteligente do PPC de Engenharia de Software
 
-## Como funciona
+### *Fork com suporte OpenRouter, Fallbacks Multi-Modelo, Anexo de Documentos, Moodle + WhatsApp & Mobile-First · IFSP São Carlos*
 
-O PPC tem cerca de 140 mil tokens (somando o currículo estruturado), o que cabe inteiro no contexto do Claude (1M tokens). Por isso o projeto
-não usa busca vetorial: o modelo lê o documento todo a cada pergunta, e o prompt caching faz isso sair barato.
-Com top-k de trechos, perguntas sobre dependências ("o que eu preciso antes de Arquitetura de Software?")
-falhavam, porque a resposta fica espalhada pelo quadro de pré-requisitos, pela grade e pelos planos de ensino.
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![OpenRouter](https://img.shields.io/badge/OpenRouter-Anthropic_Compat-6366F1?style=for-the-badge)](https://openrouter.ai/)
+[![IFSP BES](https://img.shields.io/badge/IFSP-BES_São_Carlos-1F8A4C?style=for-the-badge)](https://www.ifsp.edu.br/)
+[![Fork Rafael Feltrim](https://img.shields.io/badge/Fork-Rafael%20Feltrim-0A66C2?style=for-the-badge)](https://github.com/RaFeltrim/ppchat-api)
 
+<p align="center">
+  <strong>Assistente conversacional e mapa curricular interativo sobre o Projeto Pedagógico do Curso (PPC) de Bacharelado em Engenharia de Software do IFSP São Carlos, evoluído durante o Workshop BES (17/11/2026) com foco em TokenOps, multi-modelos econômicos, comparação de ementas via documentos e integração Moodle → WhatsApp.</strong>
+</p>
+
+[Como Funciona](#-como-funciona) •
+[Novidades do Fork](#-novidades-do-fork) •
+[Instalação e Uso](#-instalação-e-uso) •
+[API REST](#-api-rest) •
+[Integrações SUAP & Moodle](#-integrações-suap--moodle) •
+[Variáveis de Ambiente](#-configuração-env) •
+[Estrutura](#-estrutura-do-projeto)
+
+</div>
+
+---
+
+## Como Funciona
+
+O PPC completo somado ao currículo estruturado ocupa cerca de ~70k–140k tokens dependendo do tokenizador. Em vez de fragmentar o texto via busca vetorial (que falha em perguntas transversais sobre dependências entre semestres), o `ppchat-api` injeta o documento integral (`ppc.md`) e o grafo calculado (`curriculo.json`) no `system` prompt com **Prompt Caching de 1h** (`cache_control`).
+
+```text
+PDF ──► texto limpo com [Página N] ────────────────────────────────────┐
+   └──► extração estruturada do currículo (JSON validado com Pydantic) │
+              └──► CurriculumGraph (cálculo local de dependências) ────┤
+                                                                       ▼
+                       system prompt = instruções + currículo/grafo + PPC completo (cache 1h)
+                                                                       ▼
+                        chat multi-turno (OpenRouter / Anthropic) + docs anexos + SUAP
 ```
-PDF ──► texto limpo com [Página N] ──────────────────────────────┐
-   └──► Claude extrai o currículo (JSON validado com Pydantic)   │
-              └──► grafo de pré-requisitos (cálculo local) ──────┤
-                                                                 ▼
-                        system prompt = instruções + currículo/grafo + PPC completo (cache de 1 h)
-                                                                 ▼
-                                               chat multi-turno com streaming
-```
 
-1. **Ingestão** (`python main.py ingest`, roda uma vez por versão do PDF)
-   - `PdfLoader` + `TextCleaner`: extraem o texto, removem o cabeçalho repetido e mantêm as quebras de linha das tabelas.
-   - `CurriculumExtractor`: o Claude lê o PPC e devolve, por saída estruturada, todas as disciplinas com código,
-     semestre, carga horária, abordagem, laboratório, pré-requisitos (por código), tópicos e página do plano de
-     ensino, além dos requisitos gerais (estágio, TCC, ACs, extensão).
-   - Saída em `src/data/processed/` (`ppc.md`, `curriculo.json`, `manifest.json`). Se o hash do PDF não mudou, a etapa é pulada.
-2. **Grafo** (`CurriculumGraph`, sem custo de API): pré-requisitos diretos e indiretos, o que cada disciplina
-   libera, o que uma reprovação trava, cadeia crítica do curso, disciplinas-gargalo e um **índice de
-   complexidade estimada** (0–10), que combina profundidade na cadeia (35%), base acumulada (25%), semestre (25%) e carga horária (15%).
-3. **Chat** (`ChatSession`): o system prompt leva as instruções, o currículo com o grafo e o PPC completo.
-   O bloco grande tem cache de 1 h; o histórico também é cacheado a cada turno. O modelo cita `[Página N]`
-   e separa o que está no PPC do que é inferência (dificuldade, por exemplo).
+1. **Ingestão (`python main.py ingest`):** `PdfLoader` + `TextCleaner` geram `src/data/processed/ppc.md` e `curriculo.json` (já versionados no repositório; se o hash do PDF não mudar, a etapa é pulada).
+2. **Grafo (`CurriculumGraph`, custo zero de API):** pré-requisitos diretos/indiretos, o que cada disciplina libera/trava, caminho crítico, gargalos e índice de complexidade estimada (0–10).
+3. **Chat (`ChatSession`):** streaming em NDJSON com citação clicável `[Página N]`, menção `@` de disciplinas e controle de fallback automático.
 
-### Modelo e custo
+---
 
-- Padrão: **Claude Opus 5.5** (`claude-opus-5-5`) pela API da Anthropic, com esforço `medium` no chat e `high` na extração.
-- Se o modelo recusar uma pergunta, o middleware do SDK repete a requisição no `FALLBACK_MODEL` (Opus 4.8).
-- Custo aproximado (Opus 5.5: US$ 4 / 1M tokens de entrada, US$ 20 / 1M de saída, US$ 0,20 / 1M lidos do cache):
-  cada pergunta lê ~140 mil tokens do cache (~US$ 0,03) mais a resposta. A primeira pergunta de cada hora grava o
-  cache de 1 h (2× o preço de entrada, ~US$ 1,10). Confira os valores atuais em <https://www.anthropic.com/pricing>.
-- O chat mostra no terminal quantos tokens vieram do cache, para você conferir; a API devolve o mesmo em `usage` no `/chat`.
-- Para gastar menos, use os modelos do `.env-example` (Haiku 5.5 no chat): em teste, cerca de 1 centavo de dólar por pergunta.
+## Novidades do Fork
 
-## Instalação
+Evoluções implementadas neste fork sobre o projeto base:
+
+| Recurso | Descrição | Arquivos Principais |
+| :--- | :--- | :--- |
+| **OpenRouter + Multi-Fallback** | Compatibilidade com `ANTHROPIC_BASE_URL` (`https://openrouter.ai/api`), `OPENROUTER_API_KEY` e lista ordenada `FALLBACK_MODELS` no `BetaRefusalFallbackMiddleware`. | `settings.py`, `llm_client.py` |
+| **Seletor de Modelos na UI** | Troca em tempo real no composer entre modelos da fronteira de Pareto (`DeepSeek V4.1 Flash`, `GLM 5.3 Flash`, `Gemini 3.5/3.8 Flash`, `Qwen 3.8 27B`). | `index.html`, `app.js`, `chat_service.py` |
+| **Anexo de Documentos no Chat** | Upload via `POST /documents/extract` (`.pdf` via PyMuPDF, `.txt`, `.md`, `.csv`, `.json`) para comparar grades/ementas (ex.: USP × IFSP). | `app.py`, `index.html`, `app.js` |
+| **Moodle IFSP → WhatsApp** | Aba **Moodle** no drawer (padrão visual do *Meu percurso*), bookmarklet `moodle-export.js` e disparo de alertas via CallMeBot. | `moodle_import.py`, `moodle-export.js`, `app.py` |
+| **Reenvio & Devolução ao Chat** | Em erro de API ou cancelamento manual, restaura pergunta e chips `@` no composer com botões `Reenviar` e `Devolver ao chat`. | `app.js` |
+| **Mobile-First & Touch** | Hitboxes mínimas de `44px × 44px`, quebra responsiva do composer e fonte `16px` no input para dispositivos móveis. | `styles.css` |
+| **Diretriz Anti-Reasoning Leak** | Reforço no prompt de sistema para responder diretamente em português sem expor rascunhos em inglês. | `prompts.py` |
+
+---
+
+## Instalação e Uso
 
 ```bash
 python -m venv venv
 venv\Scripts\activate          # Linux/Mac: source venv/bin/activate
 pip install -r requirements.txt
-cp .env-example .env           # preencha ANTHROPIC_API_KEY
+cp .env-example .env           # Preencha OPENROUTER_API_KEY (ou ANTHROPIC_API_KEY)
 ```
 
-A chave é criada em <https://platform.claude.com/settings/keys>.
-
-## Uso
+### Comandos
 
 ```bash
-python main.py ingest                 # processa o PDF (use --force para refazer)
-python main.py chat                   # chat interativo no terminal
+python main.py serve                  # API + Interface Web em http://localhost:8000
+python main.py serve --port 8080      # Porta customizada
+python main.py chat                   # Chat interativo no terminal
 python main.py ask "Quais os pré-requisitos de Arquitetura de Software?"
-python main.py serve --port 8000      # API + interface web em http://localhost:8000
+python main.py ingest --force         # Reprocessa o PDF do PPC (apenas se o PDF mudar)
 ```
 
-### Interface web
+---
 
-Ao rodar `serve`, abra <http://localhost:8000>. Não há build nem login: é HTML, CSS e JS puros em
-`src/modules/api/static/`.
+## API REST
 
-- **Chat com streaming:** respostas em markdown com tabelas; enquanto o modelo pensa, aparece uma
-  linha com o resumo do raciocínio, que vira "Raciocinou por Xs" e pode ser expandida. O resumo vem em inglês.
-- **Disciplinas no contexto:** digite `@` (ou use o botão do livro) para escolher disciplinas. Elas viram chips
-  acima do campo, e a ficha completa de cada uma (pré-requisitos, o que libera, tópicos, complexidade) vai
-  junto da pergunta.
-- **Citações clicáveis:** `[Página N]` vira um chip que abre o PDF naquela página; códigos como `SCLPROO`
-  abrem a árvore da disciplina.
-- **Estrutura curricular** (botões Fluxograma e Meu percurso no topo, em tela cheia):
-  - **Fluxograma**, em dois modos:
-    - **Conexões:** a disciplina em foco fica no centro, o que vem antes ramifica para a esquerda (azul, em camadas
-      "logo antes", "2 etapas antes"…) e o que ela libera ramifica para a direita (laranja). Clicar num nó
-      centraliza nele; o painel ao lado traz detalhes, "Adicionar ao chat" e atalhos de pergunta.
-    - **Grade:** todas as disciplinas por semestre; clicar abre as conexões.
-  - **Meu percurso** (com o SUAP conectado): trilha em serpente com os semestres já cursados, o atual e uma previsão
-    até a formatura (pelos pré-requisitos e pelo semestre de oferta na matriz). Clicar num semestre mostra as
-    disciplinas, notas e frequência; a formatura mostra os requisitos e as atividades complementares.
-  - Busca e o modal "Regras do curso".
-- **Conversas:** lista lateral com as conversas salvas só no navegador (título automático pela primeira pergunta,
-  renomear e apagar); com a marca e o "Novo chat" no topo, como a do ChatGPT. Fechada, o cabeçalho mostra o botão de abrir, a marca e o novo chat; no celular ela abre por cima.
-- **Detalhes:** botão para parar a resposta e menu Ajustes (tema claro/escuro/sistema, opções de exibição e o PDF do PPC).
+| Método | Rota | Corpo / Parâmetros | Resposta |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/health` | — | Status e total de disciplinas carregadas |
+| `GET` | `/curriculum` | — | Currículo estruturado com análise de grafo |
+| `GET` | `/pdf` | — | PPC em PDF (suporta `#page=N`) |
+| `POST` | `/chat` | `{"question", "history", "disciplinas", "documentos", "model", "perfil", "request_id"}` | `{"answer", "usage"}` |
+| `POST` | `/chat/stream` | Mesmo payload de `/chat` | Stream NDJSON (`thinking`, `text`, `done`, `error`) |
+| `POST` | `/chat/cancel/{request_id}` | — | `204` — interrompe geração em andamento |
+| `POST` | `/documents/extract` | `multipart/form-data` (`file`) | `{"name", "content", "chars", "truncated"}` |
+| `POST` | `/aluno/importar` | Payload do bookmarklet SUAP | `{"code"}` para resgate único |
+| `GET` | `/aluno/importar/{code}` | — | Dados do aluno (apagados após leitura) |
+| `POST` | `/moodle/importar` | `{"tasks", "notify_whatsapp"}` | `{"count", "token", "summary", "whatsapp"}` |
+| `GET` | `/moodle/resgatar/{token}` | — | `{"tasks"}` importadas do Moodle |
 
-### API
+---
 
-| Método | Rota | Corpo | Resposta |
-|---|---|---|---|
-| GET | `/health` | — | status e número de disciplinas |
-| GET | `/curriculum` | — | currículo estruturado com a análise do grafo (usado pelo mapa) |
-| GET | `/pdf` | — | o PPC em PDF (aceita `#page=N`) |
-| POST | `/chat` | `{"question", "history", "disciplinas", "request_id"}` (só `question` é obrigatório) | `{"answer", "usage"}` |
-| POST | `/chat/stream` | igual ao `/chat` | NDJSON: `thinking`, `text`, e por fim `done` (com `usage`) ou `error` |
-| POST | `/chat/cancel/{request_id}` | — | 204; interrompe a resposta em andamento |
+## Integrações SUAP & Moodle
 
-A API **não guarda conversas**: para continuar uma, mande em `history` as trocas anteriores
-(`[{"role": "user", "text": "...", "disciplinas": []}, {"role": "assistant", "text": "..."}]`, até 30 mensagens).
-O front faz isso sozinho com a conversa salva no navegador. Perguntas acima do limite por IP ou do teto global
-recebem 429.
+Ambas as integrações usam **bookmarklets locais** que rodam na sessão autenticada do navegador do aluno (sem pedir nem armazenar senhas):
 
-## Dados do aluno via SUAP (bookmarklet)
+1. **SUAP (`Meu percurso`):** arraste o botão em **Conectar SUAP**, abra o SUAP logado e clique no favorito. Os dados acadêmicos são exibidos na trilha do curso e ficam salvos apenas no `localStorage`.
+2. **Moodle (`Moodle`):** arraste o botão em **Conectar Moodle**, acesse `https://moodle.scl.ifsp.edu.br/my/` e clique no favorito. O painel coleta as atividades pendentes, envia para `/moodle/importar`, dispara o alerta no WhatsApp via CallMeBot (se configurado no `.env`) e abre a aba **Moodle** no PPChat.
 
-O SUAP do IFSP não oferece, na API, as notas e o histórico do aluno, e o login da página web tem reCAPTCHA. Por
-isso o PPChat **não pede senha**: o aluno arrasta o favorito "PPChat ← SUAP" (botão **Conectar SUAP** no topo) e o
-clica com o SUAP já aberto.
-
-1. O script (`static/suap-export.js`) roda dentro do SUAP com a sessão do próprio aluno e lê só as abas acadêmicas
-   (dados acadêmicos, requisitos de conclusão, histórico, boletins e atividades complementares e de extensão).
-   Dados pessoais e bancários ficam de fora. Antes de enviar, mostra o que leu.
-2. Envia as tabelas para `POST /aluno/importar` (CORS liberado só para `SUAP_ORIGINS`) e recebe um código de uso
-   único que expira em 1 hora. O servidor guarda os dados só em memória.
-3. Abre o PPChat com `#suap=<código>`. O front troca o código pelos dados (`GET /aluno/importar/{código}`), apaga o
-   código da URL e guarda tudo **só no navegador**. Dá para remover a qualquer momento no mesmo botão.
-4. A situação de cada disciplina (feita, cursando, reprovada) vem do código `SCL…` ou do nome na tabela. As
-   "liberadas" são calculadas pelo grafo de pré-requisitos. Um resumo vai junto de cada pergunta (`perfil`), e a
-   árvore vira um mapa de progresso.
-
-O leitor é genérico (descobre as abas pelos links e extrai todas as tabelas), mas se o SUAP mudar muito, ajuste os
-padrões em `suap-export.js` (abas) e em `buildAluno` no `app.js` (situações).
-
-## Deploy no Render (plano gratuito)
-
-O `render.yaml` já descreve o serviço. A base processada (`src/data/processed/`) está no repositório, então o
-deploy não roda a ingestão nem gasta API.
-
-1. Faça push do repositório para o GitHub.
-2. No Render: **New → Blueprint**, escolha o repositório e confirme.
-3. Quando ele pedir, cole a `ANTHROPIC_API_KEY`.
-4. Defina um **limite de gastos** no console da Anthropic: o site é público e não tem login.
-
-O plano gratuito dorme após 15 min sem uso; o primeiro acesso depois disso leva até 1 minuto, e o front mostra
-"Acordando o servidor…". Se mudar o PDF, rode `python main.py ingest --force` localmente e commite a base nova.
+---
 
 ## Configuração (`.env`)
 
 | Variável | Padrão | Uso |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | — | chave da API da Anthropic |
-| `LLM_MODEL` | `claude-opus-5-5` | modelo do chat |
-| `EXTRACTION_MODEL` | igual ao `LLM_MODEL` | modelo da extração do currículo (roda uma vez por PDF) |
-| `FALLBACK_MODEL` | `claude-opus-4-8` | usado só se o principal recusar |
-| `CHAT_EFFORT` / `EXTRACTION_EFFORT` | `medium` / `high` | profundidade de raciocínio (`low` a `max`) |
-| `RATE_LIMIT_PER_HOUR` / `GLOBAL_RATE_LIMIT_PER_HOUR` | `30` / `400` | perguntas por IP e teto do site inteiro por hora (`0` desliga) |
+| :--- | :--- | :--- |
+| `OPENROUTER_API_KEY` | — | Chave da API do OpenRouter (recomendado) |
+| `ANTHROPIC_BASE_URL` | `https://openrouter.ai/api` | Endpoint compatível com Messages API da Anthropic |
+| `ANTHROPIC_API_KEY` | — | Chave direta da Anthropic (opcional se usar OpenRouter) |
+| `LLM_MODEL` | `deepseek/deepseek-v4.1-flash` | Modelo padrão do chat |
+| `EXTRACTION_MODEL` | `google/gemini-3.8-flash` | Modelo usado na extração do PDF |
+| `FALLBACK_MODELS` | `["z-ai/glm-5.3-flash", "google/gemini-3.8-flash", "qwen/qwen3.8-27b"]` | Lista ordenada de fallback em caso de recusa |
+| `CHAT_EFFORT` / `EXTRACTION_EFFORT` | `low` / `high` | Nível de raciocínio (`low` a `max`) |
+| `RATE_LIMIT_PER_HOUR` / `GLOBAL_RATE_LIMIT_PER_HOUR` | `30` / `400` | Limites por IP e global (`0` desativa) |
+| `SUAP_ORIGINS` | `["https://suap.ifsp.edu.br", "https://moodle.scl.ifsp.edu.br"]` | Origens permitidas no CORS para os bookmarklets |
+| `CALLMEBOT_PHONE` / `CALLMEBOT_APIKEY` | — | Credenciais do CallMeBot para alertas no WhatsApp |
 
-## Estrutura
+---
 
+## Estrutura do Projeto
+
+```text
+ppchat-api/
+├── main.py                              # CLI (ingest, chat, ask, serve)
+├── render.yaml                          # Blueprint de deploy no Render
+├── requirements.txt                     # Dependências Python (inclui python-multipart)
+├── CHANGELOG.md                         # Registro das alterações do fork
+└── src/
+    ├── data/
+    │   ├── documents/PPCENGSOFTWARE.pdf # PPC oficial (IFSP São Carlos)
+    │   └── processed/                   # ppc.md, curriculo.json, manifest.json
+    └── modules/
+        ├── ingestion/                   # Extração do PDF e modelo Pydantic do currículo
+        ├── knowledge/                   # CurriculumGraph e montagem do KnowledgeBase
+        ├── response/                    # ChatSession e SYSTEM_INSTRUCTIONS
+        ├── api/                         # FastAPI, rotas SUAP/Moodle, upload e UI em static/
+        └── shared/                      # Settings e cliente Anthropic/OpenRouter com fallback
 ```
-src/modules/
-├── ingestion/   # PDF → texto limpo; extração do currículo estruturado
-├── knowledge/   # grafo de pré-requisitos e montagem do contexto
-├── response/    # prompt do sistema e sessão de chat
-├── api/         # FastAPI + interface web (static/)
-└── shared/      # configurações e cliente da API da Anthropic
-```
+
+---
+
+## Créditos
+
+- **Projeto Original:** [Stanquini](https://github.com/stanquini) e Piovezan
+- **Fork & Evoluções (Workshop BES 17/11/2026):** [Rafael Feltrim](https://github.com/RaFeltrim)

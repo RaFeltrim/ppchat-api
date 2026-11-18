@@ -31,6 +31,7 @@ const state = {
   settings: { grades: false, progress: true, showDenied: false }, // preferências de exibição (salvas no navegador)
   history: [], // {role: "user", text, disciplinas} | {role: "assistant", text, thinking?, usage?, stopped?}
   context: [], // disciplinas selecionadas para a próxima pergunta
+  docs: [],    // documentos anexados para a próxima pergunta
   busy: false,
   controller: null,
   focus: null, // disciplina em foco na árvore
@@ -355,7 +356,7 @@ function closeDrawer() {
 function setView(view) {
   if (view === "flow") view = state.flowMode;
   state.view = view;
-  if (view !== "me") state.flowMode = view;
+  if (view !== "me" && view !== "moodle") state.flowMode = view;
   $$(".seg-mode").forEach((btn) => {
     const active = btn.dataset.mode === state.flowMode;
     btn.classList.toggle("is-active", active);
@@ -364,8 +365,9 @@ function setView(view) {
   $("#view-tree").classList.toggle("is-visible", view === "tree");
   $("#view-grid").classList.toggle("is-visible", view === "grid");
   $("#view-me").classList.toggle("is-visible", view === "me");
+  $("#view-moodle")?.classList.toggle("is-visible", view === "moodle");
   syncNav();
-  $("#drawer-head").hidden = view === "me"; // Conexões | Grade é só do fluxograma
+  $("#drawer-head").hidden = view === "me" || view === "moodle"; // Conexões | Grade é só do fluxograma
   if (view === "me") renderMe();
   if (view === "tree" && !$(".node", $("#tree-inner"))) showTree(state.focus); // primeiro desenho
 }
@@ -979,6 +981,8 @@ async function streamAnswer(question, disciplinas, ui) {
     body: JSON.stringify({
       question, disciplinas, history: historyPayload(), request_id: state.requestId,
       perfil: state.aluno?.contexto || null, // dados do SUAP, guardados só neste navegador
+      documentos: state.docs || [],
+      model: document.getElementById("model-select")?.value || null,
     }),
     signal: state.controller.signal,
   });
@@ -1057,25 +1061,65 @@ async function ask(question) {
   autosize();
 
   addUserMessage(question, disciplinas);
+  const userMsgEl = messagesEl.lastElementChild;
   const ui = addBotMessage();
+  const botMsgEl = messagesEl.lastElementChild;
   ui.thinkingTimer = startThinking(ui.answer);
   scrollToBottom(true);
   setBusy(true);
 
+  function restoreToComposer(removeBubbles = false) {
+    input.value = question;
+    autosize();
+    if (disciplinas.length) {
+      state.context = [...new Set([...state.context, ...disciplinas])];
+      renderContext();
+    }
+    if (removeBubbles) {
+      userMsgEl?.remove();
+      botMsgEl?.remove();
+    }
+    input.focus();
+  }
+
+  function attachRetryActions(container) {
+    const bar = document.createElement("div");
+    bar.style.cssText = "display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;";
+    bar.innerHTML = `
+      <button type="button" class="btn btn-primary" data-act="retry" style="padding:5px 12px;font-size:12.5px;">↻ Reenviar</button>
+      <button type="button" class="btn" data-act="edit" style="padding:5px 12px;font-size:12.5px;">✎ Devolver ao chat</button>`;
+    bar.querySelector('[data-act="retry"]').addEventListener("click", () => {
+      userMsgEl?.remove();
+      botMsgEl?.remove();
+      if (disciplinas.length) {
+        state.context = [...new Set([...state.context, ...disciplinas])];
+        renderContext();
+      }
+      ask(question);
+    });
+    bar.querySelector('[data-act="edit"]').addEventListener("click", () => restoreToComposer(true));
+    container.appendChild(bar);
+  }
+
   try {
     const entry = await streamAnswer(question, disciplinas, ui);
-    renderMarkdown(ui.answer, entry.text || (entry.stopped ? "" : "_Sem resposta._"));
+    renderMarkdown(ui.answer, entry.text || (entry.stopped ? "_Envio cancelado._" : "_Sem resposta._"));
     renderReasoning(ui, entry, { live: false });
     renderFooter(ui.footer, entry);
     if (!entry.stopped && entry.text) { // a API rejeita mensagens vazias no histórico
       state.history.push({ role: "user", text: question, disciplinas }, entry);
       persist();
+    } else if (entry.stopped) {
+      restoreToComposer(false);
+      attachRetryActions(ui.answer);
     }
   } catch (error) {
     clearInterval(ui.thinkingTimer);
+    restoreToComposer(false);
     const partial = error.partial?.text ? DOMPurify.sanitize(marked.parse(error.partial.text)) : "";
     ui.answer.innerHTML = `${partial}<div class="error-box">${
       error.status === 429 ? escapeHtml(error.message) : `Não consegui responder: ${escapeHtml(error.message)}`}</div>`;
+    attachRetryActions(ui.answer);
   } finally {
     state.controller = null;
     state.requestId = null;
@@ -2131,3 +2175,179 @@ loadCurriculum()
 new ResizeObserver(([entry]) => {
   document.documentElement.style.setProperty("--topbar-h", `${entry.target.offsetHeight}px`);
 }).observe($(".topbar"));
+
+// --- Document attachment ---
+(() => {
+  const btn = document.getElementById("add-document");
+  const inp = document.getElementById("doc-input");
+  const ctx = document.getElementById("context");
+  if (!btn || !inp || !ctx) return;
+
+  function renderDocChips() {
+    ctx.querySelectorAll(".doc-chip").forEach((el) => el.remove());
+    state.docs.forEach((doc, idx) => {
+      const chip = document.createElement("span");
+      chip.className = "chip doc-chip";
+      chip.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></svg> <span>${escapeHtml(doc.name)}</span><button type="button" aria-label="Remover ${escapeHtml(doc.name)}">×</button>`;
+      chip.querySelector("button").addEventListener("click", () => {
+        state.docs.splice(idx, 1);
+        renderDocChips();
+        if (!state.context.length && !state.docs.length) ctx.hidden = true;
+      });
+      ctx.appendChild(chip);
+    });
+    if (state.docs.length) ctx.hidden = false;
+  }
+
+  btn.addEventListener("click", () => inp.click());
+  inp.addEventListener("change", async () => {
+    for (const file of inp.files) {
+      if (state.docs.length >= 5) { toast("Máximo de 5 documentos por pergunta."); break; }
+      const form = new FormData();
+      form.append("file", file);
+      try {
+        const res = await fetch("/documents/extract", { method: "POST", body: form });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Erro ao ler documento");
+        state.docs.push({ name: data.name, content: data.content });
+        if (data.truncated) toast(`${data.name} foi resumido aos primeiros 40.000 caracteres.`);
+      } catch (err) {
+        toast(err.message || "Falha ao anexar documento.");
+      }
+    }
+    inp.value = "";
+    renderDocChips();
+  });
+})();
+
+// --- Moodle view (padrão Meu percurso) ---
+(() => {
+  const wrap = document.getElementById("moodle-wrap");
+  const statusDot = document.getElementById("moodle-status");
+  if (!wrap) return;
+
+  const bmHref = `javascript:(()=>{window.__PPCHAT_API='${location.origin}';const s=document.createElement('script');s.src='${location.origin}/static/moodle-export.js?t='+Date.now();document.body.appendChild(s);})();`;
+
+  function loadTasks() {
+    try { return JSON.parse(localStorage.getItem("ppchat_moodle_tasks") || "[]"); }
+    catch { return []; }
+  }
+
+  function openMoodleConnectModal() {
+    const modal = $("#suap-modal");
+    const title = $("#suap-title");
+    const body = $("#suap-body");
+    if (!modal || !title || !body) return;
+    title.textContent = "Conectar Moodle";
+    body.innerHTML = `
+      <p class="muted" style="margin-top:0;">
+        Arraste o botão abaixo para a barra de favoritos do Chrome. Depois, acesse
+        <a href="https://moodle.scl.ifsp.edu.br/my/" target="_blank" rel="noopener">moodle.scl.ifsp.edu.br/my/</a>,
+        faça login e clique no favorito para importar suas disciplinas e tarefas.
+      </p>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:14px;">
+        <a class="btn btn-primary" href="${bmHref}" onclick="event.preventDefault();toast('Arraste este botão para a barra de favoritos do Chrome!');" style="cursor:grab;text-decoration:none;">
+          PPChat ← Moodle
+        </a>
+      </div>`;
+    modal.showModal();
+  }
+
+  function renderMoodle() {
+    const tasks = loadTasks();
+    if (statusDot) {
+      statusDot.classList.toggle("is-on", tasks.length > 0);
+      statusDot.title = tasks.length ? `Moodle: ${tasks.length} atividade(s)` : "Moodle não conectado";
+    }
+
+    if (!tasks.length) {
+      wrap.innerHTML = `
+        <div class="me-empty">
+          <p class="eyebrow">Moodle IFSP</p>
+          <h3>Acompanhe suas disciplinas e prazos</h3>
+          <p class="muted">Conecte o Moodle para importar suas disciplinas, tarefas e entregas pendentes e receber alertas no WhatsApp via CallMeBot.</p>
+          <button type="button" class="btn btn-primary" id="moodle-connect-btn">Conectar Moodle</button>
+        </div>`;
+      document.getElementById("moodle-connect-btn")?.addEventListener("click", openMoodleConnectModal);
+      return;
+    }
+
+    const byCourse = new Map();
+    tasks.forEach((t) => {
+      const key = t.course || "Disciplinas do Moodle";
+      if (!byCourse.has(key)) byCourse.set(key, []);
+      byCourse.get(key).push(t);
+    });
+
+    let html = `
+      <div class="me-head" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+        <div>
+          <p class="eyebrow">Moodle IFSP</p>
+          <h3 style="margin:0;">Disciplinas e atividades (${tasks.length})</h3>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary" id="moodle-notify-btn">Enviar alerta no WhatsApp</button>
+          <button type="button" class="btn" id="moodle-reconnect-btn">Atualizar</button>
+          <button type="button" class="btn" id="moodle-clear-btn">Desconectar</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">`;
+
+    for (const [course, items] of byCourse.entries()) {
+      html += `
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;">
+          <div style="font-weight:600;font-size:14px;margin-bottom:8px;">${escapeHtml(course)}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">`;
+      items.forEach((t) => {
+        html += `
+            <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding-top:6px;border-top:1px solid var(--border);">
+              <span>${t.url ? `<a href="${escapeHtml(t.url)}" target="_blank" rel="noopener">${escapeHtml(t.title)}</a>` : escapeHtml(t.title)}</span>
+              ${t.due ? `<span class="muted" style="white-space:nowrap;">${escapeHtml(t.due)}</span>` : ""}
+            </div>`;
+      });
+      html += `</div></div>`;
+    }
+    html += `</div>`;
+    wrap.innerHTML = html;
+
+    document.getElementById("moodle-reconnect-btn")?.addEventListener("click", openMoodleConnectModal);
+    document.getElementById("moodle-clear-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("ppchat_moodle_tasks");
+      renderMoodle();
+    });
+    document.getElementById("moodle-notify-btn")?.addEventListener("click", async () => {
+      const res = await fetch("/moodle/importar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tasks, notify_whatsapp: true }),
+      });
+      const data = await res.json();
+      toast(data.whatsapp?.sent ? "Alerta enviado no WhatsApp!" : (data.whatsapp?.reason || "Erro ao enviar alerta."));
+    });
+  }
+
+  document.querySelectorAll('.nav-item[data-view="moodle"]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setView("moodle");
+      renderMoodle();
+    });
+  });
+  renderMoodle();
+})();
+
+// --- Resgatar tarefas do Moodle via #moodle=<token> ---
+(() => {
+  if (!location.hash.startsWith("#moodle=")) return;
+  const token = location.hash.slice("#moodle=".length).trim();
+  history.replaceState(null, "", location.pathname + location.search);
+  if (!token) return;
+  fetch(`/moodle/resgatar/${encodeURIComponent(token)}`)
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((d) => {
+      localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(d.tasks || []));
+      openDrawer("moodle");
+      document.querySelector('.nav-item[data-view="moodle"]')?.click();
+      toast(`${(d.tasks || []).length} tarefa(s) do Moodle carregada(s)!`);
+    })
+    .catch(() => toast("Link do Moodle expirado ou inválido."));
+})();

@@ -31,8 +31,9 @@ class ChatSession:
     enquanto o modelo ainda pensa) cancelando a task que consome `stream_events`.
     """
 
-    def __init__(self, knowledge_base: KnowledgeBase | None = None, history: Sequence[HistoryTurn] = ()):
+    def __init__(self, knowledge_base: KnowledgeBase | None = None, history: Sequence[HistoryTurn] = (), model: str | None = None):
         self.settings = get_settings()
+        self.model = model or self.settings.llm_model
         self.client = get_async_llm_client()
         self.knowledge_base = knowledge_base or get_knowledge_base()
         self.messages: List[BetaMessageParam] = [
@@ -88,7 +89,7 @@ class ChatSession:
         try:
             with self.fallback_state:
                 async with self.client.beta.messages.stream(
-                    model=self.settings.llm_model,
+                    model=self.model,
                     max_tokens=self.settings.max_output_tokens,
                     # "summarized" devolve um resumo legível do raciocínio, mostrado enquanto o modelo pensa
                     thinking={"type": "adaptive", "display": "summarized"},

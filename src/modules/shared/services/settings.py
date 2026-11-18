@@ -14,12 +14,21 @@ class Settings(BaseSettings):
 
     # Se vazia, o SDK procura ANTHROPIC_API_KEY no ambiente ou um login do `ant auth login`
     anthropic_api_key: Optional[str] = None
+    openrouter_api_key: Optional[str] = None
+    gemini_api_key: Optional[str] = None
+    groq_api_key: Optional[str] = None
+    anthropic_base_url: Optional[str] = "https://openrouter.ai/api"
 
-    llm_model: str = "claude-opus-5-5"
+    llm_model: str = "deepseek/deepseek-v4.1-flash"
     # A extração roda uma vez por PDF; vale usar um modelo mais forte que o do chat
-    extraction_model: Optional[str] = None  # vazio = mesmo modelo do chat
+    extraction_model: Optional[str] = "google/gemini-3.8-flash"
     # Usado só se o modelo principal recusar a requisição (middleware de fallback do SDK)
-    fallback_model: str = "claude-opus-4-8"
+    fallback_model: str = "z-ai/glm-5.3-flash"
+    fallback_models: List[str] = [
+        "z-ai/glm-5.3-flash",
+        "google/gemini-3.8-flash",
+        "qwen/qwen3.8-27b",
+    ]
 
     # Esforço de raciocínio: chat pode ser "medium"; extração estruturada merece mais
     chat_effort: Effort = "medium"
@@ -30,8 +39,12 @@ class Settings(BaseSettings):
     rate_limit_per_hour: int = 30  # perguntas por IP
     global_rate_limit_per_hour: int = 400  # teto para o site inteiro, vale mesmo se alguém forjar o IP
 
-    # Origens do SUAP de onde o bookmarklet pode enviar os dados do aluno (CORS)
-    suap_origins: List[str] = ["https://suap.ifsp.edu.br"]
+    # Origens do SUAP e Moodle de onde os bookmarklets podem enviar dados (CORS)
+    suap_origins: List[str] = ["https://suap.ifsp.edu.br", "https://moodle.scl.ifsp.edu.br"]
+
+    # CallMeBot (alertas no WhatsApp para tarefas do Moodle)
+    callmebot_phone: Optional[str] = None
+    callmebot_apikey: Optional[str] = None
 
     # Arquivos
     pdf_path: Path = ROOT_DIR / "src" / "data" / "documents" / "PPCENGSOFTWARE.pdf"

@@ -287,6 +287,17 @@ kbd {
   transition: background .15s, color .15s, border-color .15s;
 }
 .add-btn:hover, .add-btn[aria-expanded="true"] { background: var(--anc-soft); color: var(--anc); border-color: color-mix(in oklab, var(--anc) 30%, transparent); }
+.model-select {
+  height: 40px; flex: none; border-radius: 12px; border: 1px solid transparent;
+  background: var(--surface-2); color: var(--ink-2); font: inherit; font-size: 13px;
+  padding: 0 10px; max-width: 175px; cursor: pointer; outline: none;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.model-select:hover, .model-select:focus {
+  background: var(--anc-soft); color: var(--anc);
+  border-color: color-mix(in oklab, var(--anc) 30%, transparent);
+}
+.model-select option { background: var(--surface); color: var(--ink); }
 #input {
   flex: 1; min-width: 0; border: 0; outline: 0; resize: none; background: transparent; color: var(--ink);
   font: inherit; font-size: 15px; line-height: 1.5; max-height: 180px; padding: 9px 4px; overflow-y: hidden;
@@ -1128,3 +1139,17 @@ body.sidebar-open .drawer { left: 268px; }
 @media (max-width: 720px) {
   .lead-name { display: none; }
 }
+
+/* --- Mobile-First & Touch Hitboxes --- */
+@media (max-width: 640px) {
+  .composer-row { flex-wrap: wrap; gap: 8px; }
+  .add-btn, .send { width: 44px; height: 44px; }
+  .model-select {
+    order: 4; width: 100%; max-width: 100%; height: 44px; font-size: 14px;
+  }
+  #input { min-width: calc(100% - 160px); font-size: 16px; }
+  .moodle-wrap { margin: 16px auto !important; padding: 0 12px !important; }
+}
+
+.nav-item { border: 0; }
+.nav-item:focus:not(:focus-visible) { outline: none; }

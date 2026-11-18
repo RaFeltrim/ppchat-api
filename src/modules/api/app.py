@@ -4,12 +4,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncIterator, Dict, List, Literal, Optional
 
-from fastapi import FastAPI, HTTPException, Request
+import fitz
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 
+from src.modules.api.moodle_import import MoodleImport, format_moodle_summary, send_whatsapp_callmebot
 from src.modules.api.rate_limit import RateLimiter, client_ip
 from src.modules.api.suap_import import ImportStore, SuapImport
 from src.modules.knowledge.services.knowledge_base import get_knowledge_base
@@ -34,7 +36,7 @@ settings = get_settings()
 # O bookmarklet roda dentro do SUAP e envia os dados do aluno para cá: só essa origem é liberada
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.suap_origins,
+    allow_origins=list({*settings.suap_origins, "https://moodle.scl.ifsp.edu.br"}),
     allow_methods=["POST"],
     allow_headers=["Content-Type"],
 )
@@ -51,6 +53,11 @@ class HistoryTurn(BaseModel):
     disciplinas: List[str] = Field(default_factory=list, max_length=12)
 
 
+class AttachedDocument(BaseModel):
+    name: str = Field(max_length=120)
+    content: str = Field(max_length=45_000)
+
+
 class ChatRequest(BaseModel):
     question: str = Field(min_length=1, max_length=4000)
     # A API não guarda conversas: o navegador reenvia o histórico a cada pergunta
@@ -61,6 +68,10 @@ class ChatRequest(BaseModel):
     request_id: Optional[str] = Field(default=None, max_length=64)
     # Resumo acadêmico do aluno (importado do SUAP e guardado só no navegador dele)
     perfil: Optional[str] = Field(default=None, max_length=30_000)
+    # Documentos anexados no chat (ex: ementas USP/IFSP para comparação)
+    documentos: List[AttachedDocument] = Field(default_factory=list, max_length=5)
+    # Modelo selecionado na interface (opcional; usa LLM_MODEL do .env se vazio)
+    model: Optional[str] = Field(default=None, max_length=120)
 
     @field_validator("history")
     @classmethod
@@ -91,7 +102,7 @@ def _check_rate_limit(http_request: Request) -> None:
 
 
 def _session(request: ChatRequest) -> ChatSession:
-    return ChatSession(history=[turn.model_dump() for turn in request.history])
+    return ChatSession(history=[turn.model_dump() for turn in request.history], model=request.model)
 
 
 def _usage(session: ChatSession) -> Optional[Usage]:
@@ -107,6 +118,13 @@ def _usage(session: ChatSession) -> Optional[Usage]:
     )
 
 
+def _merge_perfil_and_docs(perfil: Optional[str], documentos: List[AttachedDocument]) -> Optional[str]:
+    parts = [perfil] if perfil else []
+    for doc in documentos:
+        parts.append(f"[Documento anexado: {doc.name}]\n{doc.content}")
+    return "\n\n".join(parts) if parts else None
+
+
 async def _stream_answer(request: ChatRequest, http_request: Request) -> AsyncIterator[str]:
     """Emite NDJSON: {"type": "thinking"} com o resumo do raciocínio, {"type": "text"} com a
     resposta, e por fim {"type": "done"} com o uso de tokens ou {"type": "error"}.
@@ -119,7 +137,9 @@ async def _stream_answer(request: ChatRequest, http_request: Request) -> AsyncIt
 
     async def produce():
         try:
-            async for kind, text in session.stream_events(request.question, request.disciplinas, request.perfil):
+            async for kind, text in session.stream_events(
+                request.question, request.disciplinas, _merge_perfil_and_docs(request.perfil, request.documentos)
+            ):
                 events.put_nowait({"type": kind, "text": text})
             usage = _usage(session)
             events.put_nowait({"type": "done", "usage": usage.model_dump() if usage else None})
@@ -199,11 +219,60 @@ def curriculum() -> dict:
     }
 
 
+import secrets
+
+_moodle_store: Dict[str, List[dict]] = {}
+
+
+@app.post("/moodle/importar")
+async def moodle_importar(payload: MoodleImport) -> dict:
+    """Recebe tarefas do Moodle via bookmarklet e dispara alerta no WhatsApp (CallMeBot)."""
+    s = get_settings()
+    summary = format_moodle_summary(payload.tasks)
+    whatsapp = {"sent": False, "reason": "notificação desativada"}
+    if payload.notify_whatsapp:
+        whatsapp = send_whatsapp_callmebot(payload.tasks, s.callmebot_phone or "", s.callmebot_apikey or "")
+    token = secrets.token_urlsafe(12)
+    _moodle_store[token] = [t.model_dump() for t in payload.tasks]
+    return {"count": len(payload.tasks), "token": token, "summary": summary, "whatsapp": whatsapp}
+
+
+@app.get("/moodle/resgatar/{token}")
+async def moodle_resgatar(token: str) -> dict:
+    tasks = _moodle_store.pop(token, None)
+    if tasks is None:
+        raise HTTPException(status_code=404, detail="Token expirado ou inválido.")
+    return {"tasks": tasks}
+
+
+@app.post("/documents/extract")
+async def extract_document(file: UploadFile = File(...)) -> dict:
+    """Extrai texto de PDFs ou arquivos de texto para anexar ao contexto do chat."""
+    raw = await file.read()
+    if len(raw) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Arquivo excede o limite de 10 MB.")
+    name = file.filename or "documento"
+    ext = Path(name).suffix.lower()
+    if ext == ".pdf":
+        with fitz.open(stream=raw, filetype="pdf") as doc:
+            text = "\n\n".join(page.get_text("text") for page in doc)
+    elif ext in {".txt", ".md", ".csv", ".json"}:
+        text = raw.decode("utf-8", errors="replace")
+    else:
+        raise HTTPException(status_code=400, detail="Formato não suportado. Use PDF, TXT, MD, CSV ou JSON.")
+    text = text.strip()
+    max_chars = 40_000
+    truncated = len(text) > max_chars
+    return {"name": name, "content": text[:max_chars], "chars": len(text), "truncated": truncated}
+
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     _check_rate_limit(http_request)
     session = _session(request)
-    answer = await session.ask(request.question, request.disciplinas, request.perfil)
+    answer = await session.ask(
+        request.question, request.disciplinas, _merge_perfil_and_docs(request.perfil, request.documentos)
+    )
     return ChatResponse(answer=answer, usage=_usage(session))
 
 
