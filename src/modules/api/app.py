@@ -276,6 +276,67 @@ async def moodle_resgatar(token: str) -> dict:
     return {"tasks": tasks}
 
 
+def _scan_download_repos() -> List[dict]:
+    downloads = Path.home() / "Downloads"
+    if not downloads.exists():
+        return []
+    skip_dirs = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
+    repos = []
+    candidates = list(downloads.iterdir())
+    for folder in candidates:
+        if not folder.is_dir():
+            continue
+        # Detecta .git na pasta ou 1 nível abaixo (ex: Web e Mobile - USP/Web_Mobile)
+        git_dirs = [folder] if (folder / ".git").is_dir() else [
+            sub for sub in folder.iterdir() if sub.is_dir() and (sub / ".git").is_dir()
+        ]
+        if not git_dirs and folder.name.lower() not in {"ap2026", "ax2", "sustentabilidade", "final-estágio", "facul"}:
+            continue
+        for repo_dir in (git_dirs or [folder]):
+            github_url = None
+            cfg = repo_dir / ".git" / "config"
+            if cfg.exists():
+                import re as _re
+                m = _re.search(r"url\s*=\s*(https://[^\s]+)", cfg.read_text(encoding="utf-8", errors="ignore"))
+                if m:
+                    raw_u = m.group(1).rstrip("/")
+                    if raw_u.endswith(".git"):
+                        raw_u = raw_u[:-4]
+                    github_url = _re.sub(r"https://[^@]+@", "https://", raw_u)
+            files = []
+            for p in repo_dir.rglob("*"):
+                if any(part in skip_dirs for part in p.parts):
+                    continue
+                if p.is_file():
+                    rel = p.relative_to(repo_dir).as_posix()
+                    files.append({"name": p.name, "rel_path": rel})
+                    if len(files) >= 60:
+                        break
+            repos.append({
+                "label": folder.name if repo_dir == folder else f"{folder.name} / {repo_dir.name}",
+                "folder": str(repo_dir.relative_to(downloads)).replace("\\", "/"),
+                "github_url": github_url,
+                "files": files,
+            })
+    return repos
+
+
+@app.get("/moodle/repos")
+async def moodle_repos() -> dict:
+    """Lista repositórios e pastas de disciplinas encontrados em Downloads."""
+    return {"repos": await asyncio.to_thread(_scan_download_repos)}
+
+
+@app.get("/moodle/file")
+async def moodle_open_file(folder: str, path: str) -> FileResponse:
+    """Abre/baixa um arquivo local de uma pasta de disciplina em Downloads."""
+    downloads = (Path.home() / "Downloads").resolve()
+    target = (downloads / folder / path).resolve()
+    if not str(target).startswith(str(downloads)) or not target.is_file():
+        raise HTTPException(status_code=404, detail="Arquivo não encontrado.")
+    return FileResponse(target, filename=target.name)
+
+
 @app.get("/ifsp-docs")
 async def list_ifsp_docs() -> dict:
     """Lista os formulários e tutoriais oficiais indexados do Drive IFSP."""

@@ -2286,29 +2286,66 @@ new ResizeObserver(([entry]) => {
     });
   }
 
-  function renderMoodle() {
+  let cachedRepos = null;
+  let selectedCourseKey = null;
+
+  async function loadRepos() {
+    if (cachedRepos) return cachedRepos;
+    try {
+      const r = await fetch("/moodle/repos");
+      const d = await r.json();
+      cachedRepos = d.repos || [];
+    } catch {
+      cachedRepos = [];
+    }
+    return cachedRepos;
+  }
+
+  function matchRepo(courseLabel, repos) {
+    const q = normalize(courseLabel);
+    return repos.find((r) => {
+      const rl = normalize(`${r.label} ${r.folder} ${r.github_url || ""}`);
+      if (q.includes("sclrco2") || q.includes("redes de computadores 2")) return rl.includes("redes");
+      if (q.includes("scltaed") || q.includes("algoritmos e estrutura de dados")) return rl.includes("taed") || rl.includes("algoritmos");
+      if (q.includes("scltcdd") || q.includes("ciencia de dados") || q.includes("ciencias de dados")) return rl.includes("tcdd") || rl.includes("ciencias de dados");
+      if (q.includes("sclttec") || q.includes("tecnologias emergentes")) return rl.includes("ttec") || rl.includes("emergentes") || rl.includes("emegentes");
+      if (q.includes("sclapoo") || q.includes("analise e projeto")) return rl.includes("apoo") && rl.includes("ifsp");
+      if (q.includes("sclaxb2") || q.includes("extensao 2")) return rl.includes("ax2");
+      if (q.includes("sclcoss") || q.includes("sustentabilidade")) return rl.includes("sustentabilidade");
+      const words = q.split(/\s+/).filter((w) => w.length >= 5);
+      return words.length && words.every((w) => rl.includes(w));
+    });
+  }
+
+  async function renderMoodle() {
     const rawTasks = loadTasks();
     const enrolled = getEnrolledCourses();
+    const repos = await loadRepos();
+    const bar = document.getElementById("moodle-bar");
+    const infoPane = document.getElementById("moodle-info");
 
     let visibleTasks = rawTasks;
-    const byCourse = new Map();
+    const courses = [];
 
     if (enrolled.length) {
-      enrolled.forEach((d) => byCourse.set(`${d.nome} (${d.codigo})`, []));
       visibleTasks = [];
-      rawTasks.forEach((t) => {
-        const hit = matchEnrolledCourse(t, enrolled);
-        if (hit) {
-          visibleTasks.push(t);
-          byCourse.get(`${hit.nome} (${hit.codigo})`).push(t);
-        }
+      enrolled.forEach((d) => {
+        const key = d.codigo;
+        const label = `${d.nome} (${d.codigo})`;
+        const items = rawTasks.filter((t) => matchEnrolledCourse(t, [d]));
+        visibleTasks.push(...items);
+        courses.push({ key, code: d.codigo, name: d.nome, sem: d.semestre, items, repo: matchRepo(label, repos) });
       });
     } else {
+      const grouped = new Map();
       rawTasks.forEach((t) => {
         const key = t.course || "Disciplinas do Moodle";
-        if (!byCourse.has(key)) byCourse.set(key, []);
-        byCourse.get(key).push(t);
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(t);
       });
+      for (const [name, items] of grouped.entries()) {
+        courses.push({ key: name, code: "MOODLE", name, sem: null, items, repo: matchRepo(name, repos) });
+      }
     }
 
     if (statusDot) {
@@ -2316,7 +2353,9 @@ new ResizeObserver(([entry]) => {
       statusDot.title = rawTasks.length ? `Moodle: ${visibleTasks.length} pendência(s)` : "Moodle não conectado";
     }
 
-    if (!rawTasks.length && !enrolled.length) {
+    if (!courses.length) {
+      if (bar) bar.innerHTML = `<span class="muted">Moodle IFSP</span>`;
+      if (infoPane) infoPane.innerHTML = "";
       wrap.innerHTML = `
         <div class="me-empty">
           <p class="eyebrow">Moodle IFSP</p>
@@ -2328,45 +2367,79 @@ new ResizeObserver(([entry]) => {
       return;
     }
 
-    const subtitle = enrolled.length
-      ? `Matérias em curso no SUAP (${enrolled.length}) · ${visibleTasks.length} pendência(s) no Moodle`
-      : `Disciplinas e atividades (${visibleTasks.length})`;
-
-    let html = `
-      <div class="me-head" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
-        <div>
-          <p class="eyebrow">Moodle IFSP</p>
-          <h3 style="margin:0;">${subtitle}</h3>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          ${visibleTasks.length ? `<button type="button" class="btn btn-primary" id="moodle-notify-btn">Enviar alerta no WhatsApp</button>` : ""}
-          <button type="button" class="btn ${!rawTasks.length ? "btn-primary" : ""}" id="moodle-reconnect-btn">${rawTasks.length ? "Atualizar" : "Conectar Moodle"}</button>
-          ${rawTasks.length ? `<button type="button" class="btn" id="moodle-clear-btn">Desconectar</button>` : ""}
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:14px;">`;
-
-    for (const [course, items] of byCourse.entries()) {
-      html += `
-        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;">
-          <div style="font-weight:600;font-size:14px;margin-bottom:8px;">${escapeHtml(course)}</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">`;
-      if (!items.length) {
-        html += `<div class="muted" style="font-size:13px;padding-top:6px;border-top:1px solid var(--border);">Nenhuma pendência aberta no Moodle.</div>`;
-      } else {
-        items.forEach((t) => {
-          html += `
-            <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding-top:6px;border-top:1px solid var(--border);">
-              <span>${t.url ? `<a href="${escapeHtml(t.url)}" target="_blank" rel="noopener">${escapeHtml(t.title)}</a>` : escapeHtml(t.title)}</span>
-              ${t.due ? `<span class="muted" style="white-space:nowrap;">${escapeHtml(t.due)}</span>` : ""}
-            </div>`;
-        });
-      }
-      html += `</div></div>`;
+    if (!selectedCourseKey || !courses.some((c) => c.key === selectedCourseKey)) {
+      selectedCourseKey = courses[0].key;
     }
-    html += `</div>`;
-    wrap.innerHTML = html;
 
+    if (bar) {
+      bar.innerHTML = `
+        <div class="tree-crumbs">
+          <strong>Moodle IFSP</strong>
+          <span class="muted">· ${courses.length} disciplina(s) · ${visibleTasks.length} pendência(s)</span>
+        </div>
+        <div class="tree-bar-actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${visibleTasks.length ? `<button type="button" class="chip-btn" id="moodle-notify-btn">Enviar alerta WhatsApp</button>` : ""}
+          <button type="button" class="chip-btn" id="moodle-reconnect-btn">${rawTasks.length ? "Atualizar Moodle" : "Conectar Moodle"}</button>
+          ${rawTasks.length ? `<button type="button" class="chip-btn" id="moodle-clear-btn">Limpar</button>` : ""}
+        </div>`;
+    }
+
+    wrap.innerHTML = `<div class="moodle-grid">${courses.map((c) => {
+      const focused = c.key === selectedCourseKey;
+      const stripeCls = c.items.length ? "anc" : "desc";
+      return `
+        <button type="button" class="node ${stripeCls} ${focused ? "is-focus" : ""}" data-moodle-course="${escapeHtml(c.key)}">
+          <div class="node-top">
+            <span class="node-code">${escapeHtml(c.code)}${c.sem ? ` · ${c.sem}º sem` : ""}</span>
+            <span class="node-code">${c.items.length} pend.</span>
+          </div>
+          <div class="node-name">${escapeHtml(c.name)}</div>
+          <div class="node-meta">
+            <span>${c.repo ? `${c.repo.files.length} arquivo(s)` : "Sem pasta local"}</span>
+            <span>${c.repo?.github_url ? "GitHub ✓" : ""}</span>
+          </div>
+        </button>`;
+    }).join("")}</div>`;
+
+    const active = courses.find((c) => c.key === selectedCourseKey) || courses[0];
+    if (infoPane && active) {
+      const tasksHtml = active.items.length
+        ? active.items.map((t) => `
+            <div style="padding:8px 10px;border:1px solid var(--line-2);border-radius:10px;background:var(--surface-2);margin-bottom:8px;">
+              <div style="font-weight:600;font-size:13px;">${t.url ? `<a href="${escapeHtml(t.url)}" target="_blank" rel="noopener">${escapeHtml(t.title)}</a>` : escapeHtml(t.title)}</div>
+              ${t.due ? `<div class="muted" style="font-size:12px;margin-top:2px;">Prazo: ${escapeHtml(t.due)}</div>` : ""}
+            </div>`).join("")
+        : `<p class="muted" style="font-size:13px;">Nenhuma pendência aberta no Moodle para esta disciplina.</p>`;
+
+      const repoFiles = active.repo?.files || [];
+      const filesHtml = repoFiles.length
+        ? repoFiles.map((f) => {
+            const href = `/moodle/file?folder=${encodeURIComponent(active.repo.folder)}&path=${encodeURIComponent(f.rel_path)}`;
+            return `<a class="chip-btn" href="${href}" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;width:100%;text-align:left;margin-bottom:6px;text-decoration:none;">
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(f.rel_path)}</span>
+              <span class="muted">Abrir</span>
+            </a>`;
+          }).join("")
+        : `<p class="muted" style="font-size:13px;">Nenhum repositório local vinculado em Downloads.</p>`;
+
+      infoPane.innerHTML = `
+        <div style="padding:18px;">
+          <p class="eyebrow">${escapeHtml(active.code)}</p>
+          <h3 style="margin:4px 0 10px;">${escapeHtml(active.name)}</h3>
+          ${active.repo?.github_url ? `<a class="btn btn-primary" href="${escapeHtml(active.repo.github_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:16px;text-decoration:none;">Abrir repositório no GitHub</a>` : ""}
+          <h4 style="margin:12px 0 8px;font-size:13px;text-transform:uppercase;color:var(--muted);">Pendências do Moodle</h4>
+          ${tasksHtml}
+          <h4 style="margin:16px 0 8px;font-size:13px;text-transform:uppercase;color:var(--muted);">Arquivos locais (${repoFiles.length})</h4>
+          <div style="max-height:300px;overflow-y:auto;">${filesHtml}</div>
+        </div>`;
+    }
+
+    wrap.querySelectorAll("[data-moodle-course]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedCourseKey = btn.dataset.moodleCourse;
+        renderMoodle();
+      });
+    });
     document.getElementById("moodle-reconnect-btn")?.addEventListener("click", openMoodleConnectModal);
     document.getElementById("moodle-clear-btn")?.addEventListener("click", () => {
       localStorage.removeItem("ppchat_moodle_tasks");
