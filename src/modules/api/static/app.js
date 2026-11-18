@@ -1613,6 +1613,7 @@ function setAluno(aluno) {
   renderGrid();
   renderSettings();
   if (state.view === "me") renderMe();
+  if (state.view === "moodle") window.__renderMoodle?.();
 }
 
 function progressHtml() {
@@ -1660,6 +1661,7 @@ function setSetting(key, value) {
   if ($(".node", $("#tree-inner"))) renderTree({ animate: false });
   renderGrid();
   if (state.view === "me") renderMe();
+  if (state.view === "moodle") window.__renderMoodle?.();
 }
 $("#tree-settings-btn").addEventListener("click", (event) => {
   event.stopPropagation();
@@ -2269,14 +2271,52 @@ new ResizeObserver(([entry]) => {
     modal.showModal();
   }
 
+  function getEnrolledCourses() {
+    if (!state.aluno?.status || !state.curriculum?.disciplinas) return [];
+    return state.curriculum.disciplinas.filter((d) => state.aluno.status[d.codigo] === "cursando");
+  }
+
+  function matchEnrolledCourse(task, enrolled) {
+    const hay = normalize(`${task.course || ""} ${task.title || ""}`);
+    const tokens = (name) => normalize(name).split(/\s+/).filter((w) => w.length >= 4);
+    return enrolled.find((d) => {
+      if (hay.includes(normalize(d.codigo))) return true;
+      const words = tokens(d.nome);
+      return words.length && words.every((w) => hay.includes(w));
+    });
+  }
+
   function renderMoodle() {
-    const tasks = loadTasks();
-    if (statusDot) {
-      statusDot.classList.toggle("is-on", tasks.length > 0);
-      statusDot.title = tasks.length ? `Moodle: ${tasks.length} atividade(s)` : "Moodle não conectado";
+    const rawTasks = loadTasks();
+    const enrolled = getEnrolledCourses();
+
+    let visibleTasks = rawTasks;
+    const byCourse = new Map();
+
+    if (enrolled.length) {
+      enrolled.forEach((d) => byCourse.set(`${d.nome} (${d.codigo})`, []));
+      visibleTasks = [];
+      rawTasks.forEach((t) => {
+        const hit = matchEnrolledCourse(t, enrolled);
+        if (hit) {
+          visibleTasks.push(t);
+          byCourse.get(`${hit.nome} (${hit.codigo})`).push(t);
+        }
+      });
+    } else {
+      rawTasks.forEach((t) => {
+        const key = t.course || "Disciplinas do Moodle";
+        if (!byCourse.has(key)) byCourse.set(key, []);
+        byCourse.get(key).push(t);
+      });
     }
 
-    if (!tasks.length) {
+    if (statusDot) {
+      statusDot.classList.toggle("is-on", rawTasks.length > 0);
+      statusDot.title = rawTasks.length ? `Moodle: ${visibleTasks.length} pendência(s)` : "Moodle não conectado";
+    }
+
+    if (!rawTasks.length && !enrolled.length) {
       wrap.innerHTML = `
         <div class="me-empty">
           <p class="eyebrow">Moodle IFSP</p>
@@ -2288,23 +2328,20 @@ new ResizeObserver(([entry]) => {
       return;
     }
 
-    const byCourse = new Map();
-    tasks.forEach((t) => {
-      const key = t.course || "Disciplinas do Moodle";
-      if (!byCourse.has(key)) byCourse.set(key, []);
-      byCourse.get(key).push(t);
-    });
+    const subtitle = enrolled.length
+      ? `Matérias em curso no SUAP (${enrolled.length}) · ${visibleTasks.length} pendência(s) no Moodle`
+      : `Disciplinas e atividades (${visibleTasks.length})`;
 
     let html = `
       <div class="me-head" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
         <div>
           <p class="eyebrow">Moodle IFSP</p>
-          <h3 style="margin:0;">Disciplinas e atividades (${tasks.length})</h3>
+          <h3 style="margin:0;">${subtitle}</h3>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button type="button" class="btn btn-primary" id="moodle-notify-btn">Enviar alerta no WhatsApp</button>
-          <button type="button" class="btn" id="moodle-reconnect-btn">Atualizar</button>
-          <button type="button" class="btn" id="moodle-clear-btn">Desconectar</button>
+          ${visibleTasks.length ? `<button type="button" class="btn btn-primary" id="moodle-notify-btn">Enviar alerta no WhatsApp</button>` : ""}
+          <button type="button" class="btn ${!rawTasks.length ? "btn-primary" : ""}" id="moodle-reconnect-btn">${rawTasks.length ? "Atualizar" : "Conectar Moodle"}</button>
+          ${rawTasks.length ? `<button type="button" class="btn" id="moodle-clear-btn">Desconectar</button>` : ""}
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">`;
@@ -2314,13 +2351,17 @@ new ResizeObserver(([entry]) => {
         <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;">
           <div style="font-weight:600;font-size:14px;margin-bottom:8px;">${escapeHtml(course)}</div>
           <div style="display:flex;flex-direction:column;gap:8px;">`;
-      items.forEach((t) => {
-        html += `
+      if (!items.length) {
+        html += `<div class="muted" style="font-size:13px;padding-top:6px;border-top:1px solid var(--border);">Nenhuma pendência aberta no Moodle.</div>`;
+      } else {
+        items.forEach((t) => {
+          html += `
             <div style="display:flex;justify-content:space-between;gap:12px;font-size:13px;padding-top:6px;border-top:1px solid var(--border);">
               <span>${t.url ? `<a href="${escapeHtml(t.url)}" target="_blank" rel="noopener">${escapeHtml(t.title)}</a>` : escapeHtml(t.title)}</span>
               ${t.due ? `<span class="muted" style="white-space:nowrap;">${escapeHtml(t.due)}</span>` : ""}
             </div>`;
-      });
+        });
+      }
       html += `</div></div>`;
     }
     html += `</div>`;
@@ -2329,13 +2370,14 @@ new ResizeObserver(([entry]) => {
     document.getElementById("moodle-reconnect-btn")?.addEventListener("click", openMoodleConnectModal);
     document.getElementById("moodle-clear-btn")?.addEventListener("click", () => {
       localStorage.removeItem("ppchat_moodle_tasks");
+      window.__syncLocalDisk?.({ moodle_tasks: [] });
       renderMoodle();
     });
     document.getElementById("moodle-notify-btn")?.addEventListener("click", async () => {
       const res = await fetch("/moodle/importar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tasks, notify_whatsapp: true }),
+        body: JSON.stringify({ tasks: visibleTasks, notify_whatsapp: true }),
       });
       const data = await res.json();
       toast(data.whatsapp?.sent ? "Alerta enviado no WhatsApp!" : (data.whatsapp?.reason || "Erro ao enviar alerta."));
