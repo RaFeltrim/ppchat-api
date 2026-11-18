@@ -50,27 +50,44 @@
     }
   });
 
-  // Filtra entregas futuras que já possuem arquivo enviado no /mod/assign/view.php
-  let skippedSubmitted = 0;
+  // Filtra tarefas já enviadas (/mod/assign/) e questionários que já possuem nota (/mod/quiz/)
+  let skippedDone = 0;
   const checked = await Promise.all(rawTasks.map(async (t) => {
-    if (!t.url || !t.url.includes("/mod/assign/view.php")) return t;
+    if (!t.url) return t;
+    const isAssign = t.url.includes("/mod/assign/view.php");
+    const isQuiz = t.url.includes("/mod/quiz/view.php");
+    if (!isAssign && !isQuiz) return t;
     try {
       const html = await fetch(t.url, { credentials: "include" }).then((r) => r.text());
-      const isSubmitted =
-        /Enviado para avalia[cç][aã]o|Submitted for grading|Editar envio|fileuploadsubmission/i.test(html) &&
-        !/Nenhum envio|Nothing has been submitted|No attempt/i.test(html);
-      if (isSubmitted) { skippedSubmitted++; return null; }
+      if (isAssign) {
+        const isSubmitted =
+          /Enviado para avalia[cç][aã]o|Submitted for grading|Editar envio|fileuploadsubmission/i.test(html) &&
+          !/Nenhum envio|Nothing has been submitted|No attempt/i.test(html);
+        if (isSubmitted) { skippedDone++; return null; }
+      }
+      if (isQuiz) {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const hasFinalGrade = /Sua nota final neste question[aá]rio|Your final grade for this quiz/i.test(doc.body?.textContent || "");
+        const hasAttemptGrade = Array.from(doc.querySelectorAll(".quizattemptsummary tbody tr")).some((tr) => {
+          const rowTxt = tr.textContent || "";
+          const finished = /Finalizada|Finished/i.test(rowTxt);
+          const ungraded = /Ainda n[aã]o avaliado|Not yet graded/i.test(rowTxt);
+          const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent.trim());
+          return finished && !ungraded && cells.some((c) => /^\d+([.,]\d+)?(\s*\/\s*\d+([.,]\d+)?)?$/.test(c));
+        });
+        if (hasFinalGrade || hasAttemptGrade) { skippedDone++; return null; }
+      }
     } catch {}
     return t;
   }));
   const tasks = checked.filter(Boolean);
 
   if (!tasks.length) {
-    status(`<b>Nenhuma pendência aberta!</b><div class="muted">${skippedSubmitted ? `${skippedSubmitted} entrega(s) já enviada(s) foram ignoradas.` : "Todas as entregas futuras já estão em dia."}</div>`);
+    status(`<b>Nenhuma pendência aberta!</b><div class="muted">${skippedDone ? `${skippedDone} atividade(s) já enviada(s)/avaliada(s) foram ignoradas.` : "Todas as entregas e questionários futuros já estão em dia."}</div>`);
     return;
   }
 
-  status(`<b>${tasks.length} pendência(s)</b> encontrada(s)${skippedSubmitted ? ` (${skippedSubmitted} já enviada(s) ignorada(s))` : ""}. Isto será salvo localmente e enviado ao PPChat:`);
+  status(`<b>${tasks.length} pendência(s)</b> encontrada(s)${skippedDone ? ` (${skippedDone} já enviada(s)/com nota ignorada(s))` : ""}. Isto será salvo localmente e enviado ao PPChat:`);
   $("[data-list]").innerHTML = tasks.slice(0, 12).map((t) =>
     `<li><span>${esc(t.title)}</span><span>${esc(t.due || t.course || "Moodle")}</span></li>`
   ).join("") + (tasks.length > 12 ? `<li><span class="muted">+ ${tasks.length - 12} mais…</span><span></span></li>` : "");
