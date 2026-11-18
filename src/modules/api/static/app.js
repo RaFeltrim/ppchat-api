@@ -2348,6 +2348,7 @@ new ResizeObserver(([entry]) => {
       renderMoodle();
     });
   });
+  window.__renderMoodle = renderMoodle;
   renderMoodle();
 })();
 
@@ -2378,27 +2379,23 @@ new ResizeObserver(([entry]) => {
     }).catch(() => {});
   }
 
-  // Restaura do disco caso o navegador esteja vazio
+  // Atualiza sempre os dados locais a partir do disco ao abrir o sistema
   fetch("/local/state")
     .then((r) => (r.ok ? r.json() : {}))
     .then((disk) => {
-      let changed = false;
-      if (!storage.get(ALUNO_KEY) && disk.aluno?.status) {
+      if (disk.aluno?.status) {
         storage.set(ALUNO_KEY, disk.aluno);
         setAluno(disk.aluno);
-        changed = true;
       }
-      if (!localStorage.getItem("ppchat_moodle_tasks") && Array.isArray(disk.moodle_tasks) && disk.moodle_tasks.length) {
+      if (Array.isArray(disk.moodle_tasks)) {
         localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(disk.moodle_tasks));
-        changed = true;
+        window.__renderMoodle?.();
       }
       if (!storage.get(CONVS_KEY) && Array.isArray(disk.conversations) && disk.conversations.length) {
         storage.set(CONVS_KEY, disk.conversations);
         loadConversations();
         renderConversations();
-        changed = true;
       }
-      if (changed) toast("Dados locais restaurados do disco.");
     })
     .catch(() => {});
 

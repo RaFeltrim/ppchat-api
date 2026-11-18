@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   if (window.__ppchatMoodleExport) return window.__ppchatMoodleExport.focus();
 
   const panel = document.createElement("div");
@@ -18,7 +18,7 @@
     </style>
     <div id="ppx-moodle" role="dialog" aria-label="Enviar dados do Moodle para o PPChat">
       <header><b>PPChat ← Moodle</b><button type="button" data-close aria-label="Fechar">×</button></header>
-      <div class="body"><div data-status>Lendo suas atividades do Moodle…</div><ul data-list></ul><div data-actions></div></div>
+      <div class="body"><div data-status>Verificando entregas e pendências no Moodle…</div><ul data-list></ul><div data-actions></div></div>
     </div>`;
   document.body.append(panel);
 
@@ -34,34 +34,52 @@
     return;
   }
 
-  const tasks = [];
+  const SUBMITTED_RE = /enviado para avalia[cç][aã]o|submitted for grading|editar envio|arquivo enviado|conclu[ií]d[oa]|fileuploadsubmission/i;
+  const rawTasks = [];
   document.querySelectorAll("[data-region='event-list-item'], .event, .calendar_event_course, .list-group-item").forEach((el) => {
+    const rawText = el.textContent || "";
+    if (SUBMITTED_RE.test(rawText)) return;
     const titleEl = el.querySelector("a, h6, .event-name, .name");
     const title = titleEl?.textContent?.trim();
     if (!title || title.length < 3) return;
     const course = el.querySelector(".course-name, small, .text-muted")?.textContent?.trim() || null;
     const due = el.querySelector("time, .date, [data-region='event-time']")?.textContent?.trim() || null;
     const url = titleEl?.href || null;
-    if (!tasks.some((t) => t.title === title && t.due === due)) {
-      tasks.push({ title: title.slice(0, 300), course: course?.slice(0, 200) || null, due: due?.slice(0, 120) || null, url });
+    if (!rawTasks.some((t) => t.title === title && t.due === due)) {
+      rawTasks.push({ title: title.slice(0, 300), course: course?.slice(0, 200) || null, due: due?.slice(0, 120) || null, url });
     }
   });
 
+  // Filtra entregas futuras que já possuem arquivo enviado no /mod/assign/view.php
+  let skippedSubmitted = 0;
+  const checked = await Promise.all(rawTasks.map(async (t) => {
+    if (!t.url || !t.url.includes("/mod/assign/view.php")) return t;
+    try {
+      const html = await fetch(t.url, { credentials: "include" }).then((r) => r.text());
+      const isSubmitted =
+        /Enviado para avalia[cç][aã]o|Submitted for grading|Editar envio|fileuploadsubmission/i.test(html) &&
+        !/Nenhum envio|Nothing has been submitted|No attempt/i.test(html);
+      if (isSubmitted) { skippedSubmitted++; return null; }
+    } catch {}
+    return t;
+  }));
+  const tasks = checked.filter(Boolean);
+
   if (!tasks.length) {
-    status(`<span class="err">Nenhuma atividade encontrada nesta página.</span><div class="muted">Certifique-se de estar no Painel (/my/) com a Linha do tempo visível.</div>`);
+    status(`<b>Nenhuma pendência aberta!</b><div class="muted">${skippedSubmitted ? `${skippedSubmitted} entrega(s) já enviada(s) foram ignoradas.` : "Todas as entregas futuras já estão em dia."}</div>`);
     return;
   }
 
-  status(`<b>${tasks.length} atividade(s)</b> encontrada(s). Isto é o que será enviado ao PPChat:<div class="muted">As tarefas serão exibidas na aba Moodle e enviadas ao WhatsApp (se configurado).</div>`);
+  status(`<b>${tasks.length} pendência(s)</b> encontrada(s)${skippedSubmitted ? ` (${skippedSubmitted} já enviada(s) ignorada(s))` : ""}. Isto será salvo localmente e enviado ao PPChat:`);
   $("[data-list]").innerHTML = tasks.slice(0, 12).map((t) =>
     `<li><span>${esc(t.title)}</span><span>${esc(t.due || t.course || "Moodle")}</span></li>`
   ).join("") + (tasks.length > 12 ? `<li><span class="muted">+ ${tasks.length - 12} mais…</span><span></span></li>` : "");
 
   const api = window.__PPCHAT_API || "http://127.0.0.1:8000";
-  $("[data-actions]").innerHTML = `<button class="btn" data-send>Enviar e abrir o PPChat</button>`;
+  $("[data-actions]").innerHTML = `<button class="btn" data-send>Atualizar e abrir o PPChat</button>`;
   $("[data-send]").addEventListener("click", async (event) => {
     event.target.disabled = true;
-    event.target.textContent = "Enviando…";
+    event.target.textContent = "Atualizando…";
     try {
       const res = await fetch(`${api}/moodle/importar`, {
         method: "POST",
