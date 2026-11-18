@@ -11,6 +11,7 @@ from src.modules.knowledge.services.usp_jupiter import (
     USP_COURSES,
     compute_equivalences,
     fetch_usp_ementa,
+    load_usp_aluno,
     load_usp_curricula,
 )
 from src.modules.shared.services.settings import get_settings
@@ -41,6 +42,7 @@ class KnowledgeBase:
         self.document_text = document_path.read_text("utf-8")
         self.graph = CurriculumGraph(self.curriculo)
         self.ifsp_docs = load_ifsp_docs(processed_dir)
+        self.usp_aluno = load_usp_aluno(processed_dir)
         self.usp_curricula = load_usp_curricula(processed_dir)
         self.usp_graphs = {k: CurriculumGraph(c) for k, c in self.usp_curricula.items()}
         self.usp_equivalences = compute_equivalences(self.curriculo, self.usp_curricula)
@@ -131,7 +133,7 @@ class KnowledgeBase:
             if any(fc in g.by_code for g in self.usp_graphs.values()):
                 usp_codes.add(fc.upper())
 
-        triggers = ("usp", "caaso", "bsi", "bci", "bcc", "estat", "especial", "equival", "abater", "aproveit", "requerimento", "jupiter")
+        triggers = ("usp", "caaso", "bsi", "bci", "bcc", "estat", "especial", "equival", "abater", "aproveit", "requerimento", "jupiter", "puxar", "ufscar", "externa")
         if inst == "ifsp_bes" and not usp_codes and not any(t in q_low for t in triggers):
             return ""
 

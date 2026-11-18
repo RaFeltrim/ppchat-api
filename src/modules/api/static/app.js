@@ -1155,6 +1155,27 @@ function errorMessage(status, body) {
   return `Erro ${status}`;
 }
 
+function combinedPerfilContext() {
+  const parts = [];
+  if (state.aluno?.contexto) {
+    parts.push(`[IFSP · SUAP]\n${state.aluno.contexto}`);
+  }
+  try {
+    const mTasks = JSON.parse(localStorage.getItem("ppchat_moodle_tasks") || "[]");
+    if (Array.isArray(mTasks) && mTasks.length) {
+      const summary = mTasks.slice(0, 25).map((t) => `- ${t.course || "IFSP"}: ${t.title}${t.due ? ` (${t.due})` : ""}`).join("\n");
+      parts.push(`[IFSP · Moodle - Pendências]\n${summary}`);
+    }
+  } catch {}
+  if (state.uspAluno?.contexto) {
+    parts.push(`[USP São Carlos · JupiterWeb & e-Disciplinas]\n${state.uspAluno.contexto}`);
+  }
+  if (state.ufscarAluno?.contexto) {
+    parts.push(`[UFSCar]\n${state.ufscarAluno.contexto}`);
+  }
+  return parts.length ? parts.join("\n\n").slice(0, 29500) : null;
+}
+
 async function streamAnswer(question, disciplinas, ui, docs = []) {
   state.controller = new AbortController();
   state.requestId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -1163,7 +1184,7 @@ async function streamAnswer(question, disciplinas, ui, docs = []) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       question, disciplinas, history: historyPayload(), request_id: state.requestId,
-      perfil: activeAluno()?.contexto || null, // dados do SUAP (IFSP) ou JupiterWeb/e-Disciplinas (USP)
+      perfil: combinedPerfilContext(), // consolidado IFSP (SUAP/Moodle) + USP (JupiterWeb/e-Disciplinas) + futuras (UFSCar)
       documentos: docs,
       inst: state.inst || "ifsp_bes",
       model: document.getElementById("model-select")?.value || null,

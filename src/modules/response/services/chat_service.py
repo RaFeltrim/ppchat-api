@@ -62,9 +62,16 @@ class ChatSession:
         if perfil:
             blocks.append({
                 "type": "text",
-                "text": "Dados acadêmicos do estudante, importados por ele mesmo do SUAP. Use para personalizar "
-                "a resposta (o que já cursou, o que está cursando, o que falta):\n"
+                "text": "Dados acadêmicos consolidados do estudante (IFSP SUAP/Moodle, USP JupiterWeb/e-Disciplinas e futuras instituições como UFSCar). "
+                "Cruze o que já cursou, o que está cursando e o que ainda falta:\n"
                 f"<perfil_aluno>\n{perfil}\n</perfil_aluno>",
+            })
+        usp_ctx = (self.knowledge_base.usp_aluno or {}).get("contexto") or ""
+        if usp_ctx and "Aluno Especial" not in (perfil or ""):
+            blocks.append({
+                "type": "text",
+                "text": "Dados oficiais sincronizados da USP São Carlos (JupiterWeb + e-Disciplinas):\n"
+                f"<dados_usp>\n{usp_ctx}\n</dados_usp>",
             })
         focus_sheet = self.knowledge_base.render_disciplinas(list(focus)) if focus else ""
         if focus_sheet:
