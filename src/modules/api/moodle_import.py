@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional
 from urllib.parse import quote_plus
 from urllib.request import urlopen
@@ -35,4 +36,8 @@ def send_whatsapp_callmebot(tasks: List[MoodleTask], phone: str, apikey: str) ->
     msg = format_moodle_summary(tasks)
     url = f"https://api.callmebot.com/whatsapp.php?phone={quote_plus(phone)}&text={quote_plus(msg)}&apikey={quote_plus(apikey)}"
     with urlopen(url, timeout=15) as resp:
-        return {"sent": resp.status == 200, "status": resp.status}
+        body = resp.read().decode("utf-8", errors="ignore")
+        clean = re.sub(r"<[^>]+>", " ", body).strip()
+        if resp.status == 200 and "error" not in clean.lower():
+            return {"sent": True, "status": resp.status}
+        return {"sent": False, "status": resp.status, "reason": clean[:180] or f"HTTP {resp.status}"}
