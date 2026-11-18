@@ -5,11 +5,12 @@ Todas as alterações notáveis adicionadas neste fork durante o Workshop BES23 
 ## [Unreleased] — 2026-11-18
 
 ### Added
-- **Seletores Duplos no Cabeçalho (`#org-select` + `#inst-select`):** seletores em cascata à esquerda de `Chat` alternando entre `IFSP` (`BES · Eng. Software`) e `USP · CAASO` (`BSI · Sist. Informação`, `BCI · Ciênc. Computação`, `Estatística e Dados`), persistidos em `localStorage`.
+- **Seletor IFSP / USP no Cabeçalho (`#org-select`) & Seletor Unificado de PPCs no Fluxograma (`#inst-select`):** `#org-select` (`IFSP` | `USP · CAASO`) posicionado à esquerda do botão `Chat`, e `#inst-select` concentrado na barra `#drawer-head` do **Fluxograma** para alternar a visualização entre todos os PPCs (`IFSP · BES`, `USP · BSI`, `USP · BCI/BCC` e `USP · Estatística`), persistidos em `localStorage`.
 - **Sincronização Autenticada JupiterWeb + e-Disciplinas USP (`GET /usp/aluno`, `POST /usp/aluno/sync`):**
   - Coleta automática no JupiterWeb da **Grade Horária** (`GradeHorariaControleDWR.obterGradeHoraria`, disciplinas `cursando` como `SSC0124`) e do **Histórico Escolar Final em PDF** (`EmissaoHEControleDWR` + `historicoescolarListar` via `PyMuPDF`, disciplinas `concluida` como `SSC0961` com nota e frequência).
   - Login SAML automático via `idpcafe.usp.br` no **e-Disciplinas USP** (`edisciplinas.usp.br`), listando disciplinas matriculadas, tarefas (`/mod/assign`, `/mod/quiz`) e materiais (`/mod/resource`, `/mod/url`).
-  - Exibição completa nas abas **Fluxograma** (badge/cor de concluída/cursando e notas + inclusão automática das cursadas nas grades USP), **Meu Percurso** (visão USP Aluno Especial) e **Moodle** (aba `e-Disciplinas USP` integrada aos repositórios locais em `Downloads` como `APOO - USP` e `Web e Mobile - USP` + links GitHub).
+  - Exibição completa nas abas **Fluxograma** (badge/cor de concluída/cursando e notas + inclusão automática das cursadas em todas as grades USP), **Meu Percurso** (trilha interativa `#trail` + `#stop-detail` dos semestres cursados/atuais na USP) e **Moodle** (`renderUspMoodle` combinando histórico e e-Disciplinas com repositórios locais em `Downloads` como `APOO - USP` e `Web e Mobile - USP` + links GitHub).
+  - Persistência e cache local deduplicado (`usp_aluno` em `/local/state` e `ppchat-usp-aluno-v1` com proteção contra chamadas simultâneas).
 - **Integração USP São Carlos (CAASO) — JupiterWeb (`usp_jupiter.py`):**
   - Sincronização das grades curriculares do ICMC/USP São Carlos (`55051/4` BSI, `55041/0` BCI/BCC e `55071/4` Estatística e Ciência de Dados) em `src/data/processed/usp_curriculos.json`.
   - Consulta e cache local de ementas/conteúdo programático do JupiterWeb em `GET /usp/disciplina/{sgldis}` (`src/data/processed/usp_ementas.json`).

@@ -23,13 +23,14 @@ const ICON = {
 const THINKING_STEPS = ["Lendo o PPC…", "Consultando o grafo de pré-requisitos…", "Cruzando com os planos de ensino…", "Escrevendo a resposta…"];
 const ABORDAGEM = { teorica: "Teórica", pratica: "Prática", teorico_pratica: "Teórico-prática" };
 
+const USP_ALUNO_KEY = "ppchat-usp-aluno-v1";
 const state = {
   inst: (() => { try { return localStorage.getItem("ppchat_inst") || "ifsp_bes"; } catch { return "ifsp_bes"; } })(),
   curriculum: null,
   byCode: new Map(),
   requestId: null, // resposta em andamento, para o botão "parar"
   aluno: null, // dados importados do SUAP: {matricula, coletado_em, status: {codigo: situação}, contexto}
-  uspAluno: null, // dados USP: JupiterWeb (histórico/grade horária) + e-Disciplinas
+  uspAluno: (() => { try { return JSON.parse(localStorage.getItem(USP_ALUNO_KEY) || "null"); } catch { return null; } })(), // dados USP: JupiterWeb + e-Disciplinas
   settings: { grades: false, progress: true, showDenied: false }, // preferências de exibição (salvas no navegador)
   history: [], // {role: "user", text, disciplinas} | {role: "assistant", text, thinking?, usage?, stopped?}
   context: [], // disciplinas selecionadas para a próxima pergunta
@@ -137,39 +138,50 @@ function syncOrgAndInstSelectors(inst) {
   const orgSel = $("#org-select");
   const instSel = $("#inst-select");
   if (orgSel) orgSel.value = org;
-  if (instSel) {
-    [...instSel.options].forEach((opt) => {
-      const match = (opt.dataset.org || "ifsp") === org;
-      opt.hidden = !match;
-      opt.disabled = !match;
-    });
-    instSel.value = inst;
-  }
+  if (instSel) instSel.value = inst;
 }
 
+let uspLoadPromise = null;
+let uspFetchedOnce = false;
+
 async function loadUspAluno({ force = false } = {}) {
-  try {
-    const res = await fetchWithWake(force ? "/usp/aluno/sync" : "/usp/aluno", { method: force ? "POST" : "GET" });
-    if (!res.ok) throw new Error("Falha ao carregar dados da USP.");
-    const data = await res.json();
-    state.uspAluno = data?.status ? data : null;
-    if (state.uspAluno && storage.get("ppchat-tree-settings")?.grades === undefined) {
-      state.settings.grades = true;
+  if (!force && uspFetchedOnce && state.uspAluno?.status) return state.uspAluno;
+  if (!force && uspLoadPromise) return uspLoadPromise;
+
+  const task = (async () => {
+    try {
+      const res = await fetchWithWake(force ? "/usp/aluno/sync" : "/usp/aluno", { method: force ? "POST" : "GET" });
+      if (!res.ok) throw new Error("Falha ao carregar dados da USP.");
+      const data = await res.json();
+      if (data?.status && Object.keys(data.status).length) {
+        state.uspAluno = data;
+        storage.set(USP_ALUNO_KEY, data);
+        window.__syncLocalDisk?.({ usp_aluno: data });
+      }
+      uspFetchedOnce = true;
+      if (state.uspAluno && storage.get("ppchat-tree-settings")?.grades === undefined) {
+        state.settings.grades = true;
+      }
+      if (force && isUsp()) await loadCurriculum(state.inst);
+      if (isUsp()) {
+        syncStatusDot();
+        if ($(".node", $("#tree-inner"))) { renderTree({ animate: false }); renderInfo(state.focus); }
+        renderGrid();
+        renderSettings();
+        if (state.view === "me") renderMe();
+        window.__renderMoodle?.();
+      }
+      return state.uspAluno;
+    } catch (err) {
+      if (force) toast(err.message || "Falha ao sincronizar JupiterWeb/e-Disciplinas.");
+      return state.uspAluno;
+    } finally {
+      uspLoadPromise = null;
     }
-    if (force && isUsp()) await loadCurriculum(state.inst);
-    if (isUsp()) {
-      syncStatusDot();
-      if ($(".node", $("#tree-inner"))) { renderTree({ animate: false }); renderInfo(state.focus); }
-      renderGrid();
-      renderSettings();
-      if (state.view === "me") renderMe();
-      window.__renderMoodle?.();
-    }
-    return state.uspAluno;
-  } catch (err) {
-    if (force) toast(err.message || "Falha ao sincronizar JupiterWeb/e-Disciplinas.");
-    return null;
-  }
+  })();
+
+  if (!force) uspLoadPromise = task;
+  return task;
 }
 
 /* ───────────── Currículo ───────────── */
@@ -1975,7 +1987,7 @@ function renderUspMe() {
       <div class="me-empty">
         <p class="eyebrow">Meu percurso · USP São Carlos</p>
         <h3>Sincronizar JupiterWeb & e-Disciplinas</h3>
-        <p class="muted">Puxe suas disciplinas em andamento e já realizadas no ICMC/USP (Aluno Especial) para exibir no Fluxograma e no Moodle.</p>
+        <p class="muted">Puxe suas disciplinas em andamento e já realizadas no ICMC/USP (Aluno Especial) para exibir no Fluxograma, Meu Percurso e Moodle.</p>
         <button class="btn btn-primary" data-me="usp-sync">Sincronizar USP</button>
       </div>`;
     return;
@@ -1984,14 +1996,31 @@ function renderUspMe() {
   const byPeriod = new Map();
   codes.forEach((code) => {
     const n = u.notas?.[code] || {};
-    const per = n.periodo || "2026";
+    const per = n.periodo || "2026/1";
     if (!byPeriod.has(per)) byPeriod.set(per, []);
-    byPeriod.get(per).push({ code, st: u.status[code], n, d: disc(code) });
+    byPeriod.get(per).push(code);
   });
-  const periods = [...byPeriod.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  const sortedPeriods = [...byPeriod.keys()].sort((a, b) => a.localeCompare(b));
+  trailStops = sortedPeriods.map((per, idx) => {
+    const list = byPeriod.get(per);
+    const hasCur = list.some((c) => u.status[c] === "cursando");
+    return {
+      key: `usp-${per}`,
+      n: idx + 1,
+      period: per,
+      kind: hasCur ? "now" : "done",
+      codes: list,
+      courses: list.map((c) => disc(c) || u.disciplinas_aluno?.find((x) => x.codigo === c) || { codigo: c, nome: c, carga_horaria_total: u.notas?.[c]?.ch || 60 }),
+    };
+  });
+  const now = trailStops.find((s) => s.kind === "now");
+  if (!trailStops.some((s) => s.key === state.trailSel)) {
+    state.trailSel = (now || trailStops.at(-1) || trailStops[0])?.key;
+  }
   const doneCount = codes.filter((c) => u.status[c] === "concluida").length;
   const curCount = codes.filter((c) => u.status[c] === "cursando").length;
   const graded = codes.map((c) => gradeValue(u.notas?.[c]?.nota)).filter((v) => !Number.isNaN(v));
+  const totalCh = codes.reduce((sum, c) => sum + (u.notas?.[c]?.ch || disc(c)?.carga_horaria_total || 0), 0);
 
   box.innerHTML = `
     <section class="pc-hero">
@@ -2008,25 +2037,73 @@ function renderUspMe() {
         <div><b>${doneCount}</b><span>concluída(s)</span></div>
         <div><b>${curCount}</b><span>cursando agora</span></div>
         ${graded.length ? `<div><b>${fmtAvg(graded)}</b><span>média USP</span></div>` : ""}
+        <div><b>${fmtH(totalCh)}</b><span>carga horária total</span></div>
       </div>
     </section>
-    ${periods.map(([per, items]) => `
-      <section class="stop-detail ${items.some((x) => x.st === "cursando") ? "k-now" : "k-done"}" style="margin-top:16px;">
-        <header class="sd-head">
-          <span class="sd-num">${per.split("/")[1] || "·"}</span>
-          <div class="sd-title"><p class="eyebrow">${items.some((x) => x.st === "cursando") ? "Cursando agora (Grade Horária)" : "Concluído (Histórico Escolar)"}</p><h4>Semestre ${escapeHtml(per)}</h4></div>
-        </header>
-        <div class="pc-courses">${items.map(({ code, st, n, d }) => {
-          const cname = d?.nome || (u.disciplinas_aluno?.find((x) => x.codigo === code)?.nome) || code;
-          const side = st === "cursando"
-            ? '<span class="st-badge st-cursando">cursando</span>'
-            : n.nota ? `<span class="grade big ${gradeClass(n.nota)}">${escapeHtml(n.nota)}</span>` : `<span class="pc-check">${ICON.check}</span>`;
-          return `<button class="pc-course" data-goto="${escapeHtml(code)}" title="Ver no Fluxograma USP">
-            <span class="pc-course-main"><b>${escapeHtml(code)} · ${escapeHtml(titleCase(cname))}</b><small>${escapeHtml(n.situacao || st)}${n.freq ? ` · Freq ${escapeHtml(n.freq)}` : ""}${n.ch ? ` · ${n.ch}h` : ""}</small></span>
-            ${side}
+
+    <section class="trail-card">
+      <div class="trail" id="trail">
+        <svg class="trail-svg" id="trail-svg" aria-hidden="true"></svg>
+        ${trailStops.map((s) => {
+          const avgStop = fmtAvg(s.codes.map((c) => gradeValue(u.notas?.[c]?.nota)).filter((v) => !Number.isNaN(v)));
+          const sub = s.kind === "done" && avgStop ? `média ${avgStop}` : `${s.codes.length} disciplina${s.codes.length === 1 ? "" : "s"}`;
+          return `<button class="stop k-${s.kind}" data-stop="${escapeHtml(s.key)}" aria-label="${s.n}º semestre USP, ${escapeHtml(s.period)}">
+            <span class="stop-num">${s.n}</span>
+            <span class="stop-node"></span>
+            <span class="stop-label"><b>${escapeHtml(s.period)}</b><small>${escapeHtml(sub)}</small></span>
           </button>`;
-        }).join("")}</div>
-      </section>`).join("")}`;
+        }).join("")}
+      </div>
+      <div class="trail-legend">
+        <span><i class="lg-done"></i>Concluído (Histórico Escolar)</span>
+        <span><i class="lg-now"></i>Cursando agora (Grade Horária)</span>
+      </div>
+    </section>
+
+    <section class="stop-detail" id="stop-detail" aria-live="polite"></section>`;
+
+  layoutTrail();
+  renderUspStop();
+}
+
+function renderUspStop() {
+  const u = state.uspAluno;
+  const stop = trailStops.find((s) => s.key === state.trailSel);
+  if (!u || !stop) return;
+  $$(".stop").forEach((el) => el.classList.toggle("is-selected", el.dataset.stop === stop.key));
+  const box = $("#stop-detail");
+  box.className = `stop-detail k-${stop.kind}`;
+  const avg = fmtAvg(stop.codes.map((c) => gradeValue(u.notas?.[c]?.nota)).filter((v) => !Number.isNaN(v)));
+
+  box.innerHTML = `
+    <header class="sd-head">
+      <span class="sd-num">${stop.n}</span>
+      <div class="sd-title">
+        <p class="eyebrow">${stop.kind === "now" ? "Cursando agora (Grade Horária)" : "Concluído (Histórico Escolar Final)"}</p>
+        <h4>Semestre ${escapeHtml(stop.period)} · JupiterWeb</h4>
+      </div>
+      <div class="sd-facts">${avg ? `<div><b>${avg}</b><span>média</span></div>` : ""}</div>
+    </header>
+    <div class="pc-courses">${stop.codes.map((code) => {
+      const n = u.notas?.[code] || {};
+      const st = u.status[code];
+      const dObj = disc(code) || u.disciplinas_aluno?.find((x) => x.codigo === code) || { codigo: code, nome: code };
+      const topEq = disc(code)?.equivalencias?.[0];
+      const side = st === "cursando"
+        ? '<span class="st-badge st-cursando">cursando</span>'
+        : n.nota ? `<span class="grade big ${gradeClass(n.nota)}">${escapeHtml(n.nota)}</span>` : `<span class="pc-check">${ICON.check}</span>`;
+      return `
+        <div class="pc-course-wrap" style="display:flex;flex-direction:column;gap:6px;">
+          <button class="pc-course" data-goto="${escapeHtml(code)}" title="Ver no Fluxograma USP">
+            <span class="pc-course-main"><b>${escapeHtml(code)} · ${escapeHtml(titleCase(dObj.nome))}</b><small>${escapeHtml(n.situacao || st)}${n.freq ? ` · Freq ${escapeHtml(n.freq)}` : ""}${n.ch ? ` · ${n.ch}h` : ""}</small></span>
+            ${side}
+          </button>
+          ${topEq ? `<div style="display:flex;gap:8px;align-items:center;padding:0 4px 4px;">
+            <span class="muted" style="font-size:12px;">Equivalente IFSP: <b>${escapeHtml(topEq.ifsp_codigo)}</b> (${topEq.similaridade_pct}%)</span>
+            <button type="button" class="btn btn-sm" data-req-ifsp="${escapeHtml(topEq.ifsp_codigo)}" data-req-usp="${escapeHtml(topEq.usp_codigo)}">Gerar Requerimento SUAP</button>
+          </div>` : ""}
+        </div>`;
+    }).join("")}</div>`;
 }
 
 function renderMe() {
@@ -2181,6 +2258,7 @@ function layoutTrail({ animate = true } = {}) {
 }
 
 function renderStop() {
+  if (isUsp()) return renderUspStop();
   const a = state.aluno;
   const stop = trailStops.find((s) => s.key === state.trailSel);
   if (!a || !stop) return;
@@ -2337,6 +2415,8 @@ $("#me").addEventListener("click", (event) => {
   }
   const goto = event.target.closest("[data-goto]");
   if (goto) { setView("tree"); return focusTree(goto.dataset.goto, { push: true }); }
+  const reqBtn = event.target.closest("[data-req-usp]");
+  if (reqBtn) return openUspRequerimentoModal(reqBtn.dataset.reqIfsp, reqBtn.dataset.reqUsp);
   const act = event.target.closest("[data-me]")?.dataset.me;
   if (act === "connect" || act === "update") { renderSuapModal(); suapModal.showModal(); }
   else if (act === "usp-sync") {
@@ -2629,22 +2709,49 @@ new ResizeObserver(([entry]) => {
     const bar = document.getElementById("moodle-bar");
     const infoPane = document.getElementById("moodle-info");
     if (!state.uspAluno) await loadUspAluno({ force: false });
-    const edCourses = state.uspAluno?.edisciplinas_courses || [];
-    const courses = edCourses.map((c) => ({
-      key: c.code,
-      code: c.code,
-      name: c.fullname || c.code,
-      periodo: c.periodo || "2026",
-      status: c.status || "cursando",
-      nota: c.nota,
-      freq: c.freq,
-      situacao: c.situacao,
-      ch: c.ch,
-      viewurl: c.viewurl,
-      tasks: c.tasks || [],
-      materials: c.materials || [],
-      repo: matchRepo(`${c.code} ${c.fullname}`, repos),
-    }));
+    const ua = state.uspAluno || {};
+    const byCode = new Map();
+    for (const c of ua.edisciplinas_courses || []) {
+      const code = (c.code || "").toUpperCase();
+      if (!code) continue;
+      const n = ua.notas?.[code] || {};
+      byCode.set(code, {
+        key: code,
+        code,
+        name: c.fullname || code,
+        periodo: c.periodo || n.periodo || "2026",
+        status: c.status || ua.status?.[code] || "cursando",
+        nota: c.nota ?? n.nota,
+        freq: c.freq ?? n.freq,
+        situacao: c.situacao || n.situacao,
+        ch: c.ch ?? n.ch,
+        viewurl: c.viewurl || `https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=${encodeURIComponent(code)}`,
+        tasks: c.tasks || [],
+        materials: c.materials || [],
+        repo: matchRepo(`${code} ${c.fullname || ""}`, repos),
+      });
+    }
+    for (const d of ua.disciplinas_aluno || []) {
+      const code = (d.codigo || "").toUpperCase();
+      if (!code || byCode.has(code)) continue;
+      const n = ua.notas?.[code] || {};
+      byCode.set(code, {
+        key: code,
+        code,
+        name: `${code} - ${titleCase(d.nome)}`,
+        periodo: n.periodo || "2026",
+        status: ua.status?.[code] || "cursando",
+        nota: n.nota,
+        freq: n.freq,
+        situacao: n.situacao,
+        ch: n.ch || d.carga_horaria_total,
+        viewurl: `https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=${encodeURIComponent(code)}`,
+        tasks: [],
+        materials: [],
+        repo: matchRepo(`${code} ${d.nome}`, repos),
+      });
+    }
+    const courses = [...byCode.values()].sort((a, b) => (a.status === "cursando" ? -1 : 1) - (b.status === "cursando" ? -1 : 1) || b.periodo.localeCompare(a.periodo));
 
     if (statusDot) {
       statusDot.classList.toggle("is-on", courses.length > 0);
@@ -2957,6 +3064,21 @@ new ResizeObserver(([entry]) => {
         storage.set(ALUNO_KEY, disk.aluno);
         setAluno(disk.aluno);
       }
+      if (disk.usp_aluno?.status) {
+        storage.set(USP_ALUNO_KEY, disk.usp_aluno);
+        state.uspAluno = disk.usp_aluno;
+        if (state.uspAluno && storage.get("ppchat-tree-settings")?.grades === undefined) {
+          state.settings.grades = true;
+        }
+        if (isUsp()) {
+          syncStatusDot();
+          if ($(".node", $("#tree-inner"))) { renderTree({ animate: false }); renderInfo(state.focus); }
+          renderGrid();
+          renderSettings();
+          if (state.view === "me") renderMe();
+          window.__renderMoodle?.();
+        }
+      }
       if (!window.__moodleHashImported && Array.isArray(disk.moodle_tasks)) {
         localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(disk.moodle_tasks));
         window.__renderMoodle?.();
@@ -2974,6 +3096,8 @@ new ResizeObserver(([entry]) => {
     const patch = {};
     const a = storage.get(ALUNO_KEY);
     if (a) patch.aluno = a;
+    const u = storage.get(USP_ALUNO_KEY);
+    if (u) patch.usp_aluno = u;
     const c = storage.get(CONVS_KEY);
     if (c) patch.conversations = c;
     try {

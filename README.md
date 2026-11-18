@@ -56,7 +56,7 @@ Evoluções implementadas neste fork sobre o projeto base:
 | **Anexo de Documentos no Chat** | Upload via `POST /documents/extract` (`.pdf` via PyMuPDF, `.txt`, `.md`, `.csv`, `.json`) para comparar grades/ementas (ex.: USP × IFSP). | `app.py`, `index.html`, `app.js` |
 | **Moodle IFSP → WhatsApp & Repositórios** | Aba **Moodle** no padrão visual do Fluxograma (cards `.node` + painel lateral), filtrada pelas matérias cursadas no SUAP, ignorando entregas enviadas e questionários com nota, com acesso direto aos arquivos locais em `Downloads`/GitHub e alertas via CallMeBot. | `moodle_import.py`, `moodle-export.js`, `app.py`, `app.js` |
 | **Base Oficial Drive IFSP (TokenOps)** | Sincroniza e indexa os 20 formulários e manuais da DDGA/SUAP (`EXAPE`, `RESAB`, substitutiva, abono de faltas, tutoriais) com injeção sob demanda na mensagem sem quebrar o cache do `system` prompt. | `ifsp_drive.py`, `ifsp_docs.json`, `knowledge_base.py`, `chat_service.py` |
-| **USP São Carlos (CAASO) & Aproveitamento SUAP** | Seletores duplos no topo (`#org-select` IFSP/USP e `#inst-select` cursos à esquerda de `Chat`) alternando entre **IFSP · BES**, **USP · BSI**, **USP · BCI/BCC** e **USP · Estatística**, com sincronização autenticada do **JupiterWeb + e-Disciplinas USP** (`GET /usp/aluno`, `POST /usp/aluno/sync`), exibição de disciplinas concluídas/cursando no Fluxograma, Meu Percurso e Moodle (vinculadas a repositórios locais e GitHub), cálculo de equivalência (`similaridade_pct`, CH ≥ 75%) e geração de minuta pronta de requerimento para o SUAP. | `usp_jupiter.py`, `usp_curriculos.json`, `app.py`, `index.html`, `app.js` |
+| **USP São Carlos (CAASO) & Aproveitamento SUAP** | Seletor de instituição no topo (`#org-select`: **IFSP** / **USP · CAASO** à esquerda de `Chat`) combinado ao seletor concentrado de PPCs dentro do **Fluxograma** (`#inst-select` em `#drawer-head`: BES, BSI, BCI/BCC e Estatística), sincronização autenticada do **JupiterWeb + e-Disciplinas USP** (`GET /usp/aluno`, `POST /usp/aluno/sync`), exibição das disciplinas concluídas e cursando na trilha de **Meu percurso**, no **Fluxograma** e no **Moodle** (vinculadas a repositórios locais e GitHub), equivalência automática (`similaridade_pct`, CH ≥ 75%) e requerimento SUAP. | `usp_jupiter.py`, `usp_curriculos.json`, `app.py`, `index.html`, `app.js` |
 | **Persistência Local & Launcher `.exe`** | Salva automaticamente SUAP, Moodle e conversas em disco (`src/data/local/user_data.json`) e inicializa com 1 clique via `PPChat.exe`. | `app.py`, `app.js`, `PPChat.exe` |
 | **Reenvio & Devolução ao Chat** | Em erro de API ou cancelamento manual, restaura pergunta, documentos e chips `@` no composer com botões `Reenviar` e `Devolver ao chat`. | `app.js` |
 | **Mobile-First & Touch** | Hitboxes mínimas de `44px × 44px`, quebra responsiva do composer, painel lateral empilhado no Moodle e fonte `16px` no input. | `styles.css` |
@@ -107,8 +107,8 @@ python main.py ingest --force         # Reprocessa o PDF do PPC (apenas se o PDF
 | `GET` | `/moodle/resgatar/{token}` | — | `{"tasks"}` importadas do Moodle |
 | `GET` | `/moodle/repos` | — | Repositórios/pastas de disciplinas em `Downloads` |
 | `GET` | `/moodle/file` | `?folder=...&path=...` | Abre/baixa arquivo local da disciplina |
-| `GET` | `/local/state` | — | Restaura SUAP, Moodle e conversas do disco |
-| `POST` | `/local/state` | `{"aluno", "moodle_tasks", "conversations"}` | Persiste estado local em `user_data.json` |
+| `GET` | `/local/state` | — | Restaura SUAP, USP, Moodle e conversas do disco |
+| `POST` | `/local/state` | `{"aluno", "usp_aluno", "moodle_tasks", "conversations"}` | Persiste estado local em `user_data.json` |
 | `GET` | `/ifsp-docs` | — | Lista os 20 documentos indexados do Drive IFSP |
 
 ---

@@ -327,18 +327,25 @@ LOCAL_STATE_FILE = get_settings().processed_dir.parent / "local" / "user_data.js
 
 @app.get("/local/state")
 async def get_local_state() -> dict:
-    """Restaura dados locais salvos em disco (SUAP, Moodle e conversas)."""
-    if not LOCAL_STATE_FILE.exists():
-        return {}
-    try:
-        return json.loads(LOCAL_STATE_FILE.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
+    """Restaura dados locais salvos em disco (SUAP, USP, Moodle e conversas)."""
+    data = {}
+    if LOCAL_STATE_FILE.exists():
+        try:
+            data = json.loads(LOCAL_STATE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+    usp_file = get_settings().processed_dir / USP_STUDENT_FILE
+    if "usp_aluno" not in data and usp_file.exists():
+        try:
+            data["usp_aluno"] = json.loads(usp_file.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return data
 
 
 @app.post("/local/state")
 async def save_local_state(payload: dict) -> dict:
-    """Salva localmente em disco os dados do aluno (SUAP, Moodle e conversas)."""
+    """Salva localmente em disco os dados do aluno (SUAP, USP, Moodle e conversas)."""
     LOCAL_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
     existing = {}
     if LOCAL_STATE_FILE.exists():
@@ -346,7 +353,7 @@ async def save_local_state(payload: dict) -> dict:
             existing = json.loads(LOCAL_STATE_FILE.read_text(encoding="utf-8"))
         except Exception:
             existing = {}
-    for key in ("aluno", "moodle_tasks", "conversations"):
+    for key in ("aluno", "usp_aluno", "moodle_tasks", "conversations"):
         if key in payload and payload[key] is not None:
             existing[key] = payload[key]
     LOCAL_STATE_FILE.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
