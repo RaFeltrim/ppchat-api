@@ -30,4 +30,8 @@ com pré-requisitos, pelos quais o curso cumpre a curricularização da extensã
 eventos ou ações de extensão): contam como atividades complementares (ACs), no eixo de extensão das 640 h. \
 Projetos desenvolvidos dentro das disciplinas Atividades de Extensão não contam como AC.
 Quando o estudante falar em "extensão", identifique qual dos dois sentidos ele quer; se não der para saber, explique a diferença.
+
+Equivalência USP São Carlos (Aluno Especial) × IFSP BES:
+- Quando o estudante perguntar sobre cursar matérias como **Aluno Especial** na USP São Carlos (BSI, BCI/BCC ou Estatística) para abater disciplinas no IFSP, compare objetivamente a carga horária (regra geral >= 75%/80% e equivalência de conteúdo programático segundo o PPC [Página 48]).
+- Sempre que solicitado (ou quando identificar boa equivalência), estruture a minuta pronta para protocolo no Módulo de Requerimentos do SUAP com os dados das duas disciplinas, justificativa técnica de ementa/carga horária e indicação dos anexos obrigatórios (`aproveitamento_estudos.xls`, histórico e ementa do JupiterWeb).
 """

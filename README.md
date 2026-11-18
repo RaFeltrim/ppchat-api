@@ -56,6 +56,7 @@ Evoluções implementadas neste fork sobre o projeto base:
 | **Anexo de Documentos no Chat** | Upload via `POST /documents/extract` (`.pdf` via PyMuPDF, `.txt`, `.md`, `.csv`, `.json`) para comparar grades/ementas (ex.: USP × IFSP). | `app.py`, `index.html`, `app.js` |
 | **Moodle IFSP → WhatsApp & Repositórios** | Aba **Moodle** no padrão visual do Fluxograma (cards `.node` + painel lateral), filtrada pelas matérias cursadas no SUAP, ignorando entregas enviadas e questionários com nota, com acesso direto aos arquivos locais em `Downloads`/GitHub e alertas via CallMeBot. | `moodle_import.py`, `moodle-export.js`, `app.py`, `app.js` |
 | **Base Oficial Drive IFSP (TokenOps)** | Sincroniza e indexa os 20 formulários e manuais da DDGA/SUAP (`EXAPE`, `RESAB`, substitutiva, abono de faltas, tutoriais) com injeção sob demanda na mensagem sem quebrar o cache do `system` prompt. | `ifsp_drive.py`, `ifsp_docs.json`, `knowledge_base.py`, `chat_service.py` |
+| **USP São Carlos (CAASO) & Aproveitamento SUAP** | Seletor no topo (`#inst-select` à esquerda de `Chat`) alternando entre **IFSP · BES**, **USP · BSI**, **USP · BCI/BCC** e **USP · Estatística**, com ementas via JupiterWeb, cálculo automático de equivalência (`similaridade_pct` e regra CH ≥ 75%) e geração de minuta pronta de requerimento para envio ao IFSP via SUAP. | `usp_jupiter.py`, `usp_curriculos.json`, `app.py`, `index.html`, `app.js` |
 | **Persistência Local & Launcher `.exe`** | Salva automaticamente SUAP, Moodle e conversas em disco (`src/data/local/user_data.json`) e inicializa com 1 clique via `PPChat.exe`. | `app.py`, `app.js`, `PPChat.exe` |
 | **Reenvio & Devolução ao Chat** | Em erro de API ou cancelamento manual, restaura pergunta, documentos e chips `@` no composer com botões `Reenviar` e `Devolver ao chat`. | `app.js` |
 | **Mobile-First & Touch** | Hitboxes mínimas de `44px × 44px`, quebra responsiva do composer, painel lateral empilhado no Moodle e fonte `16px` no input. | `styles.css` |
@@ -89,9 +90,12 @@ python main.py ingest --force         # Reprocessa o PDF do PPC (apenas se o PDF
 | Método | Rota | Corpo / Parâmetros | Resposta |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/health` | — | Status e total de disciplinas carregadas |
-| `GET` | `/curriculum` | — | Currículo estruturado com análise de grafo |
+| `GET` | `/curriculum` | `?inst=ifsp_bes\|usp_bsi\|usp_bci\|usp_est` | Currículo estruturado com grafo e equivalências USP ↔ IFSP |
+| `GET` | `/usp/equivalencias` | `?curso=...` | Lista ranqueada de equivalências entre IFSP BES e USP São Carlos |
+| `GET` | `/usp/disciplina/{sgldis}` | — | Objetivos e programa/conteúdo programático no JupiterWeb |
+| `POST` | `/usp/requerimento` | `{"ifsp_codigo", "usp_codigo", "aluno_nome", "matricula"}` | Minuta de requerimento de aproveitamento para protocolo no SUAP |
 | `GET` | `/pdf` | — | PPC em PDF (suporta `#page=N`) |
-| `POST` | `/chat` | `{"question", "history", "disciplinas", "documentos", "model", "perfil", "request_id"}` | `{"answer", "usage"}` |
+| `POST` | `/chat` | `{"question", "history", "disciplinas", "documentos", "model", "perfil", "inst", "request_id"}` | `{"answer", "usage"}` |
 | `POST` | `/chat/stream` | Mesmo payload de `/chat` | Stream NDJSON (`thinking`, `text`, `done`, `error`) |
 | `POST` | `/chat/cancel/{request_id}` | — | `204` — interrompe geração em andamento |
 | `POST` | `/documents/extract` | `multipart/form-data` (`file`) | `{"name", "content", "chars", "truncated"}` |
@@ -128,7 +132,8 @@ Ambas as integrações usam **bookmarklets locais** que rodam na sessão autenti
 | `FALLBACK_MODELS` | `["z-ai/glm-5.3-flash", "google/gemini-3.8-flash", "qwen/qwen3.8-27b"]` | Lista ordenada de fallback em caso de recusa |
 | `CHAT_EFFORT` / `EXTRACTION_EFFORT` | `low` / `high` | Nível de raciocínio (`low` a `max`) |
 | `RATE_LIMIT_PER_HOUR` / `GLOBAL_RATE_LIMIT_PER_HOUR` | `30` / `400` | Limites por IP e global (`0` desativa) |
-| `SUAP_ORIGINS` | `["https://suap.ifsp.edu.br", "https://moodle.scl.ifsp.edu.br"]` | Origens permitidas no CORS para os bookmarklets |
+| `SUAP_ORIGINS` | `["https://suap.ifsp.edu.br", "https://moodle.scl.ifsp.edu.br", "https://uspdigital.usp.br"]` | Origens permitidas no CORS para os bookmarklets e integrações |
+| `USP_USER` / `USP_PASSWORD` | — | Credenciais USP opcionais (`idpcafe.usp.br` / JupiterWeb) |
 | `CALLMEBOT_PHONE` / `CALLMEBOT_APIKEY` | — | Credenciais do CallMeBot para alertas no WhatsApp |
 
 ---
@@ -144,7 +149,7 @@ ppchat-api/
 └── src/
     ├── data/
     │   ├── documents/PPCENGSOFTWARE.pdf # PPC oficial (IFSP São Carlos)
-    │   └── processed/                   # ppc.md, curriculo.json, manifest.json
+    │   └── processed/                   # ppc.md, curriculo.json, usp_curriculos.json, usp_ementas.json, ifsp_docs.json
     └── modules/
         ├── ingestion/                   # Extração do PDF e modelo Pydantic do currículo
         ├── knowledge/                   # CurriculumGraph e montagem do KnowledgeBase

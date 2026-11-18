@@ -1,0 +1,5946 @@
+{
+  "usp_bsi": {
+    "curso": "Bacharelado em Sistemas de Informação (BSI)",
+    "campus": "USP São Carlos (ICMC / CAASO)",
+    "vigencia": "JupiterWeb USP (consulta pública oficial)",
+    "duracao_semestres": 8,
+    "carga_horaria_total_curso": 3600.0,
+    "disciplinas": [
+      {
+        "codigo": "SMA0505",
+        "nome": "MATRIZES, VETORES E GEOMETRIA ANALÍTICA",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0508",
+        "nome": "MATEMÁTICA DISCRETA",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0501",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0502",
+        "nome": "LABORATÓRIO DE INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0512",
+        "nome": "ELEMENTOS DE LÓGICA DIGITAL",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0530",
+        "nome": "INTRODUÇÃO A SISTEMAS DE INFORMAÇÃO",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0571",
+        "nome": "COMPUTAÇÃO E SOCIEDADE: EVOLUÇÃO HISTÓRICA E APLICAÇÕES",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0599",
+        "nome": "INFORMAÇÃO PROFISSIONAL EM SISTEMAS DE INFORMAÇÃO",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0502",
+        "nome": "ALGORITMOS E ESTRUTURAS DE DADOS I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0501"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0501",
+        "nome": "CÁLCULO I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 6,
+        "total_aulas": 90,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0503",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO II",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0501"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0513",
+        "nome": "ORGANIZAÇÃO E ARQUITETURA DE COMPUTADORES",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0512"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0532",
+        "nome": "METODOLOGIAS DE DESENVOLVIMENTO DE SOFTWARE",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0503",
+        "nome": "ALGORITMOS E ESTRUTURAS DE DADOS II",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0502"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0504",
+        "nome": "PROGRAMAÇÃO ORIENTADA A OBJETOS",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0502"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0500",
+        "nome": "CÁLCULO NUMÉRICO",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0501",
+          "SSC0501"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0520",
+        "nome": "INTRODUÇÃO À ESTATÍSTICA",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0501"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0533",
+        "nome": "REQUISITOS DE SOFTWARE",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SSC0532"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0541",
+        "nome": "SISTEMAS OPERACIONAIS I",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0513",
+          "SCC0502"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0960",
+        "nome": "PROGRAMAÇÃO FUNCIONAL",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0502"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0505",
+        "nome": "INTRODUÇÃO À TEORIA DA COMPUTAÇÃO",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0501"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0540",
+        "nome": "BASES DE DADOS",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0503"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0560",
+        "nome": "INTERAÇÃO HUMANO-COMPUTADOR E EXPERIÊNCIA DO USUÁRIO",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0504",
+          "SSC0533"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SEP0584",
+        "nome": "CONTABILIDADE PARA COMPUTAÇÃO",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0510",
+        "nome": "INTRODUÇÃO À PESQUISA OPERACIONAL",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0500"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0524",
+        "nome": "VERIFICAÇÃO, VALIDAÇÃO E TESTE DE SOFTWARE",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0504"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0534",
+        "nome": "MODELAGEM DE SISTEMAS DE SOFTWARE",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0533",
+          "SCC0504"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0530",
+        "nome": "INTELIGÊNCIA ARTIFICIAL",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0503"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0541",
+        "nome": "LABORATÓRIO DE BASES DE DADOS",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0540"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SEP0324",
+        "nome": "MODELAGEM DE SISTEMAS",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0535",
+        "nome": "GERÊNCIA DE CONFIGURAÇÃO, MANUTENÇÃO E EVOLUÇÃO DE SOFTWARE",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SSC0534"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0540",
+        "nome": "REDES DE COMPUTADORES",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0541"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0961",
+        "nome": "DESENVOLVIMENTO WEB E MOBILE",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0504"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0580",
+        "nome": "ACESSIBILIDADE EM SISTEMAS COMPUTACIONAIS",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0560"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SEP0172",
+        "nome": "PRÁTICA E GERENCIAMENTO DE PROJETOS",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0534"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SEP0301",
+        "nome": "MODELAGEM DE SISTEMAS DE PLANEJAMENTO E CONTROLE DA PRODUÇÃO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0534"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SEP0566",
+        "nome": "FUNDAMENTOS DE ECONOMIA",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0531",
+        "nome": "GESTÃO DE SISTEMAS DE INFORMAÇÃO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0530"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0536",
+        "nome": "PROJETO E DESENVOLVIMENTO DE SISTEMAS DE INFORMAÇÃO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0535",
+          "SSC0524"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0547",
+        "nome": "ENGENHARIA DE SEGURANÇA",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0540"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0570",
+        "nome": "EMPREENDEDORISMO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0530"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0591",
+        "nome": "ESTÁGIO SUPERVISIONADO I",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0592",
+        "nome": "ESTÁGIO SUPERVISIONADO II",
+        "semestre": 8,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0591"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0576",
+        "nome": "SEMINÁRIOS EM COMPUTAÇÃO I",
+        "semestre": 3,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0577",
+        "nome": "SEMINÁRIOS EM COMPUTAÇÃO II",
+        "semestre": 4,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0275",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE DADOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0231",
+        "nome": "ANÁLISE TOPOLÓGICA DE DADOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0822",
+        "nome": "ANÁLISE MULTIVARIADA E APRENDIZADO NÃO SUPERVISIONADO",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0770",
+        "nome": "INTRODUÇÃO AO DESENVOLVIMENTO DE JOGOS ELETRÔNICOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0954",
+        "nome": "INFRAESTRUTURA PARA COMPUTAÇÃO DE ALTO DESEMPENHO E SISTEMAS DISTRIBUÍDOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "RAD2401",
+        "nome": "COMÉRCIO ELETRÔNICO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0270",
+        "nome": "REDES NEURAIS E APRENDIZADO PROFUNDO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0276",
+        "nome": "APRENDIZADO DE MÁQUINA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0282",
+        "nome": "RECUPERAÇÃO DA INFORMAÇÃO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0561",
+        "nome": "MULTIMÍDIA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0570",
+        "nome": "INTRODUÇÃO A REDES NEURAIS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0130",
+        "nome": "REDES COMPLEXAS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0806",
+        "nome": "ESTATÍSTICA COMPUTACIONAL",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0878",
+        "nome": "MINERAÇÃO ESTATÍSTICA DE DADOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0158",
+        "nome": "COMPUTAÇÃO EM NUVEM E ARQUITETURA ORIENTADAS A SERVIÇOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0528",
+        "nome": "SISTEMAS COLABORATIVOS: FUNDAMENTOS E APLICAÇÕES",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0593",
+        "nome": "PROJETO DE GRADUAÇÃO I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0595",
+        "nome": "PROJETO EMPREENDEDOR I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0597",
+        "nome": "PROJETO EM INTERCÂMBIO I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0725",
+        "nome": "ARQUITETURA DE SOFTWARE",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0950",
+        "nome": "PROJETO E DESENVOLVIMENTO DE SOFTWARE DE SISTEMA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0962",
+        "nome": "GESTÃO DA QUALIDADE NO DESENVOLVIMENTO DE SISTEMAS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0963",
+        "nome": "INDÚSTRIA 4.0: TECNOLOGIAS E APLICAÇÕES",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0964",
+        "nome": "INTRODUÇÃO À COMPUTAÇÃO NO MERCADO FINANCEIRO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0965",
+        "nome": "STREAMING DE DADOS, MICROSSERVIÇOS E CONTAINERS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "RAD2810",
+        "nome": "ANÁLISE DE DADOS PARA GESTÃO DE NEGÓCIOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0244",
+        "nome": "MINERAÇÃO A PARTIR DE GRANDES BASES DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0252",
+        "nome": "VISUALIZAÇÃO COMPUTACIONAL",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0283",
+        "nome": "INTRODUÇÃO À WEB SEMÂNTICA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0808",
+        "nome": "SÉRIES TEMPORAIS E APRENDIZADO DINÂMICO",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0823",
+        "nome": "MODELOS DE REGRESSÃO E APRENDIZADO SUPERVISIONADO II",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0594",
+        "nome": "PROJETO DE GRADUAÇÃO II",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0596",
+        "nome": "PROJETO EMPREENDEDOR II",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0598",
+        "nome": "PROJETO EM INTERCÂMBIO II",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0726",
+        "nome": "REUSO DE SOFTWARE",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0952",
+        "nome": "INTERNET DAS COISAS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0958",
+        "nome": "CRIPTOMOEDAS E BLOCKCHAIN",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "5500002",
+        "nome": "SEMINÁRIOS EM GESTÃO ORGANIZACIONAL",
+        "semestre": 2,
+        "tipo": "optativa",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55051/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      }
+    ],
+    "requisitos_gerais": [
+      {
+        "item": "Aluno Especial (USP São Carlos)",
+        "descricao": "Matrícula em disciplinas isoladas via JupiterWeb/ICMC sujeita a edital semestral e vagas.",
+        "pagina": null
+      },
+      {
+        "item": "Aproveitamento de Estudos no IFSP",
+        "descricao": "Equivalência >= 75%/80% de carga horária e conteúdo programático mediante requerimento no SUAP.",
+        "pagina": 48
+      }
+    ]
+  },
+  "usp_bci": {
+    "curso": "Bacharelado em Ciências de Computação (BCI/BCC)",
+    "campus": "USP São Carlos (ICMC / CAASO)",
+    "vigencia": "JupiterWeb USP (consulta pública oficial)",
+    "duracao_semestres": 8,
+    "carga_horaria_total_curso": 4125.0,
+    "disciplinas": [
+      {
+        "codigo": "SCC0200",
+        "nome": "INFORMAÇÃO PROFISSIONAL E TUTORIA ACADÊMICA EM CIÊNCIAS DA COMPUTAÇÃO",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0221",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0222",
+        "nome": "LABORATÓRIO DE INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0300",
+        "nome": "GEOMETRIA ANALÍTICA",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0353",
+        "nome": "CÁLCULO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0104",
+        "nome": "EVOLUÇÃO HISTÓRICA DA COMPUTAÇÃO E APLICAÇÕES",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0109",
+        "nome": "PRÁTICA EM LÓGICA DIGITAL",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0117",
+        "nome": "INTRODUÇÃO À LÓGICA DIGITAL",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0180",
+        "nome": "ELETRÔNICA PARA COMPUTAÇÃO",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0201",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO II",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0221"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0202",
+        "nome": "ALGORITMOS E ESTRUTURAS DE DADOS I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0180",
+        "nome": "MATEMÁTICA DISCRETA I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0354",
+        "nome": "CÁLCULO II",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0353"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0108",
+        "nome": "PRÁTICA EM SISTEMAS DIGITAIS",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0118",
+        "nome": "SISTEMAS DIGITAIS",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0117"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0215",
+        "nome": "ORGANIZAÇÃO DE ARQUIVOS",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0202",
+          "SCC0201"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0216",
+        "nome": "MODELAGEM COMPUTACIONAL EM GRAFOS",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0202"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0355",
+        "nome": "CÁLCULO III",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0354"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0103",
+        "nome": "PROGRAMAÇÃO ORIENTADA A OBJETOS",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0202"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0902",
+        "nome": "ORGANIZAÇÃO E ARQUITETURA DE COMPUTADORES",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0118"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0960",
+        "nome": "PROGRAMAÇÃO FUNCIONAL",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0202"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0213",
+        "nome": "METODOLOGIA DE PESQUISA EM COMPUTAÇÃO",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0218",
+        "nome": "ALGORITMOS AVANÇADOS E APLICAÇÕES",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0216"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0123",
+        "nome": "ESTATÍSTICA",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0354"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0142",
+        "nome": "ÁLGEBRA LINEAR E APLICAÇÕES",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0124",
+        "nome": "ANÁLISE E PROJETO ORIENTADOS A OBJETOS",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0103"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0140",
+        "nome": "SISTEMAS OPERACIONAIS I",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0202",
+          "SSC0902"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0219",
+        "nome": "INTRODUÇÃO AO DESENVOLVIMENTO WEB",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0240",
+        "nome": "BASES DE DADOS",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0215"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0104",
+        "nome": "CÁLCULO NUMÉRICO",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0353",
+          "SME0142"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0121",
+        "nome": "PROCESSOS ESTOCÁSTICOS",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0123"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0130",
+        "nome": "ENGENHARIA DE SOFTWARE",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0124"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0142",
+        "nome": "REDES DE COMPUTADORES",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0140"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0205",
+        "nome": "TEORIA DA COMPUTAÇÃO E LINGUAGENS FORMAIS",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0201"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0207",
+        "nome": "COMPUTADORES E SOCIEDADE I",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0230",
+        "nome": "INTELIGÊNCIA ARTIFICIAL",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0201"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0110",
+        "nome": "PROGRAMAÇÃO MATEMÁTICA",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0104"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0903",
+        "nome": "COMPUTAÇÃO DE ALTO DESEMPENHO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0902",
+          "SSC0140"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0217",
+        "nome": "LINGUAGENS DE PROGRAMAÇÃO E COMPILADORES",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0205"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0250",
+        "nome": "COMPUTAÇÃO GRÁFICA",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0103"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0120",
+        "nome": "SISTEMAS DE INFORMAÇÃO",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0900",
+        "nome": "ENGENHARIA DE SEGURANÇA",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0142"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0904",
+        "nome": "SISTEMAS COMPUTACIONAIS DISTRIBUÍDOS",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0142",
+          "SSC0140"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0291",
+        "nome": "ESTÁGIO SUPERVISIONADO I",
+        "semestre": 9,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0292",
+        "nome": "ESTÁGIO SUPERVISIONADO II",
+        "semestre": 10,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SCC0291"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0220",
+        "nome": "LABORATÓRIO DE INTRODUÇÃO À CIÊNCIA DA COMPUTAÇÃO II",
+        "semestre": 2,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "7600005",
+        "nome": "FÍSICA I",
+        "semestre": 3,
+        "tipo": "eletiva",
+        "aulas_semanais": 5,
+        "total_aulas": 75,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "7600109",
+        "nome": "LABORATÓRIO DE FÍSICA GERAL I",
+        "semestre": 3,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0303",
+        "nome": "INTRODUÇÃO A COMPRESSÃO DE DADOS",
+        "semestre": 3,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0119",
+        "nome": "PRÁTICA EM ORGANIZAÇÃO DE COMPUTADORES",
+        "semestre": 3,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0227",
+        "nome": "SEMINÁRIOS EM COMPUTAÇÃO I",
+        "semestre": 4,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0295",
+        "nome": "ATIVIDADES ACADÊMICAS DE EXTENSÃO I",
+        "semestre": 4,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0210",
+        "nome": "LABORATÓRIO DE ALGORITMOS AVANÇADOS I",
+        "semestre": 5,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0228",
+        "nome": "SEMINÁRIOS EM COMPUTAÇÃO II",
+        "semestre": 5,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0296",
+        "nome": "ATIVIDADES ACADÊMICAS DE EXTENSÃO II",
+        "semestre": 5,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0953",
+        "nome": "SISTEMAS OPEN SOURCE",
+        "semestre": 5,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0211",
+        "nome": "LABORATÓRIO DE ALGORITMOS AVANÇADOS II",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0229",
+        "nome": "SEMINÁRIOS EM COMPUTAÇÃO III",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0247",
+        "nome": "BANCO DE DADOS NOSQL E ARCABOUÇOS DISTRIBUÍDOS DE PROCESSAMENTO",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0231",
+        "nome": "ANÁLISE TOPOLÓGICA DE DADOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0770",
+        "nome": "INTRODUÇÃO AO DESENVOLVIMENTO DE JOGOS ELETRÔNICOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0954",
+        "nome": "INFRAESTRUTURA PARA COMPUTAÇÃO DE ALTO DESEMPENHO E SISTEMAS DISTRIBUÍDOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0209",
+        "nome": "EMPREENDEDORES EM INFORMÁTICA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0241",
+        "nome": "LABORATÓRIO DE BASES DE DADOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0243",
+        "nome": "ARQUITETURA DE SISTEMAS GERENCIADORES DE BASES DE DADOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0245",
+        "nome": "PROCESSAMENTO ANALÍTICO DE DADOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0251",
+        "nome": "PROCESSAMENTO DE IMAGENS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0260",
+        "nome": "INTERAÇÃO HUMANO-COMPUTADOR E EXPERIÊNCIA DO USUÁRIO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0261",
+        "nome": "MULTIMÍDIA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0270",
+        "nome": "REDES NEURAIS E APRENDIZADO PROFUNDO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0276",
+        "nome": "APRENDIZADO DE MÁQUINA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0282",
+        "nome": "RECUPERAÇÃO DA INFORMAÇÃO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0284",
+        "nome": "SISTEMAS DE RECOMENDAÇÃO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0370",
+        "nome": "INTRODUÇÃO À COMPUTAÇÃO BIOINSPIRADA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0633",
+        "nome": "PROCESSAMENTO DE LINGUAGEM NATURAL",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0910",
+        "nome": "TÓPICOS AVANÇADOS EM CIÊNCIAS DE COMPUTAÇÃO I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0130",
+        "nome": "REDES COMPLEXAS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0806",
+        "nome": "ESTATÍSTICA COMPUTACIONAL",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0141",
+        "nome": "PRÁTICA EM SISTEMAS OPERACIONAIS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0147",
+        "nome": "TÓPICOS ESPECIAIS EM SISTEMAS DE COMPUTAÇÃO I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0154",
+        "nome": "SEMINÁRIOS AVANÇADOS EM SISTEMAS DISTRIBUÍDOS E PROGRAMAÇÃO CONCORRENTE I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0158",
+        "nome": "COMPUTAÇÃO EM NUVEM E ARQUITETURA ORIENTADAS A SERVIÇOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0160",
+        "nome": "MODELAGEM E SIMULAÇÃO DE SISTEMAS COMPUTACIONAIS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0712",
+        "nome": "PROGRAMAÇÃO DE ROBÔS MÓVEIS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0714",
+        "nome": "ROBÔS MÓVEIS AUTÔNOMOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0723",
+        "nome": "SISTEMAS COLABORATIVOS: FUNDAMENTOS E APLICAÇÕES",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0725",
+        "nome": "ARQUITETURA DE SOFTWARE",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0740",
+        "nome": "SISTEMAS EMBARCADOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0950",
+        "nome": "PROJETO E DESENVOLVIMENTO DE SOFTWARE DE SISTEMA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0951",
+        "nome": "DESENVOLVIMENTO DE CÓDIGO OTIMIZADO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0959",
+        "nome": "TESTE E INSPEÇÃO DE SOFTWARE",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0225",
+        "nome": "LABORATÓRIO DE DESENVOLVIMENTO DE APLICAÇÕES PARA DISPOSITIVOS MÓVEIS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0231",
+        "nome": "INTRODUÇÃO A SISTEMAS INTELIGENTES",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0233",
+        "nome": "APLICAÇÕES DE APRENDIZADO DE MÁQUINA E MINERAÇÃO DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0244",
+        "nome": "MINERAÇÃO A PARTIR DE GRANDES BASES DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0252",
+        "nome": "VISUALIZAÇÃO COMPUTACIONAL",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0254",
+        "nome": "INTRODUÇÃO À GEOMETRIA COMPUTACIONAL: ALGORITMOS E APLICAÇÕES",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0271",
+        "nome": "INTRODUÇÃO À BIOINFORMÁTICA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0273",
+        "nome": "ROBÔS MÓVEIS INTELIGENTES",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0275",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0277",
+        "nome": "COMPETIÇÕES DE CIÊNCIAS DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0280",
+        "nome": "ACESSIBILIDADE EM SISTEMAS COMPUTACIONAIS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0283",
+        "nome": "INTRODUÇÃO À WEB SEMÂNTICA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0287",
+        "nome": "MINERAÇÃO DE DADOS NÃO ESTRUTURADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0911",
+        "nome": "TÓPICOS AVANÇADOS EM CIÊNCIAS DE COMPUTAÇÃO II",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0808",
+        "nome": "SÉRIES TEMPORAIS E APRENDIZADO DINÂMICO",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0822",
+        "nome": "ANÁLISE MULTIVARIADA E APRENDIZADO NÃO SUPERVISIONADO",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0823",
+        "nome": "MODELOS DE REGRESSÃO E APRENDIZADO SUPERVISIONADO II",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0123",
+        "nome": "TÓPICOS ESPECIAIS EM ENGENHARIA DE SOFTWARE",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0128",
+        "nome": "GERÊNCIA DE PROJETOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0152",
+        "nome": "ADMINISTRAÇÃO E GERENCIAMENTO DE REDES",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0159",
+        "nome": "TÓPICOS AVANÇADOS EM COMPUTAÇÃO DE ALTO DESEMPENHO",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0643",
+        "nome": "AVALIAÇÃO DE DESEMPENHO DE SISTEMAS COMPUTACIONAIS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0902"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0713",
+        "nome": "SISTEMAS EVOLUTIVOS E APLICADOS À ROBÓTICA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0715",
+        "nome": "SENSORES INTELIGENTES",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0720",
+        "nome": "ENGENHARIA DE SOFTWARE PARA SISTEMAS EMBARCADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0724",
+        "nome": "SISTEMAS EDUCACIONAIS AVANÇADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0726",
+        "nome": "REUSO DE SOFTWARE",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0741",
+        "nome": "PROJETO E IMPLEMENTAÇÃO DE SISTEMAS EMBARCADOS I",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 135.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 135.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0744",
+        "nome": "COMPUTAÇÃO DISTRIBUÍDA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 135.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 135.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0745",
+        "nome": "SISTEMAS COMPUTACIONAIS DE TEMPO-REAL",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0748",
+        "nome": "REDES MÓVEIS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0901",
+        "nome": "LABORATÓRIO DE ENGENHARIA DE SEGURANÇA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0952",
+        "nome": "INTERNET DAS COISAS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0958",
+        "nome": "CRIPTOMOEDAS E BLOCKCHAIN",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0289",
+        "nome": "PROJETO EM INTERCÂMBIO I",
+        "semestre": 9,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0293",
+        "nome": "PROJETO DE GRADUAÇÃO I",
+        "semestre": 9,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0300",
+        "nome": "PROJETO EMPREENDEDOR I",
+        "semestre": 9,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0878",
+        "nome": "MINERAÇÃO ESTATÍSTICA DE DADOS",
+        "semestre": 9,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0290",
+        "nome": "PROJETO EM INTERCÂMBIO II",
+        "semestre": 10,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0294",
+        "nome": "PROJETO DE GRADUAÇÃO II",
+        "semestre": 10,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0302",
+        "nome": "PROJETO EMPREENDEDOR II",
+        "semestre": 10,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0967",
+        "nome": "INTELIGÊNCIA ARTIFICIAL EMBARCADA",
+        "semestre": 10,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "5500002",
+        "nome": "SEMINÁRIOS EM GESTÃO ORGANIZACIONAL",
+        "semestre": 2,
+        "tipo": "optativa",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0392",
+        "nome": "CÁLCULO I (SEMIPRESENCIAL)",
+        "semestre": 2,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0394",
+        "nome": "GEOMETRIA ANALÍTICA (SEMIPRESENCIAL)",
+        "semestre": 2,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0390",
+        "nome": "CÁLCULO II (SEMIPRESENCIAL)",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0393",
+        "nome": "CÁLCULO III (SEMIPRESENCIAL)",
+        "semestre": 4,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0391",
+        "nome": "CÁLCULO IV (SEMIPRESENCIAL)",
+        "semestre": 5,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "IAU0126",
+        "nome": "HUMANIDADES E CIÊNCIAS SOCIAIS",
+        "semestre": 8,
+        "tipo": "optativa",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55041/0)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      }
+    ],
+    "requisitos_gerais": [
+      {
+        "item": "Aluno Especial (USP São Carlos)",
+        "descricao": "Matrícula em disciplinas isoladas via JupiterWeb/ICMC sujeita a edital semestral e vagas.",
+        "pagina": null
+      },
+      {
+        "item": "Aproveitamento de Estudos no IFSP",
+        "descricao": "Equivalência >= 75%/80% de carga horária e conteúdo programático mediante requerimento no SUAP.",
+        "pagina": 48
+      }
+    ]
+  },
+  "usp_est": {
+    "curso": "Bacharelado em Estatística e Ciência de Dados",
+    "campus": "USP São Carlos (ICMC / CAASO)",
+    "vigencia": "JupiterWeb USP (consulta pública oficial)",
+    "duracao_semestres": 8,
+    "carga_horaria_total_curso": 2790.0,
+    "disciplinas": [
+      {
+        "codigo": "SMA0800",
+        "nome": "GEOMETRIA ANALÍTICA",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0801",
+        "nome": "CÁLCULO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 6,
+        "total_aulas": 90,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0803",
+        "nome": "VISUALIZAÇÃO E EXPLORAÇÃO DE DADOS",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0825",
+        "nome": "METODOLOGIA CIENTÍFICA I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0890",
+        "nome": "DIRECIONAMENTO ACADÊMICO I",
+        "semestre": 1,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 15.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 15.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0802",
+        "nome": "CÁLCULO II",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 6,
+        "total_aulas": 90,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0801"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0804",
+        "nome": "ÁLGEBRA LINEAR PARA ESTATÍSTICA",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0800",
+        "nome": "PROBABILIDADE I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0801"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0800",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0801",
+        "nome": "LABORATÓRIO DE INTRODUÇÃO À CIÊNCIA DE COMPUTAÇÃO I",
+        "semestre": 2,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0803",
+        "nome": "CÁLCULO III",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0801"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0801",
+        "nome": "PROBABILIDADE II",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0802",
+          "SME0800"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0818",
+        "nome": "INFERÊNCIA ESTATÍSTICA",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 6,
+        "total_aulas": 90,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0800"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0827",
+        "nome": "ESTRUTURAS DE DADOS",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 105.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 105.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SSC0800",
+          "SSC0801"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0892",
+        "nome": "CÁLCULO NUMÉRICO PARA ESTATÍSTICA",
+        "semestre": 3,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SMA0801",
+          "SMA0804",
+          "SSC0800"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0805",
+        "nome": "PROCESSOS ESTOCÁSTICOS",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0800"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0809",
+        "nome": "INFERÊNCIA BAYESIANA",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0801",
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0820",
+        "nome": "MODELOS DE REGRESSÃO E APRENDIZADO SUPERVISIONADO I",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0824",
+        "nome": "GESTÃO DA QUALIDADE",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0828",
+        "nome": "INTRODUÇÃO À CIÊNCIA DE DADOS",
+        "semestre": 4,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0827"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0806",
+        "nome": "ESTATÍSTICA COMPUTACIONAL",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0807",
+        "nome": "TÉCNICAS DE AMOSTRAGEM",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0816",
+        "nome": "PLANEJAMENTO DE EXPERIMENTOS I",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0821",
+        "nome": "ANÁLISE DE SOBREVIVÊNCIA E CONFIABILIDADE",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0829",
+        "nome": "APRENDIZADO DE MÁQUINA",
+        "semestre": 5,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0828"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0808",
+        "nome": "SÉRIES TEMPORAIS E APRENDIZADO DINÂMICO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0810",
+        "nome": "MÉTODOS NÃO PARAMÉTRICOS",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0822",
+        "nome": "ANÁLISE MULTIVARIADA E APRENDIZADO NÃO SUPERVISIONADO",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0823",
+        "nome": "MODELOS DE REGRESSÃO E APRENDIZADO SUPERVISIONADO II",
+        "semestre": 6,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0878",
+        "nome": "MINERAÇÃO ESTATÍSTICA DE DADOS",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0820",
+          "SSC0800",
+          "SME0822",
+          "SME0818",
+          "SME0800"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0882",
+        "nome": "CONSULTORIA ESTATÍSTICA",
+        "semestre": 7,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0814",
+        "nome": "ESTÁGIO SUPERVISIONADO EM ESTATÍSTICA I",
+        "semestre": 8,
+        "tipo": "obrigatoria",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [
+          "SME0818"
+        ],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0805",
+        "nome": "TÓPICOS DE MATEMÁTICA",
+        "semestre": 1,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0520",
+        "nome": "INTRODUÇÃO À ESTATÍSTICA",
+        "semestre": 1,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0240",
+        "nome": "EQUAÇÕES DIFERENCIAIS ORDINÁRIAS",
+        "semestre": 3,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0850",
+        "nome": "INFORMAÇÃO PROFISSIONAL EM CIÊNCIA DE DADOS",
+        "semestre": 4,
+        "tipo": "eletiva",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0240",
+        "nome": "BASES DE DADOS",
+        "semestre": 5,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0811",
+        "nome": "ANÁLISE DE DADOS CATEGORIZADOS",
+        "semestre": 5,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0230",
+        "nome": "INTELIGÊNCIA ARTIFICIAL",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0308",
+        "nome": "ANÁLISE II",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0212",
+        "nome": "OTIMIZAÇÃO NÃO LINEAR",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0231",
+        "nome": "ANÁLISE TOPOLÓGICA DE DADOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0826",
+        "nome": "METODOLOGIA CIENTÍFICA II",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0879",
+        "nome": "MINERAÇÃO DE DADOS REPRESENTADOS POR GRAFOS",
+        "semestre": 6,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0251",
+        "nome": "PROCESSAMENTO DE IMAGENS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0270",
+        "nome": "REDES NEURAIS E APRENDIZADO PROFUNDO",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0307",
+        "nome": "ANÁLISE I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0130",
+        "nome": "REDES COMPLEXAS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0852",
+        "nome": "PRÁTICA EM CIÊNCIA DE DADOS I",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 180.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 180.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0853",
+        "nome": "PRÁTICA EM CIÊNCIA DE DADOS III",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 180.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 180.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0854",
+        "nome": "VISUALIZAÇÃO PARA CIÊNCIA DE DADOS",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0871",
+        "nome": "BIOESTATÍSTICA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0873",
+        "nome": "ECONOMETRIA",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0875",
+        "nome": "TÓPICOS ESPECIAIS EM ESTATÍSTICA APLICADA II",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0876",
+        "nome": "TEORIA DE RESPOSTA AO ITEM",
+        "semestre": 7,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0244",
+        "nome": "MINERAÇÃO A PARTIR DE GRANDES BASES DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0252",
+        "nome": "VISUALIZAÇÃO COMPUTACIONAL",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 3,
+        "total_aulas": 45,
+        "carga_horaria_ensino": 75.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 75.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0277",
+        "nome": "COMPETIÇÕES DE CIÊNCIAS DE DADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SCC0287",
+        "nome": "MINERAÇÃO DE DADOS NÃO ESTRUTURADOS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0143",
+        "nome": "INTRODUÇÃO À TEORIA DA MEDIDA",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0262",
+        "nome": "ANÁLISE DE SÉRIES TEMPORAIS EM FINANÇAS",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0510",
+        "nome": "INTRODUÇÃO À PESQUISA OPERACIONAL",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0812",
+        "nome": "MODELOS LINEARES",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0870",
+        "nome": "TÓPICOS ESPECIAIS EM ESTATÍSTICA APLICADA I",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0880",
+        "nome": "PROJETO DE GRADUAÇÃO EM ESTATÍSTICA I",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 360.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 360.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SSC0570",
+        "nome": "EMPREENDEDORISMO",
+        "semestre": 8,
+        "tipo": "eletiva",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "5500002",
+        "nome": "SEMINÁRIOS EM GESTÃO ORGANIZACIONAL",
+        "semestre": 2,
+        "tipo": "optativa",
+        "aulas_semanais": 1,
+        "total_aulas": 15,
+        "carga_horaria_ensino": 45.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 45.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "7600108",
+        "nome": "PSICOLOGIA DA EDUCAÇÃO",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 120.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 120.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "IAU0314",
+        "nome": "CULTURA, AMBIENTE E SUSTENTABILIDADE I",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SLC0605",
+        "nome": "INTRODUÇÃO AOS ESTUDOS DA EDUCAÇÃO: ASPECTOS HISTÓRICOS, FILOSÓFICOS E SOCIAIS",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SLC0620",
+        "nome": "BIOLOGIA 1",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0394",
+        "nome": "GEOMETRIA ANALÍTICA (SEMIPRESENCIAL)",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SME0830",
+        "nome": "PROBABILIDADE I (MODALIDADE SEMIPRESENCIAL)",
+        "semestre": 3,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "IAU0315",
+        "nome": "CULTURA, AMBIENTE E SUSTENTABILIDADE II",
+        "semestre": 6,
+        "tipo": "optativa",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 30.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 30.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SLC0606",
+        "nome": "INTRODUÇÃO AOS ESTUDOS DA EDUCAÇÃO: CIÊNCIA, SOCIOLOGIA E IMPRENSA",
+        "semestre": 6,
+        "tipo": "optativa",
+        "aulas_semanais": 2,
+        "total_aulas": 30,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SLC0621",
+        "nome": "BIOLOGIA 2",
+        "semestre": 6,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 90.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 90.0,
+        "abordagem": "teorico_pratica",
+        "usa_laboratorio": true,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      },
+      {
+        "codigo": "SMA0326",
+        "nome": "FILOSOFIA DA MATEMÁTICA",
+        "semestre": 6,
+        "tipo": "optativa",
+        "aulas_semanais": 4,
+        "total_aulas": 60,
+        "carga_horaria_ensino": 60.0,
+        "carga_horaria_extensao": 0.0,
+        "carga_horaria_total": 60.0,
+        "abordagem": "teorica",
+        "usa_laboratorio": false,
+        "pre_requisitos": [],
+        "grupos_conhecimento": [
+          "JupiterWeb ICMC (55071/4)"
+        ],
+        "topicos_principais": [],
+        "pagina_plano_ensino": null
+      }
+    ],
+    "requisitos_gerais": [
+      {
+        "item": "Aluno Especial (USP São Carlos)",
+        "descricao": "Matrícula em disciplinas isoladas via JupiterWeb/ICMC sujeita a edital semestral e vagas.",
+        "pagina": null
+      },
+      {
+        "item": "Aproveitamento de Estudos no IFSP",
+        "descricao": "Equivalência >= 75%/80% de carga horária e conteúdo programático mediante requerimento no SUAP.",
+        "pagina": 48
+      }
+    ]
+  }
+}

@@ -16,6 +16,11 @@ from src.modules.api.moodle_import import MoodleImport, format_moodle_summary, s
 from src.modules.api.rate_limit import RateLimiter, client_ip
 from src.modules.api.suap_import import ImportStore, SuapImport
 from src.modules.knowledge.services.knowledge_base import get_knowledge_base
+from src.modules.knowledge.services.usp_jupiter import (
+    USP_COURSES,
+    build_suap_requerimento,
+    fetch_usp_ementa,
+)
 from src.modules.response.services.chat_service import ChatSession
 from src.modules.shared.services.settings import get_settings
 
@@ -73,6 +78,8 @@ class ChatRequest(BaseModel):
     documentos: List[AttachedDocument] = Field(default_factory=list, max_length=5)
     # Modelo selecionado na interface (opcional; usa LLM_MODEL do .env se vazio)
     model: Optional[str] = Field(default=None, max_length=120)
+    # Instituição / curso selecionado no menu superior (ifsp_bes, usp_bsi, usp_bci, usp_est)
+    inst: str = Field(default="ifsp_bes", max_length=32)
 
     @field_validator("history")
     @classmethod
@@ -82,6 +89,13 @@ class ChatRequest(BaseModel):
         if roles != expected:
             raise ValueError("o histórico deve alternar user/assistant, começando por user")
         return history
+
+
+class RequerimentoRequest(BaseModel):
+    ifsp_codigo: str = Field(max_length=20)
+    usp_codigo: str = Field(max_length=20)
+    aluno_nome: str = Field(default="", max_length=120)
+    matricula: str = Field(default="", max_length=40)
 
 
 class Usage(BaseModel):
@@ -139,7 +153,7 @@ async def _stream_answer(request: ChatRequest, http_request: Request) -> AsyncIt
     async def produce():
         try:
             async for kind, text in session.stream_events(
-                request.question, request.disciplinas, _merge_perfil_and_docs(request.perfil, request.documentos)
+                request.question, request.disciplinas, _merge_perfil_and_docs(request.perfil, request.documentos), inst=request.inst
             ):
                 events.put_nowait({"type": kind, "text": text})
             usage = _usage(session)
@@ -200,11 +214,22 @@ def health() -> dict:
 
 
 @app.get("/curriculum")
-def curriculum() -> dict:
-    """Currículo estruturado + análise do grafo, para a árvore e a grade do front."""
+def curriculum(inst: str = "ifsp_bes") -> dict:
+    """Currículo estruturado + análise do grafo + equivalências USP ↔ IFSP."""
     kb = get_knowledge_base()
-    c, graph = kb.curriculo, kb.graph
+    if inst != "ifsp_bes" and inst in kb.usp_curricula:
+        c, graph = kb.usp_curricula[inst], kb.usp_graphs[inst]
+    else:
+        inst = "ifsp_bes"
+        c, graph = kb.curriculo, kb.graph
+
+    eq_by_code = {}
+    for eq in kb.usp_equivalences:
+        k = eq["ifsp_codigo"] if inst == "ifsp_bes" else eq["usp_codigo"]
+        eq_by_code.setdefault(k, []).append(eq)
+
     return {
+        "inst": inst,
         "curso": c.curso,
         "campus": c.campus,
         "vigencia": c.vigencia,
@@ -214,10 +239,55 @@ def curriculum() -> dict:
         "gargalos": graph.bottlenecks(),
         "requisitos_gerais": [r.model_dump() for r in c.requisitos_gerais],
         "disciplinas": [
-            {**d.model_dump(), **graph.analysis[d.codigo].model_dump(exclude={"codigo"})}
+            {
+                **d.model_dump(),
+                **graph.analysis[d.codigo].model_dump(exclude={"codigo"}),
+                "equivalencias": eq_by_code.get(d.codigo, [])[:5],
+            }
             for d in sorted(c.disciplinas, key=lambda d: (d.semestre or 99, d.nome))
         ],
     }
+
+
+@app.get("/usp/equivalencias")
+def usp_equivalencias(curso: str = "all") -> dict:
+    """Lista equivalências candidatas entre USP São Carlos (BSI/BCI/Estatística) e IFSP BES."""
+    kb = get_knowledge_base()
+    items = [e for e in kb.usp_equivalences if curso == "all" or e["usp_curso"] == curso]
+    return {"count": len(items), "cursos": USP_COURSES, "equivalencias": items}
+
+
+@app.get("/usp/disciplina/{sgldis}")
+async def usp_disciplina(sgldis: str) -> dict:
+    """Retorna a ementa oficial da disciplina no JupiterWeb (com cache local)."""
+    kb = get_knowledge_base()
+    try:
+        return await asyncio.to_thread(fetch_usp_ementa, sgldis, kb.processed_dir)
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Erro ao consultar JupiterWeb: {exc}")
+
+
+@app.post("/usp/requerimento")
+async def usp_requerimento(req: RequerimentoRequest) -> dict:
+    """Gera minuta formal de requerimento de aproveitamento de estudos (USP → IFSP via SUAP)."""
+    kb = get_knowledge_base()
+    ifsp_disc = kb.graph.by_code.get(req.ifsp_codigo.upper())
+    if not ifsp_disc:
+        raise HTTPException(status_code=404, detail=f"Disciplina IFSP {req.ifsp_codigo} não encontrada.")
+
+    usp_code = req.usp_codigo.upper()
+    usp_disc = None
+    usp_label = "USP São Carlos"
+    for k, g in kb.usp_graphs.items():
+        if usp_code in g.by_code:
+            usp_disc = g.by_code[usp_code]
+            usp_label = USP_COURSES[k]["label"]
+            break
+    if not usp_disc:
+        raise HTTPException(status_code=404, detail=f"Disciplina USP {req.usp_codigo} não encontrada.")
+
+    ementa = await asyncio.to_thread(fetch_usp_ementa, usp_code, kb.processed_dir)
+    return build_suap_requerimento(ifsp_disc, usp_disc, ementa, usp_label, req.aluno_nome, req.matricula)
 
 
 moodle_store = ImportStore()
@@ -370,7 +440,7 @@ async def chat(request: ChatRequest, http_request: Request) -> ChatResponse:
     _check_rate_limit(http_request)
     session = _session(request)
     answer = await session.ask(
-        request.question, request.disciplinas, _merge_perfil_and_docs(request.perfil, request.documentos)
+        request.question, request.disciplinas, _merge_perfil_and_docs(request.perfil, request.documentos), inst=request.inst
     )
     return ChatResponse(answer=answer, usage=_usage(session))
 

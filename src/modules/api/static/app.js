@@ -24,6 +24,7 @@ const THINKING_STEPS = ["Lendo o PPC…", "Consultando o grafo de pré-requisito
 const ABORDAGEM = { teorica: "Teórica", pratica: "Prática", teorico_pratica: "Teórico-prática" };
 
 const state = {
+  inst: (() => { try { return localStorage.getItem("ppchat_inst") || "ifsp_bes"; } catch { return "ifsp_bes"; } })(),
   curriculum: null,
   byCode: new Map(),
   requestId: null, // resposta em andamento, para o botão "parar"
@@ -117,56 +118,81 @@ async function fetchWithWake(url, options = {}) {
 }
 
 /* ───────────── Currículo ───────────── */
-async function loadCurriculum() {
-  const response = await fetchWithWake("/curriculum");
+async function loadCurriculum(inst = state.inst) {
+  const response = await fetchWithWake(`/curriculum?inst=${encodeURIComponent(inst)}`);
   if (!response.ok) throw new Error("Não foi possível carregar o currículo");
   const data = await response.json();
+  state.inst = data.inst || inst;
+  try { localStorage.setItem("ppchat_inst", state.inst); } catch {}
+  const sel = $("#inst-select");
+  if (sel) sel.value = state.inst;
   state.curriculum = data;
+  state.byCode.clear();
+  namesByLength = null;
   data.disciplinas.forEach((d) => state.byCode.set(d.codigo, d));
 
-  $("#course-name").textContent = "Engenharia de Software · IFSP São Carlos";
+  $("#course-name").textContent = state.inst === "ifsp_bes"
+    ? "Engenharia de Software · IFSP São Carlos"
+    : `${data.curso} · ${data.campus || "USP São Carlos (CAASO)"}`;
 
   renderGrid();
+  return data;
 }
 
 /* ───────────── Estado vazio ───────────── */
-function renderEmpty(eyebrow = "PPC · IFSP Câmpus São Carlos") {
+function renderEmpty(eyebrow) {
+  const isIfsp = state.inst === "ifsp_bes";
+  const resolvedEyebrow = eyebrow || (isIfsp
+    ? "PPC · IFSP Câmpus São Carlos"
+    : `PPC · ${state.curriculum.campus || "USP São Carlos (CAASO)"} · Aluno Especial`);
   const { disciplinas, gargalos } = state.curriculum;
   const deepest = [...disciplinas].sort((a, b) => b.profundidade - a.profundidade || b.indice_complexidade - a.indice_complexidade)
     .find((d) => d.tipo === "obrigatoria" && !/extens/i.test(d.nome)) || disciplinas[0];
-  const gate = disc(gargalos[1] || gargalos[0]);
-  const pair = [gargalos[2], "SCLBDD1"].filter((c) => disc(c));
-  const items = state.aluno ? [
+  const gate = disc(gargalos[1] || gargalos[0]) || disciplinas[0];
+  const pair = isIfsp
+    ? [gargalos[2], "SCLBDD1"].filter((c) => disc(c))
+    : gargalos.slice(0, 2).filter((c) => disc(c));
+  const items = isIfsp && state.aluno ? [
     // Com o SUAP importado, as sugestões falam do percurso do próprio aluno
     { icon: ICON.route, tag: "Meu percurso", text: "Quais disciplinas eu já posso cursar no próximo semestre?" },
     { icon: ICON.rules, tag: "Meu percurso", text: "Quanto falta para eu me formar, incluindo as atividades complementares?" },
     { icon: ICON.gauge, tag: "Dificuldade", text: "Das disciplinas que ainda faltam, quais devem ser as mais difíceis para mim?" },
     { icon: ICON.chain, tag: "Planejamento", text: "Monte um plano semestre a semestre para eu me formar no menor tempo." },
-  ] : [
+  ] : isIfsp ? [
     { icon: ICON.chain, tag: "Dependências", text: `Quais são todos os pré-requisitos de ${titleCase(deepest.nome)}?` },
     { icon: ICON.route, tag: "Com disciplinas no contexto", text: "Em que ordem devo cursar estas disciplinas e por quê?", context: pair },
     { icon: ICON.gauge, tag: "Dificuldade", text: "Quais são as disciplinas mais difíceis do curso e por quê?" },
     { icon: ICON.rules, tag: "Planejamento", text: `Reprovei em ${titleCase(gate.nome)}. Como fica o resto do meu curso?` },
+  ] : [
+    { icon: ICON.route, tag: "Equivalência USP ↔ IFSP", text: `Quais disciplinas de ${state.curriculum.curso} na USP São Carlos têm maior equivalência com Engenharia de Software no IFSP?` },
+    { icon: ICON.rules, tag: "Aluno Especial · SUAP", text: `Quero cursar disciplinas de ${state.curriculum.curso} como Aluno Especial na USP (CAASO) e aproveitar no IFSP: gere um plano e os critérios de requerimento no SUAP.` },
+    { icon: ICON.chain, tag: "Dependências", text: `Quais são todos os pré-requisitos de ${titleCase(deepest.nome)} (${deepest.codigo}) no JupiterWeb?` },
+    { icon: ICON.gauge, tag: "Com disciplinas no contexto", text: "Compare estas disciplinas com as equivalentes do BES/IFSP para aproveitamento.", context: pair },
   ];
+  const heading = isIfsp
+    ? "Pergunte qualquer coisa sobre <em>Engenharia de Software no IFSP.</em>"
+    : `Explore <em>${escapeHtml(state.curriculum.curso)} (USP São Carlos)</em> e aproveite no IFSP.`;
+  const lede = isIfsp
+    ? "Respostas baseadas no Projeto Pedagógico inteiro, com a página de cada informação. Digite <kbd>@</kbd> para colocar disciplinas no contexto da pergunta."
+    : "Grade do JupiterWeb para Aluno Especial no CAASO com análise automática de equivalência para Engenharia de Software (IFSP) e geração de requerimento SUAP. Digite <kbd>@</kbd> para mencionar disciplinas.";
   $("#messages").innerHTML = `
     <div class="empty" id="empty">
-      <p class="eyebrow">${eyebrow}</p>
-      <h1>Pergunte qualquer coisa sobre <em>Engenharia de Software no IFSP.</em></h1>
-      <p class="lede">Respostas baseadas no Projeto Pedagógico inteiro, com a página de cada informação.
-        Digite <kbd>@</kbd> para colocar disciplinas no contexto da pergunta.</p>
+      <p class="eyebrow">${escapeHtml(resolvedEyebrow)}</p>
+      <h1>${heading}</h1>
+      <p class="lede">${lede}</p>
       <p class="course-facts"><span><b>${disciplinas.length}</b> disciplinas</span><span><b>${state.curriculum.duracao_semestres}</b> semestres</span>
         <span><b>${hours(state.curriculum.carga_horaria_total_curso)}</b> de curso</span></p>
       <div class="suggestions">${items.map((item, i) => `
         <button class="suggestion" style="animation-delay:${80 + i * 60}ms" data-i="${i}">
           <span class="s-tag">${item.icon}${item.tag}</span>
           <span class="s-text">${escapeHtml(item.text)}</span>
-          ${item.context ? `<span class="s-chips">${item.context.map((c) => staticChip(c)).join("")}</span>` : ""}
+          ${item.context?.length ? `<span class="s-chips">${item.context.map((c) => staticChip(c)).join("")}</span>` : ""}
         </button>`).join("")}
       </div>
     </div>`;
   $$(".suggestion").forEach((btn) => btn.addEventListener("click", () => {
     const item = items[btn.dataset.i];
-    if (item.context) state.context = [...item.context];
+    if (item.context?.length) state.context = [...item.context];
     ask(item.text);
   }));
 }
@@ -713,7 +739,7 @@ function renderCourseInfo() {
       <span class="pill">${disciplinas.length} disciplinas</span>
       <span class="pill">${hours(state.curriculum.carga_horaria_total_curso)}</span>
     </div>
-    ${state.aluno ? progressHtml() : ""}
+    ${state.aluno && state.inst === "ifsp_bes" ? progressHtml() : ""}
     <div class="info-section">
       <div class="stat-grid">
         <div class="stat-card anc"><b>${connected.length}</b><span>com pré-requisitos ou dependentes</span></div>
@@ -735,12 +761,82 @@ function renderCourseInfo() {
     </div>` : ""}`;
 }
 
+function renderEquivalenciasSection(d) {
+  if (!d.equivalencias?.length) return "";
+  return `<div class="info-section eq-section">
+    <h4>Equivalência IFSP ↔ USP (Aluno Especial)</h4>
+    <div class="eq-list">
+      ${d.equivalencias.map((eq) => {
+        const isIfsp = state.inst === "ifsp_bes";
+        const tag = isIfsp ? `${eq.usp_curso_label} · ${eq.usp_codigo}` : `IFSP BES · ${eq.ifsp_codigo}`;
+        const title = isIfsp ? eq.usp_nome : eq.ifsp_nome;
+        const ratio = eq.ifsp_ch ? (eq.usp_ch / eq.ifsp_ch) * 100 : 100;
+        const chNote = ratio >= 75 ? `CH compatível (${Math.round(ratio)}%)` : `CH USP < 75% (${Math.round(ratio)}%)`;
+        return `<div class="eq-card">
+          <div class="eq-head"><span class="eq-course">${escapeHtml(tag)}</span><span class="eq-sim">${eq.similaridade_pct}% ementa</span></div>
+          <div class="eq-title">${escapeHtml(titleCase(title))}</div>
+          <div class="eq-meta">IFSP ${hours(eq.ifsp_ch)} ↔ USP ${hours(eq.usp_ch)} · ${chNote}</div>
+          <div class="eq-actions">
+            <button class="btn btn-sm btn-primary" data-req-ifsp="${escapeHtml(eq.ifsp_codigo)}" data-req-usp="${escapeHtml(eq.usp_codigo)}">Gerar requerimento SUAP</button>
+            <button class="btn btn-sm" data-ask="Analise a equivalência entre ${escapeHtml(eq.usp_codigo)} (${escapeHtml(eq.usp_nome)}) na USP São Carlos e ${escapeHtml(eq.ifsp_codigo)} (${escapeHtml(eq.ifsp_nome)}) no BES/IFSP e oriente sobre a matrícula como Aluno Especial.">${ICON.ask}Comparar no chat</button>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+async function openUspRequerimentoModal(ifspCodigo, uspCodigo) {
+  const modal = $("#suap-modal");
+  const title = $("#suap-title");
+  const body = $("#suap-body");
+  if (!modal || !title || !body) return;
+  title.textContent = "Requerimento de Aproveitamento (SUAP)";
+  body.innerHTML = `<p class="muted">Consultando ementa no JupiterWeb e montando requerimento ${escapeHtml(ifspCodigo)} ↔ ${escapeHtml(uspCodigo)}…</p>`;
+  modal.showModal();
+  try {
+    const res = await fetchWithWake("/usp/requerimento", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ifsp_codigo: ifspCodigo,
+        usp_codigo: uspCodigo,
+        aluno_nome: state.aluno?.nome || "",
+        matricula: state.aluno?.matricula || "",
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Falha ao gerar requerimento");
+    const md = data.minuta_markdown || "";
+    body.innerHTML = `
+      <div class="req-preview">${marked.parse(md)}</div>
+      <div class="info-actions" style="flex-direction:row;flex-wrap:wrap;margin-top:12px;">
+        <button class="btn btn-sm btn-primary" id="req-copy-btn">${ICON.copy}Copiar texto para SUAP</button>
+        <button class="btn btn-sm" id="req-ask-btn">${ICON.ask}Refinar justificativa no chat</button>
+      </div>`;
+    $("#req-copy-btn")?.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(md); toast("Minuta copiada para a área de transferência!"); }
+      catch { toast("Não foi possível copiar automaticamente."); }
+    });
+    $("#req-ask-btn")?.addEventListener("click", () => {
+      modal.close();
+      closeDrawer();
+      ask(`Revise e fortaleça a justificativa de aproveitamento de estudos entre a disciplina da USP (${uspCodigo}) e a do IFSP (${ifspCodigo}), destacando o cumprimento dos conteúdos da ementa do BES.`);
+    });
+  } catch (err) {
+    body.innerHTML = `<div class="error-box">${escapeHtml(err.message || "Erro ao gerar requerimento.")}</div>`;
+  }
+}
+
 function renderInfo(code) {
   if (!code) return renderCourseInfo();
   const d = disc(code);
   const inCtx = state.context.includes(code);
   const name = titleCase(d.nome);
   const back = state.focusHistory.at(-1);
+  const jupiterLink = state.inst !== "ifsp_bes"
+    ? `<div class="info-section"><a class="btn btn-sm" href="https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=${encodeURIComponent(d.codigo)}" target="_blank" rel="noopener">${ICON.page}Ficha no JupiterWeb</a></div>`
+    : "";
   $("#tree-info").innerHTML = `${INFO_CLOSE}
     ${state.focusHistory.length ? `<button class="btn btn-sm back-btn" data-act="back">${ICON.back}<span>Voltar para ${back ? escapeHtml(nameOf(back)) : "o curso inteiro"}</span></button>` : ""}
     <span class="info-code">${d.codigo}</span>
@@ -749,8 +845,8 @@ function renderInfo(code) {
     <div class="pills">
       <span class="pill">${d.semestre ? `${d.semestre}º semestre` : "Optativa"}</span>
       <span class="pill">${hours(d.carga_horaria_total)}</span>
-      <span class="pill">${d.aulas_semanais} aulas/semana</span>
-      <span class="pill">${ABORDAGEM[d.abordagem]}</span>
+      ${d.aulas_semanais ? `<span class="pill">${d.aulas_semanais} aulas/semana</span>` : ""}
+      ${ABORDAGEM[d.abordagem] ? `<span class="pill">${ABORDAGEM[d.abordagem]}</span>` : ""}
       ${d.usa_laboratorio ? '<span class="pill">Laboratório</span>' : ""}
     </div>
     <div class="info-actions">
@@ -760,6 +856,7 @@ function renderInfo(code) {
         <button class="btn btn-sm" data-ask="O que acontece com o meu curso se eu reprovar em ${escapeHtml(name)}?">E se reprovar?</button>
       </div>
     </div>
+    ${renderEquivalenciasSection(d)}
     <div class="info-section">
       <div class="stat-grid">
         <div class="stat-card anc"><b>${d.pre_requisitos_transitivos.length}</b><span>vêm antes (${d.pre_requisitos.length} direto${d.pre_requisitos.length === 1 ? "" : "s"})</span></div>
@@ -775,10 +872,12 @@ function renderInfo(code) {
       <p class="small-note">${d.nivel_estimado} · ${d.profundidade} etapa(s) de pré-requisito até ela. Estimativa, não é dado oficial do PPC.</p>
     </div>
     ${d.topicos_principais.length ? `<div class="info-section"><h4>Tópicos</h4><ul class="topics">${d.topicos_principais.map((t) => `<li>${escapeHtml(t)}</li>`).join("")}</ul></div>` : ""}
-    ${d.pagina_plano_ensino ? `<div class="info-section"><a class="btn btn-sm" href="/pdf#page=${d.pagina_plano_ensino}" target="_blank" rel="noopener">${ICON.page}Plano de ensino · p. ${d.pagina_plano_ensino}</a></div>` : ""}`;
+    ${d.pagina_plano_ensino ? `<div class="info-section"><a class="btn btn-sm" href="/pdf#page=${d.pagina_plano_ensino}" target="_blank" rel="noopener">${ICON.page}Plano de ensino · p. ${d.pagina_plano_ensino}</a></div>` : jupiterLink}`;
 }
 
 $("#tree-info").addEventListener("click", (event) => {
+  const reqBtn = event.target.closest("[data-req-usp]");
+  if (reqBtn) return openUspRequerimentoModal(reqBtn.dataset.reqIfsp, reqBtn.dataset.reqUsp);
   const target = event.target.closest("[data-act], [data-ask], [data-goto]");
   if (!target) return;
   if (target.dataset.goto) focusTree(target.dataset.goto, { push: true });
@@ -999,6 +1098,7 @@ async function streamAnswer(question, disciplinas, ui, docs = []) {
       question, disciplinas, history: historyPayload(), request_id: state.requestId,
       perfil: state.aluno?.contexto || null, // dados do SUAP, guardados só neste navegador
       documentos: docs,
+      inst: state.inst || "ifsp_bes",
       model: document.getElementById("model-select")?.value || null,
     }),
     signal: state.controller.signal,
@@ -1420,7 +1520,7 @@ const CONTEXT_TABS = /dados acad|requisitos|complementares|extens|boletins?/i;
 
 // Situação de uma disciplina para o aluno; "liberada" = todos os pré-requisitos já concluídos
 function studentStatus(code) {
-  if (!state.aluno) return null;
+  if (!state.aluno || state.inst !== "ifsp_bes") return null;
   const st = state.aluno.status[code];
   if (st) return st;
   const d = disc(code);
@@ -1624,7 +1724,7 @@ function alunoContext(aluno) {
 
 function setAluno(aluno) {
   state.aluno = aluno;
-  if (aluno) aluno.contexto = alunoContext(aluno);
+  if (aluno && state.inst === "ifsp_bes") aluno.contexto = alunoContext(aluno);
   aluno ? storage.set(ALUNO_KEY, aluno) : storage.remove(ALUNO_KEY);
   if (aluno) window.__syncLocalDisk?.({ aluno });
   $("#suap-status").classList.toggle("is-on", !!aluno);
@@ -1713,7 +1813,7 @@ const gradeClass = (nota) => {
 };
 // Nota final no card (só com a opção ligada e a disciplina já feita)
 function gradeTag(code) {
-  if (!state.settings.grades || !state.aluno) return "";
+  if (!state.settings.grades || !state.aluno || state.inst !== "ifsp_bes") return "";
   const n = state.aluno.notas?.[code];
   if (!n?.nota || state.aluno.status[code] !== "concluida") return "";
   return `<span class="grade ${gradeClass(n.nota)}" title="Nota final">${escapeHtml(n.nota)}</span>`;
@@ -2197,7 +2297,31 @@ async function importFromHash() {
 /* ───────────── Início ───────────── */
 marked.use({ gfm: true, breaks: false });
 updateSendState();
-loadCurriculum()
+
+const instSelect = $("#inst-select");
+if (instSelect) {
+  instSelect.value = state.inst;
+  instSelect.addEventListener("change", async (event) => {
+    const nextInst = event.target.value || "ifsp_bes";
+    state.context = [];
+    state.focus = null;
+    state.focusHistory = [];
+    try {
+      const data = await loadCurriculum(nextInst);
+      renderContext();
+      if ($("#empty")) renderEmpty();
+      if (picker.open) renderPicker();
+      if (state.view === "tree") showCourse();
+      else if (state.view === "me" && nextInst !== "ifsp_bes") openDrawer("tree");
+      toast(`Currículo ativo: ${data.curso} (${nextInst === "ifsp_bes" ? "IFSP" : "USP CAASO"})`);
+    } catch (error) {
+      toast(error.message || "Falha ao trocar instituição.");
+      event.target.value = state.inst;
+    }
+  });
+}
+
+loadCurriculum(state.inst)
   .then(() => {
     const saved = storage.get(ALUNO_KEY);
     if (saved?.status) setAluno(saved);

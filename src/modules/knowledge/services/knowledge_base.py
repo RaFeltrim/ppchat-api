@@ -1,11 +1,18 @@
+import re
 from functools import cached_property, lru_cache
 from pathlib import Path
-from typing import List
+from typing import List, Sequence
 
 from src.modules.ingestion.models.curriculum import Curriculo, Disciplina
 from src.modules.ingestion.services.ingestion_pipeline import CURRICULUM_FILE, DOCUMENT_FILE
 from src.modules.knowledge.services.curriculum_graph import CurriculumGraph
 from src.modules.knowledge.services.ifsp_drive import load_ifsp_docs, search_ifsp_docs
+from src.modules.knowledge.services.usp_jupiter import (
+    USP_COURSES,
+    compute_equivalences,
+    fetch_usp_ementa,
+    load_usp_curricula,
+)
 from src.modules.shared.services.settings import get_settings
 
 ABORDAGEM = {"teorica": "teórica", "pratica": "prática", "teorico_pratica": "teórico-prática"}
@@ -29,10 +36,14 @@ class KnowledgeBase:
         if not curriculum_path.exists() or not document_path.exists():
             raise FileNotFoundError("Base não processada. Rode primeiro: python main.py ingest")
 
+        self.processed_dir = processed_dir
         self.curriculo = Curriculo.model_validate_json(curriculum_path.read_text("utf-8"))
         self.document_text = document_path.read_text("utf-8")
         self.graph = CurriculumGraph(self.curriculo)
         self.ifsp_docs = load_ifsp_docs(processed_dir)
+        self.usp_curricula = load_usp_curricula(processed_dir)
+        self.usp_graphs = {k: CurriculumGraph(c) for k, c in self.usp_curricula.items()}
+        self.usp_equivalences = compute_equivalences(self.curriculo, self.usp_curricula)
 
     def _names(self, codes: List[str]) -> str:
         return "; ".join(f"{self.graph.by_code[c].nome} ({c})" for c in codes) or "nenhuma"
@@ -98,9 +109,64 @@ class KnowledgeBase:
 
     def render_disciplinas(self, codes: List[str]) -> str:
         """Ficha das disciplinas que o usuário selecionou no chat (códigos desconhecidos são ignorados)."""
-        return "\n\n".join(
-            self._render_disciplina(self.graph.by_code[code]) for code in codes if code in self.graph.by_code
-        )
+        parts = []
+        for code in codes:
+            if code in self.graph.by_code:
+                parts.append(self._render_disciplina(self.graph.by_code[code]))
+                continue
+            for usp_key, g in self.usp_graphs.items():
+                if code in g.by_code:
+                    d = g.by_code[code]
+                    parts.append(f"### {d.nome} ({d.codigo}) — {USP_COURSES[usp_key]['label']}\n- Semestre ideal: {d.semestre or 'Optativa'} · Carga horária: {_hours(d.carga_horaria_total)}\n- Pré-requisitos: {', '.join(d.pre_requisitos) or 'nenhum'}")
+                    break
+        return "\n\n".join(parts)
+
+    def render_usp_equivalencias(self, question: str, focus: Sequence[str] = (), inst: str = "ifsp_bes") -> str:
+        """Injeta contexto da USP São Carlos (BSI/BCI/Estatística) e equivalências para Aluno Especial."""
+        if not self.usp_curricula:
+            return ""
+        q_low = question.lower()
+        usp_codes = set(re.findall(r"\b(?:SSC|SCC|SMA|SME|5500)\d{3,4}\b", question.upper()))
+        for fc in focus:
+            if any(fc in g.by_code for g in self.usp_graphs.values()):
+                usp_codes.add(fc.upper())
+
+        triggers = ("usp", "caaso", "bsi", "bci", "bcc", "estat", "especial", "equival", "abater", "aproveit", "requerimento", "jupiter")
+        if inst == "ifsp_bes" and not usp_codes and not any(t in q_low for t in triggers):
+            return ""
+
+        lines = []
+        if inst in self.usp_curricula:
+            uc = self.usp_curricula[inst]
+            lines.append(f"Curso selecionado na interface: {uc.curso} ({uc.campus}) — {len(uc.disciplinas)} disciplinas no JupiterWeb.")
+
+        # Ementas oficiais de códigos USP citados
+        for code in list(usp_codes)[:3]:
+            try:
+                em = fetch_usp_ementa(code, self.processed_dir)
+                prog = em.get("programa_resumido") or em.get("programa") or em.get("objetivos") or ""
+                lines.append(f"Ementa JupiterWeb `{code}` ({em.get('titulo')}, {em.get('carga_horaria')}): {prog[:1200]}\nURL: {em.get('url')}")
+            except Exception:
+                pass
+
+        # Equivalências filtradas por foco, código ou curso
+        focus_set = {f.upper() for f in focus} | usp_codes
+        relevant = [
+            e for e in self.usp_equivalences
+            if (inst == "ifsp_bes" or e["usp_curso"] == inst)
+            and (not focus_set or e["ifsp_codigo"] in focus_set or e["usp_codigo"] in focus_set)
+        ]
+        if not relevant:
+            relevant = [e for e in self.usp_equivalences if inst == "ifsp_bes" or e["usp_curso"] == inst]
+
+        if relevant:
+            lines.append("Equivalências candidatas USP São Carlos (BSI/BCI/Estatística) ↔ IFSP BES (Aluno Especial):")
+            for e in relevant[:25]:
+                lines.append(
+                    f"- [{e['equivalencia']} {e['similaridade_pct']}% · CH {e['usp_ch']:.0f}h/{e['ifsp_ch']:.0f}h] "
+                    f"{e['usp_curso_label']} `{e['usp_codigo']}` ({e['usp_nome']}) ↔ IFSP `{e['ifsp_codigo']}` ({e['ifsp_nome']})"
+                )
+        return "\n".join(lines)
 
     def render_ifsp_docs(self, question: str) -> str:
         """Seleciona até 3 documentos relevantes do Drive IFSP (TokenOps)."""

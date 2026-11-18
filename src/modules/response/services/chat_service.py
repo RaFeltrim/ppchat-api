@@ -56,7 +56,7 @@ class ChatSession:
             },
         ]
 
-    def _user_content(self, question: str, focus: Sequence[str], perfil: str | None = None) -> str | list:
+    def _user_content(self, question: str, focus: Sequence[str], perfil: str | None = None, inst: str = "ifsp_bes") -> str | list:
         # Contexto extra entra na própria mensagem (depois do prefixo em cache), nunca no system
         blocks = []
         if perfil:
@@ -73,6 +73,14 @@ class ChatSession:
                 "text": "O estudante selecionou estas disciplinas como foco da pergunta:\n"
                 f"<disciplinas_selecionadas>\n{focus_sheet}\n</disciplinas_selecionadas>",
             })
+        usp_sheet = self.knowledge_base.render_usp_equivalencias(question, focus, inst=inst)
+        if usp_sheet:
+            blocks.append({
+                "type": "text",
+                "text": "Dados oficiais do JupiterWeb USP São Carlos (BSI, BCI/BCC, Estatística) e análise de "
+                "equivalência para Aluno Especial e Requerimento SUAP:\n"
+                f"<usp_equivalencias>\n{usp_sheet}\n</usp_equivalencias>",
+            })
         ifsp_sheet = self.knowledge_base.render_ifsp_docs(question)
         if ifsp_sheet:
             blocks.append({
@@ -86,14 +94,14 @@ class ChatSession:
         return [*blocks, {"type": "text", "text": question}]
 
     async def stream_events(
-        self, question: str, focus: Sequence[str] = (), perfil: str | None = None
+        self, question: str, focus: Sequence[str] = (), perfil: str | None = None, inst: str = "ifsp_bes"
     ) -> AsyncIterator[StreamEvent]:
         """Envia a pergunta e devolve ("thinking", resumo) e ("text", resposta) à medida que chegam.
 
         `focus` são códigos de disciplinas selecionadas no chat; a ficha delas vai junto da pergunta.
         `perfil` é o resumo acadêmico do aluno importado do SUAP (só na pergunta atual).
         """
-        self.messages.append({"role": "user", "content": self._user_content(question, focus, perfil)})
+        self.messages.append({"role": "user", "content": self._user_content(question, focus, perfil, inst=inst)})
         try:
             with self.fallback_state:
                 async with self.client.beta.messages.stream(
@@ -127,11 +135,11 @@ class ChatSession:
         elif message.stop_reason == "max_tokens":
             yield "text", "\n\n[Resposta interrompida pelo limite de tokens.]"
 
-    async def stream(self, question: str, focus: Sequence[str] = (), perfil: str | None = None) -> AsyncIterator[str]:
+    async def stream(self, question: str, focus: Sequence[str] = (), perfil: str | None = None, inst: str = "ifsp_bes") -> AsyncIterator[str]:
         """Só o texto da resposta, em pedaços."""
-        async for kind, text in self.stream_events(question, focus, perfil):
+        async for kind, text in self.stream_events(question, focus, perfil, inst=inst):
             if kind == "text":
                 yield text
 
-    async def ask(self, question: str, focus: Sequence[str] = (), perfil: str | None = None) -> str:
-        return "".join([chunk async for chunk in self.stream(question, focus, perfil)])
+    async def ask(self, question: str, focus: Sequence[str] = (), perfil: str | None = None, inst: str = "ifsp_bes") -> str:
+        return "".join([chunk async for chunk in self.stream(question, focus, perfil, inst=inst)])

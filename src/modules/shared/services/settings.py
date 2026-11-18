@@ -39,8 +39,12 @@ class Settings(BaseSettings):
     rate_limit_per_hour: int = 30  # perguntas por IP
     global_rate_limit_per_hour: int = 400  # teto para o site inteiro, vale mesmo se alguém forjar o IP
 
-    # Origens do SUAP e Moodle de onde os bookmarklets podem enviar dados (CORS)
-    suap_origins: List[str] = ["https://suap.ifsp.edu.br", "https://moodle.scl.ifsp.edu.br"]
+    # Origens do SUAP, Moodle e JupiterWeb USP de onde os bookmarklets podem enviar dados (CORS)
+    suap_origins: List[str] = ["https://suap.ifsp.edu.br", "https://moodle.scl.ifsp.edu.br", "https://uspdigital.usp.br"]
+
+    # Credenciais USP (opcional, uso local para JupiterWeb/aluno especial)
+    usp_user: Optional[str] = None
+    usp_password: Optional[str] = None
 
     # CallMeBot (alertas no WhatsApp para tarefas do Moodle)
     callmebot_phone: Optional[str] = None
