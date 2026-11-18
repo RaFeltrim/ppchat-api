@@ -13,6 +13,7 @@ Todas as alterações notáveis adicionadas neste fork durante o Workshop BES23 
   - Persistência e cache local deduplicado (`usp_aluno` em `/local/state` e `ppchat-usp-aluno-v1` com proteção contra chamadas simultâneas).
   - Auto-login e sincronização automática em segundo plano na inicialização do servidor (`_auto_sync_usp_on_startup` em `app.py` via `USP_USER` / `USP_PASSWORD`).
   - Contexto unificado no agente (`combinedPerfilContext` em `app.js`, `<dados_usp>` em `chat_service.py`, `self.usp_aluno` em `knowledge_base.py` e `prompts.py`) enviando simultaneamente SUAP/Moodle IFSP, JupiterWeb/e-Disciplinas USP e gancho futuro para UFSCar.
+  - **Roteamento FinOps `SLM-First` (`model_router.py` + `docs/slm-finops-nanochat.md`):** opção `Auto (SLM-First FinOps)` em `#model-select`, configurações `SLM_FIRST_ENABLED` / `SLM_MODEL` / `SLM_BASE_URL` e roteamento automático entre Tier 0 (`SLM_MODEL`, esforço `low`) e Tier High (`LLM_MODEL`).
 - **Integração USP São Carlos (CAASO) — JupiterWeb (`usp_jupiter.py`):**
   - Sincronização das grades curriculares do ICMC/USP São Carlos (`55051/4` BSI, `55041/0` BCI/BCC e `55071/4` Estatística e Ciência de Dados) em `src/data/processed/usp_curriculos.json`.
   - Consulta e cache local de ementas/conteúdo programático do JupiterWeb em `GET /usp/disciplina/{sgldis}` (`src/data/processed/usp_ementas.json`).

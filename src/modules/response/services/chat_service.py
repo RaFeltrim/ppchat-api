@@ -6,7 +6,7 @@ from anthropic.types.beta import BetaMessage, BetaMessageParam
 from src.modules.knowledge.services.knowledge_base import KnowledgeBase, get_knowledge_base
 from src.modules.response.services.prompts import SYSTEM_INSTRUCTIONS
 from src.modules.shared.services.llm_client import get_async_llm_client
-from src.modules.shared.services.settings import get_settings
+from src.modules.shared.services.settings import Effort, get_settings
 
 StreamEvent = Tuple[Literal["thinking", "text"], str]
 
@@ -31,9 +31,16 @@ class ChatSession:
     enquanto o modelo ainda pensa) cancelando a task que consome `stream_events`.
     """
 
-    def __init__(self, knowledge_base: KnowledgeBase | None = None, history: Sequence[HistoryTurn] = (), model: str | None = None):
+    def __init__(
+        self,
+        knowledge_base: KnowledgeBase | None = None,
+        history: Sequence[HistoryTurn] = (),
+        model: str | None = None,
+        effort: Effort | None = None,
+    ):
         self.settings = get_settings()
         self.model = model or self.settings.llm_model
+        self.effort = effort or self.settings.chat_effort
         self.client = get_async_llm_client()
         self.knowledge_base = knowledge_base or get_knowledge_base()
         self.messages: List[BetaMessageParam] = [
@@ -116,7 +123,7 @@ class ChatSession:
                     max_tokens=self.settings.max_output_tokens,
                     # "summarized" devolve um resumo legível do raciocínio, mostrado enquanto o modelo pensa
                     thinking={"type": "adaptive", "display": "summarized"},
-                    output_config={"effort": self.settings.chat_effort},
+                    output_config={"effort": self.effort},
                     cache_control={"type": "ephemeral"},
                     system=self.system,
                     messages=self.messages,

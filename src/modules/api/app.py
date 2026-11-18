@@ -24,6 +24,7 @@ from src.modules.knowledge.services.usp_jupiter import (
     sync_usp_student_data,
 )
 from src.modules.response.services.chat_service import ChatSession
+from src.modules.response.services.model_router import route_inference
 from src.modules.shared.services.settings import get_settings
 
 STATIC_DIR = Path(__file__).parent / "static"
@@ -137,7 +138,18 @@ def _check_rate_limit(http_request: Request) -> None:
 
 
 def _session(request: ChatRequest) -> ChatSession:
-    return ChatSession(history=[turn.model_dump() for turn in request.history], model=request.model)
+    decision = route_inference(
+        request.question,
+        has_docs=bool(request.documentos),
+        history_len=len(request.history),
+        requested_model=request.model,
+        settings=settings,
+    )
+    return ChatSession(
+        history=[turn.model_dump() for turn in request.history],
+        model=decision.model,
+        effort=decision.effort,
+    )
 
 
 def _usage(session: ChatSession) -> Optional[Usage]:

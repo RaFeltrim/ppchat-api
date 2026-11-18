@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     extraction_effort: Effort = "high"
     max_output_tokens: int = 64000
 
+    # Roteamento FinOps SLM-First (Tier 0 local/econômico vs. Tier High LLM)
+    slm_first_enabled: bool = True
+    slm_model: str = "qwen/qwen3.8-27b"
+    slm_base_url: Optional[str] = None  # Ex.: http://127.0.0.1:1234/v1 (LM Studio) ou http://127.0.0.1:11434/v1 (Ollama)
+
     # Proteção dos créditos da API quando o site é público (0 desliga)
     rate_limit_per_hour: int = 30  # perguntas por IP
     global_rate_limit_per_hour: int = 400  # teto para o site inteiro, vale mesmo se alguém forjar o IP
