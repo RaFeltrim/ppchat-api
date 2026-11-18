@@ -181,8 +181,10 @@ function staticChip(code) {
 
 function renderContext() {
   const box = $("#context");
-  box.hidden = !state.context.length;
-  box.innerHTML = state.context.length ? `<span class="context-label">No contexto</span>` + state.context.map((code) => {
+  const docs = state.docs || [];
+  const hasAny = state.context.length > 0 || docs.length > 0;
+  box.hidden = !hasAny;
+  const discHtml = state.context.map((code) => {
     const d = disc(code);
     return `<span class="dchip" data-code="${code}">
       <i class="dot ${levelClass(d.nivel_estimado)}"></i>
@@ -190,7 +192,20 @@ function renderContext() {
       <button type="button" data-tree="${code}" title="Ver árvore" aria-label="Ver árvore de ${escapeHtml(nameOf(code))}">${ICON.tree}</button>
       <button type="button" data-remove="${code}" title="Remover" aria-label="Remover ${escapeHtml(nameOf(code))}">${ICON.close}</button>
     </span>`;
-  }).join("") : "";
+  }).join("");
+  const docHtml = docs.map((doc, idx) => `
+    <span class="doc-chip" data-doc-idx="${idx}">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></svg>
+      <span>${escapeHtml(doc.name)}</span>
+      <button type="button" data-remove-doc="${idx}" title="Remover" aria-label="Remover ${escapeHtml(doc.name)}">${ICON.close}</button>
+    </span>`).join("");
+  box.innerHTML = hasAny ? `<span class="context-label">No contexto</span>${discHtml}${docHtml}` : "";
+  box.querySelectorAll("[data-remove-doc]").forEach((b) => {
+    b.addEventListener("click", () => {
+      state.docs.splice(Number(b.dataset.removeDoc), 1);
+      renderContext();
+    });
+  });
   $$(".node, .card").forEach((el) => el.classList.toggle("in-context", state.context.includes(el.dataset.code)));
   updateSendState();
 }
@@ -341,8 +356,9 @@ function openDrawer(view = state.view, code) {
 // Marca no cabeçalho a seção aberta (Fluxograma ou Meu percurso)
 function syncNav() {
   const open = drawer.classList.contains("is-open");
+  const target = !open ? "chat" : state.view === "me" ? "me" : state.view === "moodle" ? "moodle" : "flow";
   $$(".nav-btn[data-nav]").forEach((btn) => {
-    const active = btn.dataset.nav === (!open ? "chat" : state.view === "me" ? "me" : "flow");
+    const active = btn.dataset.nav === target;
     btn.classList.toggle("is-active", active);
     active ? btn.setAttribute("aria-current", "page") : btn.removeAttribute("aria-current");
   });
@@ -369,6 +385,7 @@ function setView(view) {
   syncNav();
   $("#drawer-head").hidden = view === "me" || view === "moodle"; // Conexões | Grade é só do fluxograma
   if (view === "me") renderMe();
+  if (view === "moodle") window.__renderMoodle?.();
   if (view === "tree" && !$(".node", $("#tree-inner"))) showTree(state.focus); // primeiro desenho
 }
 
@@ -1072,16 +1089,18 @@ async function ask(question) {
   setBusy(true);
 
   function restoreToComposer(removeBubbles = false) {
-    input.value = question;
-    autosize();
+    if (!input.value.trim()) {
+      input.value = question;
+      autosize();
+    }
     if (disciplinas.length) {
       state.context = [...new Set([...state.context, ...disciplinas])];
-      renderContext();
     }
     if (docs.length) {
-      state.docs = [...(state.docs || []), ...docs].slice(0, 5);
-      window.__renderDocChips?.();
+      const seen = new Set((state.docs || []).map((d) => d.name));
+      state.docs = [...(state.docs || []), ...docs.filter((d) => !seen.has(d.name))].slice(0, 5);
     }
+    renderContext();
     if (removeBubbles) {
       userMsgEl?.remove();
       botMsgEl?.remove();
@@ -1093,19 +1112,19 @@ async function ask(question) {
     const bar = document.createElement("div");
     bar.style.cssText = "display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;";
     bar.innerHTML = `
-      <button type="button" class="btn btn-primary" data-act="retry" style="padding:5px 12px;font-size:12.5px;">↻ Reenviar</button>
-      <button type="button" class="btn" data-act="edit" style="padding:5px 12px;font-size:12.5px;">✎ Devolver ao chat</button>`;
+      <button type="button" class="btn btn-primary btn-sm" data-act="retry">↻ Reenviar</button>
+      <button type="button" class="btn btn-sm" data-act="edit">✎ Devolver ao chat</button>`;
     bar.querySelector('[data-act="retry"]').addEventListener("click", () => {
       userMsgEl?.remove();
       botMsgEl?.remove();
       if (disciplinas.length) {
         state.context = [...new Set([...state.context, ...disciplinas])];
-        renderContext();
       }
       if (docs.length) {
-        state.docs = [...(state.docs || []), ...docs].slice(0, 5);
-        window.__renderDocChips?.();
+        const seen = new Set((state.docs || []).map((d) => d.name));
+        state.docs = [...(state.docs || []), ...docs.filter((d) => !seen.has(d.name))].slice(0, 5);
       }
+      renderContext();
       ask(question);
     });
     bar.querySelector('[data-act="edit"]').addEventListener("click", () => restoreToComposer(true));
@@ -1215,6 +1234,7 @@ function openConversation(id) {
   state.convId = id;
   state.history = conv.history;
   state.context = [];
+  state.docs = [];
   renderContext();
   renderHistory();
   saveConversations();
@@ -1229,6 +1249,7 @@ function startNewConversation() {
   state.convId = null;
   state.history = [];
   state.context = [];
+  state.docs = [];
   saveConversations();
   renderContext();
   renderEmpty("Nova conversa");
@@ -2197,25 +2218,7 @@ new ResizeObserver(([entry]) => {
 (() => {
   const btn = document.getElementById("add-document");
   const inp = document.getElementById("doc-input");
-  const ctx = document.getElementById("context");
-  if (!btn || !inp || !ctx) return;
-
-  function renderDocChips() {
-    ctx.querySelectorAll(".doc-chip").forEach((el) => el.remove());
-    state.docs.forEach((doc, idx) => {
-      const chip = document.createElement("span");
-      chip.className = "chip doc-chip";
-      chip.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></svg> <span>${escapeHtml(doc.name)}</span><button type="button" aria-label="Remover ${escapeHtml(doc.name)}">×</button>`;
-      chip.querySelector("button").addEventListener("click", () => {
-        state.docs.splice(idx, 1);
-        renderDocChips();
-        if (!state.context.length && !state.docs.length) ctx.hidden = true;
-      });
-      ctx.appendChild(chip);
-    });
-    ctx.hidden = !state.context.length && !state.docs.length;
-  }
-  window.__renderDocChips = renderDocChips;
+  if (!btn || !inp) return;
 
   btn.addEventListener("click", () => inp.click());
   inp.addEventListener("change", async () => {
@@ -2227,14 +2230,15 @@ new ResizeObserver(([entry]) => {
         const res = await fetch("/documents/extract", { method: "POST", body: form });
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || "Erro ao ler documento");
-        state.docs.push({ name: data.name, content: data.content });
+        const seen = new Set(state.docs.map((d) => d.name));
+        if (!seen.has(data.name)) state.docs.push({ name: data.name, content: data.content });
         if (data.truncated) toast(`${data.name} foi resumido aos primeiros 40.000 caracteres.`);
       } catch (err) {
         toast(err.message || "Falha ao anexar documento.");
       }
     }
     inp.value = "";
-    renderDocChips();
+    renderContext();
   });
 })();
 
@@ -2263,11 +2267,20 @@ new ResizeObserver(([entry]) => {
         <a href="https://moodle.scl.ifsp.edu.br/my/" target="_blank" rel="noopener">moodle.scl.ifsp.edu.br/my/</a>,
         faça login e clique no favorito para importar suas disciplinas e tarefas.
       </p>
-      <div style="display:flex;gap:10px;align-items:center;margin-top:14px;">
-        <a class="btn btn-primary" href="${bmHref}" onclick="event.preventDefault();toast('Arraste este botão para a barra de favoritos do Chrome!');" style="cursor:grab;text-decoration:none;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;">
+        <a class="btn btn-primary" id="moodle-bm-link" href="${bmHref}" style="cursor:grab;">
           PPChat ← Moodle
         </a>
+        <button type="button" class="btn" id="moodle-bm-copy">Copiar código</button>
       </div>`;
+    body.querySelector("#moodle-bm-link")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      toast("Arraste este botão para a barra de favoritos e clique nele com o Moodle aberto.");
+    });
+    body.querySelector("#moodle-bm-copy")?.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(bmHref); toast("Código copiado. Cole como URL de um favorito."); }
+      catch { toast("Não foi possível copiar."); }
+    });
     modal.showModal();
   }
 
@@ -2389,15 +2402,15 @@ new ResizeObserver(([entry]) => {
       const stripeCls = c.items.length ? "anc" : "desc";
       return `
         <button type="button" class="node ${stripeCls} ${focused ? "is-focus" : ""}" data-moodle-course="${escapeHtml(c.key)}">
-          <div class="node-top">
+          <span class="node-top">
             <span class="node-code">${escapeHtml(c.code)}${c.sem ? ` · ${c.sem}º sem` : ""}</span>
             <span class="node-code">${c.items.length} pend.</span>
-          </div>
-          <div class="node-name">${escapeHtml(c.name)}</div>
-          <div class="node-meta">
+          </span>
+          <span class="node-name">${escapeHtml(c.name)}</span>
+          <span class="node-meta">
             <span>${c.repo ? `${c.repo.files.length} arquivo(s)` : "Sem pasta local"}</span>
             <span>${c.repo?.github_url ? "GitHub ✓" : ""}</span>
-          </div>
+          </span>
         </button>`;
     }).join("")}</div>`;
 
@@ -2415,23 +2428,21 @@ new ResizeObserver(([entry]) => {
       const filesHtml = repoFiles.length
         ? repoFiles.map((f) => {
             const href = `/moodle/file?folder=${encodeURIComponent(active.repo.folder)}&path=${encodeURIComponent(f.rel_path)}`;
-            return `<a class="chip-btn" href="${href}" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;width:100%;text-align:left;margin-bottom:6px;text-decoration:none;">
-              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(f.rel_path)}</span>
+            return `<a class="chip-btn moodle-file-link" href="${href}" target="_blank" rel="noopener">
+              <span>${escapeHtml(f.rel_path)}</span>
               <span class="muted">Abrir</span>
             </a>`;
           }).join("")
         : `<p class="muted" style="font-size:13px;">Nenhum repositório local vinculado em Downloads.</p>`;
 
       infoPane.innerHTML = `
-        <div style="padding:18px;">
-          <p class="eyebrow">${escapeHtml(active.code)}</p>
-          <h3 style="margin:4px 0 10px;">${escapeHtml(active.name)}</h3>
-          ${active.repo?.github_url ? `<a class="btn btn-primary" href="${escapeHtml(active.repo.github_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:16px;text-decoration:none;">Abrir repositório no GitHub</a>` : ""}
-          <h4 style="margin:12px 0 8px;font-size:13px;text-transform:uppercase;color:var(--muted);">Pendências do Moodle</h4>
-          ${tasksHtml}
-          <h4 style="margin:16px 0 8px;font-size:13px;text-transform:uppercase;color:var(--muted);">Arquivos locais (${repoFiles.length})</h4>
-          <div style="max-height:300px;overflow-y:auto;">${filesHtml}</div>
-        </div>`;
+        <p class="info-code">${escapeHtml(active.code)}</p>
+        <h3>${escapeHtml(active.name)}</h3>
+        ${active.repo?.github_url ? `<div class="info-actions"><a class="btn btn-primary" href="${escapeHtml(active.repo.github_url)}" target="_blank" rel="noopener">Abrir repositório no GitHub</a></div>` : ""}
+        <h4 style="margin:14px 0 8px;font-size:12px;text-transform:uppercase;color:var(--muted);">Pendências do Moodle</h4>
+        ${tasksHtml}
+        <h4 style="margin:16px 0 8px;font-size:12px;text-transform:uppercase;color:var(--muted);">Arquivos locais (${repoFiles.length})</h4>
+        <div>${filesHtml}</div>`;
     }
 
     wrap.querySelectorAll("[data-moodle-course]").forEach((btn) => {
@@ -2457,11 +2468,8 @@ new ResizeObserver(([entry]) => {
     });
   }
 
-  document.querySelectorAll('.nav-item[data-view="moodle"]').forEach((btn) => {
-    btn.addEventListener("click", () => {
-      setView("moodle");
-      renderMoodle();
-    });
+  document.getElementById("moodle-btn")?.addEventListener("click", () => {
+    openDrawer("moodle");
   });
   window.__renderMoodle = renderMoodle;
   renderMoodle();
@@ -2470,16 +2478,18 @@ new ResizeObserver(([entry]) => {
 // --- Resgatar tarefas do Moodle via #moodle=<token> ---
 (() => {
   if (!location.hash.startsWith("#moodle=")) return;
+  window.__moodleHashImported = true;
   const token = location.hash.slice("#moodle=".length).trim();
   history.replaceState(null, "", location.pathname + location.search);
   if (!token) return;
   fetch(`/moodle/resgatar/${encodeURIComponent(token)}`)
     .then((r) => (r.ok ? r.json() : Promise.reject()))
     .then((d) => {
-      localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(d.tasks || []));
+      const tasks = d.tasks || [];
+      localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(tasks));
+      window.__syncLocalDisk?.({ moodle_tasks: tasks });
       openDrawer("moodle");
-      document.querySelector('.nav-item[data-view="moodle"]')?.click();
-      toast(`${(d.tasks || []).length} tarefa(s) do Moodle carregada(s)!`);
+      toast(`${tasks.length} tarefa(s) do Moodle carregada(s)!`);
     })
     .catch(() => toast("Link do Moodle expirado ou inválido."));
 })();
@@ -2502,7 +2512,7 @@ new ResizeObserver(([entry]) => {
         storage.set(ALUNO_KEY, disk.aluno);
         setAluno(disk.aluno);
       }
-      if (Array.isArray(disk.moodle_tasks)) {
+      if (!window.__moodleHashImported && Array.isArray(disk.moodle_tasks)) {
         localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(disk.moodle_tasks));
         window.__renderMoodle?.();
       }
