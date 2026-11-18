@@ -133,37 +133,50 @@ class KnowledgeBase:
             if any(fc in g.by_code for g in self.usp_graphs.values()):
                 usp_codes.add(fc.upper())
 
-        triggers = ("usp", "caaso", "bsi", "bci", "bcc", "estat", "especial", "equival", "abater", "aproveit", "requerimento", "jupiter", "puxar", "ufscar", "externa")
+        triggers = (
+            "usp", "caaso", "bsi", "bci", "bcc", "estat", "especial", "equival", "abater",
+            "aproveit", "requerimento", "jupiter", "puxar", "ufscar", "externa", "disciplina", "materia", "curso",
+        )
         if inst == "ifsp_bes" and not usp_codes and not any(t in q_low for t in triggers):
             return ""
+
+        # Inclui automaticamente as disciplinas do estudante na USP para detalhamento completo
+        student_usp_codes = {c.upper() for c in (self.usp_aluno or {}).get("status", {}).keys()}
+        usp_codes |= student_usp_codes
 
         lines = []
         if inst in self.usp_curricula:
             uc = self.usp_curricula[inst]
             lines.append(f"Curso selecionado na interface: {uc.curso} ({uc.campus}) — {len(uc.disciplinas)} disciplinas no JupiterWeb.")
 
-        # Ementas oficiais de códigos USP citados
-        for code in list(usp_codes)[:3]:
+        # Ementas oficiais de códigos USP citados ou cursados pelo aluno
+        for code in sorted(usp_codes)[:6]:
             try:
                 em = fetch_usp_ementa(code, self.processed_dir)
-                prog = em.get("programa_resumido") or em.get("programa") or em.get("objetivos") or ""
-                lines.append(f"Ementa JupiterWeb `{code}` ({em.get('titulo')}, {em.get('carga_horaria')}): {prog[:1200]}\nURL: {em.get('url')}")
+                prog = em.get("programa") or em.get("programa_resumido") or ""
+                obj = em.get("objetivos") or ""
+                bib = em.get("bibliografia") or ""
+                lines.append(
+                    f"Ementa JupiterWeb `{code}` ({em.get('titulo')}, {em.get('carga_horaria')}):\n"
+                    + (f"- Objetivos: {obj[:600]}\n" if obj else "")
+                    + (f"- Programa/Conteúdo: {prog[:1400]}\n" if prog else "")
+                    + (f"- Bibliografia: {bib[:600]}\n" if bib else "")
+                    + f"- URL: {em.get('url')}"
+                )
             except Exception:
                 pass
 
-        # Equivalências filtradas por foco, código ou curso
+        # Equivalências: garante todas as do foco/aluno primeiro, depois top 25 gerais
         focus_set = {f.upper() for f in focus} | usp_codes
-        relevant = [
-            e for e in self.usp_equivalences
-            if (inst == "ifsp_bes" or e["usp_curso"] == inst)
-            and (not focus_set or e["ifsp_codigo"] in focus_set or e["usp_codigo"] in focus_set)
-        ]
-        if not relevant:
-            relevant = [e for e in self.usp_equivalences if inst == "ifsp_bes" or e["usp_curso"] == inst]
+        scoped = [e for e in self.usp_equivalences if inst == "ifsp_bes" or e["usp_curso"] == inst]
+        prioritized = [e for e in scoped if e["ifsp_codigo"] in focus_set or e["usp_codigo"] in focus_set]
+        seen_pairs = {(e["usp_curso"], e["usp_codigo"], e["ifsp_codigo"]) for e in prioritized}
+        rest = [e for e in scoped if (e["usp_curso"], e["usp_codigo"], e["ifsp_codigo"]) not in seen_pairs]
+        relevant = prioritized + rest[: max(0, 25 - len(prioritized))]
 
         if relevant:
             lines.append("Equivalências candidatas USP São Carlos (BSI/BCI/Estatística) ↔ IFSP BES (Aluno Especial):")
-            for e in relevant[:25]:
+            for e in relevant[:35]:
                 lines.append(
                     f"- [{e['equivalencia']} {e['similaridade_pct']}% · CH {e['usp_ch']:.0f}h/{e['ifsp_ch']:.0f}h] "
                     f"{e['usp_curso_label']} `{e['usp_codigo']}` ({e['usp_nome']}) ↔ IFSP `{e['ifsp_codigo']}` ({e['ifsp_nome']})"

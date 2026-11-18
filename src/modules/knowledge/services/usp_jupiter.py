@@ -276,6 +276,7 @@ def fetch_usp_ementa(sgldis: str, processed_dir: Optional[Path] = None) -> dict:
         "objetivos": _section(("Objetivos",), stops),
         "programa_resumido": _section(("Programa Resumido", "Conteúdo Programático"), ("Programa", "Instrumentos e Critérios", "Método de Avaliação", "Avaliação", "Bibliografia")),
         "programa": _section(("Conteúdo Programático", "Programa"), ("Instrumentos e Critérios", "Método de Avaliação", "Avaliação", "Bibliografia", "Atividades de Extensão"))[:3000],
+        "bibliografia": _section(("Bibliografia", "Bibliografia Principal"), ("Bibliografia Complementar", "Docente", "Créditos", "Atividades de Extensão"))[:1200],
         "url": url,
     }
     if cache_path:
@@ -733,7 +734,13 @@ def sync_usp_student_data(usp_user: str, usp_password: str, processed_dir: Path,
     if ed_courses:
         lines.append("Disciplinas no e-Disciplinas USP (Moodle):")
         for c in ed_courses:
-            lines.append(f"- {c['code']} ({c['fullname']}): {len(c['tasks'])} tarefa(s), {len(c['materials'])} material(is)")
+            lines.append(f"- {c['code']} ({c['fullname']}) — {c.get('viewurl', '')}")
+            if c.get("summary"):
+                lines.append(f"  Resumo: {c['summary'][:300]}")
+            if c.get("tasks"):
+                lines.append("  Tarefas: " + "; ".join(t["title"] for t in c["tasks"][:15]))
+            if c.get("materials"):
+                lines.append("  Materiais: " + "; ".join(m["title"] for m in c["materials"][:15]))
 
     result = {
         "inst": "usp",
