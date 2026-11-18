@@ -50,11 +50,15 @@
     <!-- Navegação: os mesmos nomes das abas da tela cheia -->
     <nav class="topnav" aria-label="Seções">
       <div class="inst-picker">
-        <select id="inst-select" class="inst-select" title="Selecionar Instituição / Curso" aria-label="Selecionar Instituição ou Curso">
-          <option value="ifsp_bes" selected>IFSP · BES</option>
-          <option value="usp_bsi">USP · BSI (CAASO)</option>
-          <option value="usp_bci">USP · BCI (CAASO)</option>
-          <option value="usp_est">USP · Estatística (CAASO)</option>
+        <select id="org-select" class="inst-select org-select" title="Selecionar Instituição (IFSP ou USP)" aria-label="Selecionar Instituição">
+          <option value="ifsp" selected>IFSP</option>
+          <option value="usp">USP · CAASO</option>
+        </select>
+        <select id="inst-select" class="inst-select" title="Selecionar Curso / Grade" aria-label="Selecionar Curso ou Grade">
+          <option value="ifsp_bes" data-org="ifsp" selected>BES · Eng. Software</option>
+          <option value="usp_bsi" data-org="usp">BSI · Sist. Informação</option>
+          <option value="usp_bci" data-org="usp">BCI · Ciênc. Computação</option>
+          <option value="usp_est" data-org="usp">Estatística e Dados</option>
         </select>
       </div>
       <button class="nav-btn is-active" id="close-drawer" data-nav="chat" aria-current="page">

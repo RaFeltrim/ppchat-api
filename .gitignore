@@ -110,4 +110,5 @@ src/data/chroma_db/
 
 # Local persisted user data & Windows launcher binary
 src/data/local/
+src/data/processed/usp_aluno.json
 PPChat.exe

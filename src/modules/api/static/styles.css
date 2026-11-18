@@ -988,9 +988,9 @@ button.crumb svg { width: 14px; height: 14px; }
 .btn-ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
 .btn-ghost:hover { background: var(--surface); border-color: var(--line); }
 .topnav { display: flex; align-items: center; gap: 4px; margin-left: auto; padding: 4px; border-radius: 14px; border: 1px solid var(--line); background: color-mix(in oklab, var(--surface) 70%, transparent); }
-.inst-picker { position: relative; display: inline-flex; align-items: center; margin-right: 2px; }
+.inst-picker { position: relative; display: inline-flex; align-items: center; gap: 4px; margin-right: 2px; }
 .inst-select {
-  height: 34px; max-width: 210px; padding: 0 26px 0 11px; border-radius: 10px;
+  height: 34px; max-width: 196px; padding: 0 26px 0 11px; border-radius: 10px;
   border: 1px solid var(--line); background: var(--surface); color: var(--ink);
   font-family: var(--font); font-size: 13px; font-weight: 650; cursor: pointer;
   appearance: none; -webkit-appearance: none;
@@ -998,6 +998,7 @@ button.crumb svg { width: 14px; height: 14px; }
   background-repeat: no-repeat; background-position: right 9px center;
   transition: border-color .15s, background-color .15s;
 }
+.org-select { max-width: 118px; font-weight: 700; }
 .inst-select:hover, .inst-select:focus-visible { border-color: var(--accent); outline: none; }
 .nav-btn {
   position: relative; display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 13px; border-radius: 10px;
@@ -1028,7 +1029,8 @@ button.crumb svg { width: 14px; height: 14px; }
 .course-facts b { color: var(--ink); font-weight: 600; }
 
 @media (max-width: 720px) {
-  .inst-select { max-width: 138px; font-size: 12.5px; padding: 0 22px 0 9px; height: 36px; }
+  .org-select { max-width: 92px; }
+  .inst-select { max-width: 112px; font-size: 12px; padding: 0 20px 0 8px; height: 36px; }
   .nav-btn span { display: none; }
   .nav-btn { padding: 0 10px; }
   .nav-status { position: absolute; top: 6px; right: 6px; }

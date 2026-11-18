@@ -29,6 +29,7 @@ const state = {
   byCode: new Map(),
   requestId: null, // resposta em andamento, para o botão "parar"
   aluno: null, // dados importados do SUAP: {matricula, coletado_em, status: {codigo: situação}, contexto}
+  uspAluno: null, // dados USP: JupiterWeb (histórico/grade horária) + e-Disciplinas
   settings: { grades: false, progress: true, showDenied: false }, // preferências de exibição (salvas no navegador)
   history: [], // {role: "user", text, disciplinas} | {role: "assistant", text, thinking?, usage?, stopped?}
   context: [], // disciplinas selecionadas para a próxima pergunta
@@ -117,6 +118,60 @@ async function fetchWithWake(url, options = {}) {
   }
 }
 
+const isUsp = () => state.inst !== "ifsp_bes";
+const activeAluno = () => (isUsp() ? state.uspAluno : state.aluno);
+
+function syncStatusDot() {
+  const a = activeAluno();
+  $("#suap-status").classList.toggle("is-on", !!a);
+  $("#suap-status").title = a
+    ? (isUsp() ? "JupiterWeb USP conectado" : "SUAP conectado")
+    : (isUsp() ? "JupiterWeb não conectado" : "SUAP não conectado");
+}
+
+function syncOrgAndInstSelectors(inst) {
+  const org = inst === "ifsp_bes" ? "ifsp" : "usp";
+  if (org === "usp") {
+    try { localStorage.setItem("ppchat_last_usp", inst); } catch {}
+  }
+  const orgSel = $("#org-select");
+  const instSel = $("#inst-select");
+  if (orgSel) orgSel.value = org;
+  if (instSel) {
+    [...instSel.options].forEach((opt) => {
+      const match = (opt.dataset.org || "ifsp") === org;
+      opt.hidden = !match;
+      opt.disabled = !match;
+    });
+    instSel.value = inst;
+  }
+}
+
+async function loadUspAluno({ force = false } = {}) {
+  try {
+    const res = await fetchWithWake(force ? "/usp/aluno/sync" : "/usp/aluno", { method: force ? "POST" : "GET" });
+    if (!res.ok) throw new Error("Falha ao carregar dados da USP.");
+    const data = await res.json();
+    state.uspAluno = data?.status ? data : null;
+    if (state.uspAluno && storage.get("ppchat-tree-settings")?.grades === undefined) {
+      state.settings.grades = true;
+    }
+    if (force && isUsp()) await loadCurriculum(state.inst);
+    if (isUsp()) {
+      syncStatusDot();
+      if ($(".node", $("#tree-inner"))) { renderTree({ animate: false }); renderInfo(state.focus); }
+      renderGrid();
+      renderSettings();
+      if (state.view === "me") renderMe();
+      window.__renderMoodle?.();
+    }
+    return state.uspAluno;
+  } catch (err) {
+    if (force) toast(err.message || "Falha ao sincronizar JupiterWeb/e-Disciplinas.");
+    return null;
+  }
+}
+
 /* ───────────── Currículo ───────────── */
 async function loadCurriculum(inst = state.inst) {
   const response = await fetchWithWake(`/curriculum?inst=${encodeURIComponent(inst)}`);
@@ -124,8 +179,7 @@ async function loadCurriculum(inst = state.inst) {
   const data = await response.json();
   state.inst = data.inst || inst;
   try { localStorage.setItem("ppchat_inst", state.inst); } catch {}
-  const sel = $("#inst-select");
-  if (sel) sel.value = state.inst;
+  syncOrgAndInstSelectors(state.inst);
   state.curriculum = data;
   state.byCode.clear();
   namesByLength = null;
@@ -136,6 +190,7 @@ async function loadCurriculum(inst = state.inst) {
     : `${data.curso} · ${data.campus || "USP São Carlos (CAASO)"}`;
 
   renderGrid();
+  syncStatusDot();
   return data;
 }
 
@@ -739,7 +794,7 @@ function renderCourseInfo() {
       <span class="pill">${disciplinas.length} disciplinas</span>
       <span class="pill">${hours(state.curriculum.carga_horaria_total_curso)}</span>
     </div>
-    ${state.aluno && state.inst === "ifsp_bes" ? progressHtml() : ""}
+    ${activeAluno() ? progressHtml() : ""}
     <div class="info-section">
       <div class="stat-grid">
         <div class="stat-card anc"><b>${connected.length}</b><span>com pré-requisitos ou dependentes</span></div>
@@ -1096,7 +1151,7 @@ async function streamAnswer(question, disciplinas, ui, docs = []) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       question, disciplinas, history: historyPayload(), request_id: state.requestId,
-      perfil: state.aluno?.contexto || null, // dados do SUAP, guardados só neste navegador
+      perfil: activeAluno()?.contexto || null, // dados do SUAP (IFSP) ou JupiterWeb/e-Disciplinas (USP)
       documentos: docs,
       inst: state.inst || "ifsp_bes",
       model: document.getElementById("model-select")?.value || null,
@@ -1520,11 +1575,13 @@ const CONTEXT_TABS = /dados acad|requisitos|complementares|extens|boletins?/i;
 
 // Situação de uma disciplina para o aluno; "liberada" = todos os pré-requisitos já concluídos
 function studentStatus(code) {
-  if (!state.aluno || state.inst !== "ifsp_bes") return null;
-  const st = state.aluno.status[code];
+  const a = activeAluno();
+  if (!a?.status) return null;
+  const st = a.status[code];
   if (st) return st;
+  if (isUsp()) return null; // Na USP como Aluno Especial, destaca apenas cursadas/em andamento
   const d = disc(code);
-  return d && d.pre_requisitos.every((p) => state.aluno.status[p] === "concluida") ? "liberada" : null;
+  return d && d.pre_requisitos.every((p) => a.status[p] === "concluida") ? "liberada" : null;
 }
 
 // Nomes do currículo do mais longo ao mais curto, para "Banco de Dados 1" não casar dentro de outro nome
@@ -1727,8 +1784,7 @@ function setAluno(aluno) {
   if (aluno && state.inst === "ifsp_bes") aluno.contexto = alunoContext(aluno);
   aluno ? storage.set(ALUNO_KEY, aluno) : storage.remove(ALUNO_KEY);
   if (aluno) window.__syncLocalDisk?.({ aluno });
-  $("#suap-status").classList.toggle("is-on", !!aluno);
-  $("#suap-status").title = aluno ? "SUAP conectado" : "SUAP não conectado";
+  syncStatusDot();
   if ($(".node", $("#tree-inner"))) { renderTree({ animate: false }); renderInfo(state.focus); }
   if ($("#empty")) renderEmpty();
   renderGrid();
@@ -1738,10 +1794,26 @@ function setAluno(aluno) {
 }
 
 function progressHtml() {
+  const a = activeAluno();
+  if (!a) return "";
+  if (isUsp()) {
+    const doneCodes = Object.keys(a.status || {}).filter((c) => a.status[c] === "concluida");
+    const curCodes = Object.keys(a.status || {}).filter((c) => a.status[c] === "cursando");
+    const chips = [...curCodes, ...doneCodes].filter((c) => disc(c));
+    return `
+      <div class="info-section progress">
+        <h4>Seu progresso · JupiterWeb USP</h4>
+        <div class="progress-pills">
+          <span class="st-badge st-concluida">${doneCodes.length} concluída(s)</span>
+          <span class="st-badge st-cursando">${curCodes.length} cursando agora</span>
+        </div>
+        ${chips.length ? `<h4 style="margin-top:14px">Disciplinas USP</h4>${goChips(chips, (c) => a.notas?.[c]?.nota ? ` <b>${escapeHtml(a.notas[c].nota)}</b>` : "")}` : ""}
+      </div>`;
+  }
   const all = state.curriculum.disciplinas.filter((d) => d.semestre);
   const count = (st) => all.filter((d) => studentStatus(d.codigo) === st).length;
   const done = count("concluida");
-  const { prevista, cumprida } = state.aluno.acc;
+  const { prevista, cumprida } = a.acc || {};
   const free = all.filter((d) => studentStatus(d.codigo) === "liberada").map((d) => d.codigo);
   return `
     <div class="info-section progress">
@@ -1767,8 +1839,8 @@ Object.assign(state.settings, storage.get(SETTINGS_KEY) || {});
 const SETTING_INPUTS = { grades: "#opt-grades", progress: "#opt-progress", showDenied: "#opt-denied" };
 
 function renderSettings() {
-  const connected = !!state.aluno;
-  $("#clear-suap").hidden = !connected;
+  const connected = !!activeAluno();
+  $("#clear-suap").hidden = !state.aluno;
   $("#clear-suap").classList.remove("is-confirming");
   for (const [key, sel] of Object.entries(SETTING_INPUTS)) {
     $(sel).checked = !!state.settings[key];
@@ -1813,9 +1885,10 @@ const gradeClass = (nota) => {
 };
 // Nota final no card (só com a opção ligada e a disciplina já feita)
 function gradeTag(code) {
-  if (!state.settings.grades || !state.aluno || state.inst !== "ifsp_bes") return "";
-  const n = state.aluno.notas?.[code];
-  if (!n?.nota || state.aluno.status[code] !== "concluida") return "";
+  const a = activeAluno();
+  if (!state.settings.grades || !a) return "";
+  const n = a.notas?.[code];
+  if (!n?.nota || a.status[code] !== "concluida") return "";
   return `<span class="grade ${gradeClass(n.nota)}" title="Nota final">${escapeHtml(n.nota)}</span>`;
 }
 
@@ -1894,7 +1967,70 @@ function stopStats(a, stop) {
   };
 }
 
+function renderUspMe() {
+  const box = $("#me");
+  const u = state.uspAluno;
+  if (!u || !Object.keys(u.status || {}).length) {
+    box.innerHTML = `
+      <div class="me-empty">
+        <p class="eyebrow">Meu percurso · USP São Carlos</p>
+        <h3>Sincronizar JupiterWeb & e-Disciplinas</h3>
+        <p class="muted">Puxe suas disciplinas em andamento e já realizadas no ICMC/USP (Aluno Especial) para exibir no Fluxograma e no Moodle.</p>
+        <button class="btn btn-primary" data-me="usp-sync">Sincronizar USP</button>
+      </div>`;
+    return;
+  }
+  const codes = Object.keys(u.status || {});
+  const byPeriod = new Map();
+  codes.forEach((code) => {
+    const n = u.notas?.[code] || {};
+    const per = n.periodo || "2026";
+    if (!byPeriod.has(per)) byPeriod.set(per, []);
+    byPeriod.get(per).push({ code, st: u.status[code], n, d: disc(code) });
+  });
+  const periods = [...byPeriod.entries()].sort((a, b) => b[0].localeCompare(a[0]));
+  const doneCount = codes.filter((c) => u.status[c] === "concluida").length;
+  const curCount = codes.filter((c) => u.status[c] === "cursando").length;
+  const graded = codes.map((c) => gradeValue(u.notas?.[c]?.nota)).filter((v) => !Number.isNaN(v));
+
+  box.innerHTML = `
+    <section class="pc-hero">
+      <div class="pc-hero-text">
+        <p class="eyebrow">Meu percurso · USP São Carlos (ICMC / CAASO)</p>
+        <h3><em>${escapeHtml(u.nome || "Aluno USP")}</em><span>${escapeHtml(u.matricula || "Aluno Especial · ICMC/USP")}</span></h3>
+        <p class="muted">Sincronizado via JupiterWeb & e-Disciplinas em ${u.coletado_em ? new Date(u.coletado_em).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "cache local"}</p>
+      </div>
+      <div class="pc-actions">
+        <button class="btn btn-primary btn-sm" data-me="ask">${ICON.ask}Analisar aproveitamento USP → IFSP</button>
+        <button class="btn btn-sm" data-me="usp-sync">Sincronizar JupiterWeb</button>
+      </div>
+      <div class="pc-stats">
+        <div><b>${doneCount}</b><span>concluída(s)</span></div>
+        <div><b>${curCount}</b><span>cursando agora</span></div>
+        ${graded.length ? `<div><b>${fmtAvg(graded)}</b><span>média USP</span></div>` : ""}
+      </div>
+    </section>
+    ${periods.map(([per, items]) => `
+      <section class="stop-detail ${items.some((x) => x.st === "cursando") ? "k-now" : "k-done"}" style="margin-top:16px;">
+        <header class="sd-head">
+          <span class="sd-num">${per.split("/")[1] || "·"}</span>
+          <div class="sd-title"><p class="eyebrow">${items.some((x) => x.st === "cursando") ? "Cursando agora (Grade Horária)" : "Concluído (Histórico Escolar)"}</p><h4>Semestre ${escapeHtml(per)}</h4></div>
+        </header>
+        <div class="pc-courses">${items.map(({ code, st, n, d }) => {
+          const cname = d?.nome || (u.disciplinas_aluno?.find((x) => x.codigo === code)?.nome) || code;
+          const side = st === "cursando"
+            ? '<span class="st-badge st-cursando">cursando</span>'
+            : n.nota ? `<span class="grade big ${gradeClass(n.nota)}">${escapeHtml(n.nota)}</span>` : `<span class="pc-check">${ICON.check}</span>`;
+          return `<button class="pc-course" data-goto="${escapeHtml(code)}" title="Ver no Fluxograma USP">
+            <span class="pc-course-main"><b>${escapeHtml(code)} · ${escapeHtml(titleCase(cname))}</b><small>${escapeHtml(n.situacao || st)}${n.freq ? ` · Freq ${escapeHtml(n.freq)}` : ""}${n.ch ? ` · ${n.ch}h` : ""}</small></span>
+            ${side}
+          </button>`;
+        }).join("")}</div>
+      </section>`).join("")}`;
+}
+
 function renderMe() {
+  if (isUsp()) return renderUspMe();
   const box = $("#me");
   const a = state.aluno;
   if (!a) {
@@ -2203,8 +2339,21 @@ $("#me").addEventListener("click", (event) => {
   if (goto) { setView("tree"); return focusTree(goto.dataset.goto, { push: true }); }
   const act = event.target.closest("[data-me]")?.dataset.me;
   if (act === "connect" || act === "update") { renderSuapModal(); suapModal.showModal(); }
+  else if (act === "usp-sync") {
+    const btn = event.target.closest("[data-me]");
+    if (btn) { btn.disabled = true; btn.textContent = "Sincronizando…"; }
+    loadUspAluno({ force: true }).then((u) => {
+      if (u?.status) toast("JupiterWeb & e-Disciplinas sincronizados!");
+      if (btn) { btn.disabled = false; btn.textContent = "Sincronizar JupiterWeb"; }
+    });
+  }
   else if (act === "ask-acc") { closeDrawer(); ask("Como posso completar as horas de atividades complementares que faltam, considerando o que já tenho e o limite de cada tipo?"); }
-  else if (act === "ask") { closeDrawer(); ask("Faça um resumo do meu percurso no curso: o que já fiz, como estou indo e o que devo priorizar agora."); }
+  else if (act === "ask") {
+    closeDrawer();
+    ask(isUsp()
+      ? "Analise minhas disciplinas realizadas e em andamento na USP São Carlos (SSC0961 e SSC0124) e quais aproveitamentos consigo pedir no BES do IFSP via SUAP."
+      : "Faça um resumo do meu percurso no curso: o que já fiz, como estou indo e o que devo priorizar agora.");
+  }
 });
 
 /* Modal */
@@ -2298,26 +2447,45 @@ async function importFromHash() {
 marked.use({ gfm: true, breaks: false });
 updateSendState();
 
+async function switchInstitution(nextInst) {
+  const prevInst = state.inst;
+  state.context = [];
+  state.focus = null;
+  state.focusHistory = [];
+  try {
+    const data = await loadCurriculum(nextInst);
+    if (isUsp() && !state.uspAluno) await loadUspAluno({ force: false });
+    renderContext();
+    if ($("#empty")) renderEmpty();
+    if (picker.open) renderPicker();
+    if (state.view === "tree") showCourse();
+    else if (state.view === "me") renderMe();
+    else if (state.view === "moodle") window.__renderMoodle?.();
+    renderSettings();
+    toast(`Currículo ativo: ${data.curso} (${nextInst === "ifsp_bes" ? "IFSP" : "USP CAASO"})`);
+  } catch (error) {
+    toast(error.message || "Falha ao trocar instituição.");
+    syncOrgAndInstSelectors(prevInst);
+  }
+}
+
+const orgSelect = $("#org-select");
 const instSelect = $("#inst-select");
+syncOrgAndInstSelectors(state.inst);
+
+if (orgSelect) {
+  orgSelect.addEventListener("change", (event) => {
+    const org = event.target.value;
+    const nextInst = org === "usp"
+      ? ((() => { try { return localStorage.getItem("ppchat_last_usp") || "usp_bsi"; } catch { return "usp_bsi"; } })())
+      : "ifsp_bes";
+    switchInstitution(nextInst);
+  });
+}
+
 if (instSelect) {
-  instSelect.value = state.inst;
-  instSelect.addEventListener("change", async (event) => {
-    const nextInst = event.target.value || "ifsp_bes";
-    state.context = [];
-    state.focus = null;
-    state.focusHistory = [];
-    try {
-      const data = await loadCurriculum(nextInst);
-      renderContext();
-      if ($("#empty")) renderEmpty();
-      if (picker.open) renderPicker();
-      if (state.view === "tree") showCourse();
-      else if (state.view === "me" && nextInst !== "ifsp_bes") openDrawer("tree");
-      toast(`Currículo ativo: ${data.curso} (${nextInst === "ifsp_bes" ? "IFSP" : "USP CAASO"})`);
-    } catch (error) {
-      toast(error.message || "Falha ao trocar instituição.");
-      event.target.value = state.inst;
-    }
+  instSelect.addEventListener("change", (event) => {
+    switchInstitution(event.target.value || "ifsp_bes");
   });
 }
 
@@ -2325,6 +2493,7 @@ loadCurriculum(state.inst)
   .then(() => {
     const saved = storage.get(ALUNO_KEY);
     if (saved?.status) setAluno(saved);
+    loadUspAluno({ force: false });
     loadConversations();
     const current = conversations.list.find((c) => c.id === state.convId);
     if (current) { state.history = current.history; renderHistory(); } else renderEmpty();
@@ -2442,6 +2611,8 @@ new ResizeObserver(([entry]) => {
     const q = normalize(courseLabel);
     return repos.find((r) => {
       const rl = normalize(`${r.label} ${r.folder} ${r.github_url || ""}`);
+      if (q.includes("ssc0124") || (isUsp() && q.includes("analise e projeto"))) return rl.includes("apoo") && (rl.includes("usp") || !rl.includes("ifsp"));
+      if (q.includes("ssc0961") || q.includes("web e mobile")) return rl.includes("web e mobile") || rl.includes("sibisc");
       if (q.includes("sclrco2") || q.includes("redes de computadores 2")) return rl.includes("redes");
       if (q.includes("scltaed") || q.includes("algoritmos e estrutura de dados")) return rl.includes("taed") || rl.includes("algoritmos");
       if (q.includes("scltcdd") || q.includes("ciencia de dados") || q.includes("ciencias de dados")) return rl.includes("tcdd") || rl.includes("ciencias de dados");
@@ -2454,10 +2625,160 @@ new ResizeObserver(([entry]) => {
     });
   }
 
+  async function renderUspMoodle(repos) {
+    const bar = document.getElementById("moodle-bar");
+    const infoPane = document.getElementById("moodle-info");
+    if (!state.uspAluno) await loadUspAluno({ force: false });
+    const edCourses = state.uspAluno?.edisciplinas_courses || [];
+    const courses = edCourses.map((c) => ({
+      key: c.code,
+      code: c.code,
+      name: c.fullname || c.code,
+      periodo: c.periodo || "2026",
+      status: c.status || "cursando",
+      nota: c.nota,
+      freq: c.freq,
+      situacao: c.situacao,
+      ch: c.ch,
+      viewurl: c.viewurl,
+      tasks: c.tasks || [],
+      materials: c.materials || [],
+      repo: matchRepo(`${c.code} ${c.fullname}`, repos),
+    }));
+
+    if (statusDot) {
+      statusDot.classList.toggle("is-on", courses.length > 0);
+      statusDot.title = courses.length ? `e-Disciplinas USP: ${courses.length} disciplina(s)` : "USP não sincronizada";
+    }
+
+    if (!courses.length) {
+      if (bar) bar.innerHTML = `<span class="muted">e-Disciplinas USP (Moodle)</span>`;
+      if (infoPane) infoPane.innerHTML = "";
+      wrap.innerHTML = `
+        <div class="me-empty">
+          <p class="eyebrow">e-Disciplinas USP · JupiterWeb</p>
+          <h3>Nenhuma disciplina USP carregada</h3>
+          <p class="muted">Sincronize com o JupiterWeb e e-Disciplinas USP usando USP_USER e USP_PASSWORD configurados no .env.</p>
+          <button type="button" class="btn btn-primary" id="usp-moodle-sync-btn">Sincronizar USP</button>
+        </div>`;
+      document.getElementById("usp-moodle-sync-btn")?.addEventListener("click", () => loadUspAluno({ force: true }));
+      return;
+    }
+
+    if (!selectedCourseKey || !courses.some((c) => c.key === selectedCourseKey)) {
+      selectedCourseKey = courses[0].key;
+    }
+
+    if (bar) {
+      bar.innerHTML = `
+        <div class="tree-crumbs">
+          <strong>e-Disciplinas USP (Moodle)</strong>
+          <span class="muted">· ${courses.length} disciplina(s) (JupiterWeb + e-Disciplinas)</span>
+        </div>
+        <div class="tree-bar-actions" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" class="chip-btn" id="usp-moodle-sync-btn">Sincronizar USP</button>
+        </div>`;
+    }
+
+    wrap.innerHTML = `<div class="moodle-grid">${courses.map((c) => {
+      const focused = c.key === selectedCourseKey;
+      const stripeCls = c.status === "cursando" ? "anc" : "desc";
+      const badge = c.status === "concluida" ? `✓ ${c.nota ? `Nota ${c.nota}` : "Concluída"}` : "Cursando";
+      return `
+        <button type="button" class="node ${stripeCls} ${focused ? "is-focus" : ""}" data-moodle-course="${escapeHtml(c.key)}">
+          <span class="node-top">
+            <span class="node-code">${escapeHtml(c.code)} · ${escapeHtml(c.periodo)}</span>
+            <span class="node-code">${escapeHtml(badge)}</span>
+          </span>
+          <span class="node-name">${escapeHtml(c.name)}</span>
+          <span class="node-meta">
+            <span>${c.tasks.length} tarefa(s) · ${c.materials.length} mat.</span>
+            <span>${c.repo?.github_url ? "GitHub ✓" : (c.repo ? `${c.repo.files.length} arq.` : "")}</span>
+          </span>
+        </button>`;
+    }).join("")}</div>`;
+
+    const active = courses.find((c) => c.key === selectedCourseKey) || courses[0];
+    if (infoPane && active) {
+      const topEq = disc(active.code)?.equivalencias?.[0];
+      const tasksHtml = active.tasks.length
+        ? active.tasks.map((t) => `
+            <div style="padding:8px 10px;border:1px solid var(--line-2);border-radius:10px;background:var(--surface-2);margin-bottom:6px;">
+              <div style="font-weight:600;font-size:13px;"><a href="${escapeHtml(t.url)}" target="_blank" rel="noopener">${escapeHtml(t.title)}</a></div>
+            </div>`).join("")
+        : `<p class="muted" style="font-size:13px;">Nenhuma tarefa listada no e-Disciplinas.</p>`;
+
+      const matHtml = active.materials.length
+        ? active.materials.map((m) => `
+            <a class="chip-btn moodle-file-link" href="${escapeHtml(m.url)}" target="_blank" rel="noopener">
+              <span>${escapeHtml(m.title)}</span>
+              <span class="muted">e-Disciplinas</span>
+            </a>`).join("")
+        : `<p class="muted" style="font-size:13px;">Sem materiais listados.</p>`;
+
+      const repoFiles = active.repo?.files || [];
+      const filesHtml = repoFiles.length
+        ? repoFiles.map((f) => {
+            const href = `/moodle/file?folder=${encodeURIComponent(active.repo.folder)}&path=${encodeURIComponent(f.rel_path)}`;
+            return `<a class="chip-btn moodle-file-link" href="${href}" target="_blank" rel="noopener">
+              <span>${escapeHtml(f.rel_path)}</span>
+              <span class="muted">Abrir</span>
+            </a>`;
+          }).join("")
+        : `<p class="muted" style="font-size:13px;">Nenhum repositório local vinculado em Downloads.</p>`;
+
+      infoPane.innerHTML = `
+        <p class="info-code">${escapeHtml(active.code)} · ${escapeHtml(active.periodo)}</p>
+        <h3>${escapeHtml(active.name)}</h3>
+        <div class="pills" style="margin:6px 0 12px;">
+          <span class="pill">${escapeHtml(active.situacao || active.status)}</span>
+          ${active.nota ? `<span class="pill">Nota ${escapeHtml(active.nota)}</span>` : ""}
+          ${active.freq ? `<span class="pill">Freq ${escapeHtml(active.freq)}</span>` : ""}
+          ${active.ch ? `<span class="pill">${active.ch}h</span>` : ""}
+        </div>
+        <div class="info-actions" style="gap:6px;">
+          <a class="btn btn-primary" href="${escapeHtml(active.viewurl)}" target="_blank" rel="noopener">Abrir no e-Disciplinas USP</a>
+          ${active.repo?.github_url ? `<a class="btn" href="${escapeHtml(active.repo.github_url)}" target="_blank" rel="noopener">Abrir repositório no GitHub</a>` : ""}
+          ${disc(active.code) ? `<button type="button" class="btn btn-sm" id="usp-moodle-tree-btn">Ver no Fluxograma USP</button>` : ""}
+          ${topEq ? `<button type="button" class="btn btn-sm" id="usp-moodle-req-btn">Gerar Requerimento SUAP (↔ ${escapeHtml(topEq.ifsp_codigo)})</button>` : ""}
+        </div>
+        <h4 style="margin:14px 0 8px;font-size:12px;text-transform:uppercase;color:var(--muted);">Atividades e Tarefas (${active.tasks.length})</h4>
+        ${tasksHtml}
+        <h4 style="margin:14px 0 8px;font-size:12px;text-transform:uppercase;color:var(--muted);">Materiais no e-Disciplinas (${active.materials.length})</h4>
+        <div>${matHtml}</div>
+        <h4 style="margin:14px 0 8px;font-size:12px;text-transform:uppercase;color:var(--muted);">Arquivos locais (${repoFiles.length})</h4>
+        <div>${filesHtml}</div>`;
+
+      document.getElementById("usp-moodle-tree-btn")?.addEventListener("click", () => {
+        setView("tree");
+        focusTree(active.code, { push: true });
+      });
+      if (topEq) {
+        document.getElementById("usp-moodle-req-btn")?.addEventListener("click", () => {
+          openUspRequerimentoModal(topEq.ifsp_codigo, topEq.usp_codigo);
+        });
+      }
+    }
+
+    wrap.querySelectorAll("[data-moodle-course]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedCourseKey = btn.dataset.moodleCourse;
+        renderMoodle();
+      });
+    });
+    document.getElementById("usp-moodle-sync-btn")?.addEventListener("click", async (e) => {
+      e.currentTarget.disabled = true;
+      e.currentTarget.textContent = "Sincronizando…";
+      await loadUspAluno({ force: true });
+      toast("JupiterWeb & e-Disciplinas USP sincronizados!");
+    });
+  }
+
   async function renderMoodle() {
+    const repos = await loadRepos();
+    if (isUsp()) return renderUspMoodle(repos);
     const rawTasks = loadTasks();
     const enrolled = getEnrolledCourses();
-    const repos = await loadRepos();
     const bar = document.getElementById("moodle-bar");
     const infoPane = document.getElementById("moodle-info");
 

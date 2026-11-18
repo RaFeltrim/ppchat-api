@@ -18,8 +18,10 @@ from src.modules.api.suap_import import ImportStore, SuapImport
 from src.modules.knowledge.services.knowledge_base import get_knowledge_base
 from src.modules.knowledge.services.usp_jupiter import (
     USP_COURSES,
+    USP_STUDENT_FILE,
     build_suap_requerimento,
     fetch_usp_ementa,
+    sync_usp_student_data,
 )
 from src.modules.response.services.chat_service import ChatSession
 from src.modules.shared.services.settings import get_settings
@@ -288,6 +290,33 @@ async def usp_requerimento(req: RequerimentoRequest) -> dict:
 
     ementa = await asyncio.to_thread(fetch_usp_ementa, usp_code, kb.processed_dir)
     return build_suap_requerimento(ifsp_disc, usp_disc, ementa, usp_label, req.aluno_nome, req.matricula)
+
+
+@app.get("/usp/aluno")
+async def usp_aluno() -> dict:
+    """Retorna disciplinas realizadas e em andamento na USP (JupiterWeb + e-Disciplinas)."""
+    kb = get_knowledge_base()
+    s = get_settings()
+    existed = (kb.processed_dir / USP_STUDENT_FILE).exists()
+    data = await asyncio.to_thread(sync_usp_student_data, s.usp_user or "", s.usp_password or "", kb.processed_dir, False)
+    if not existed and data.get("disciplinas_aluno"):
+        get_knowledge_base.cache_clear()
+        get_knowledge_base()
+    return data
+
+
+@app.post("/usp/aluno/sync")
+async def usp_aluno_sync() -> dict:
+    """Força ressincronização ao vivo no JupiterWeb e e-Disciplinas USP."""
+    kb = get_knowledge_base()
+    s = get_settings()
+    try:
+        data = await asyncio.to_thread(sync_usp_student_data, s.usp_user or "", s.usp_password or "", kb.processed_dir, True)
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Erro ao sincronizar com USP: {exc}")
+    get_knowledge_base.cache_clear()
+    get_knowledge_base()
+    return data
 
 
 moodle_store = ImportStore()
