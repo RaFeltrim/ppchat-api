@@ -54,9 +54,11 @@ Evoluções implementadas neste fork sobre o projeto base:
 | **OpenRouter + Multi-Fallback** | Compatibilidade com `ANTHROPIC_BASE_URL` (`https://openrouter.ai/api`), `OPENROUTER_API_KEY` e lista ordenada `FALLBACK_MODELS` no `BetaRefusalFallbackMiddleware`. | `settings.py`, `llm_client.py` |
 | **Seletor de Modelos na UI** | Troca em tempo real no composer entre modelos da fronteira de Pareto (`DeepSeek V4.1 Flash`, `GLM 5.3 Flash`, `Gemini 3.5/3.8 Flash`, `Qwen 3.8 27B`). | `index.html`, `app.js`, `chat_service.py` |
 | **Anexo de Documentos no Chat** | Upload via `POST /documents/extract` (`.pdf` via PyMuPDF, `.txt`, `.md`, `.csv`, `.json`) para comparar grades/ementas (ex.: USP × IFSP). | `app.py`, `index.html`, `app.js` |
-| **Moodle IFSP → WhatsApp** | Aba **Moodle** no drawer (padrão visual do *Meu percurso*), bookmarklet `moodle-export.js` e disparo de alertas via CallMeBot. | `moodle_import.py`, `moodle-export.js`, `app.py` |
-| **Reenvio & Devolução ao Chat** | Em erro de API ou cancelamento manual, restaura pergunta e chips `@` no composer com botões `Reenviar` e `Devolver ao chat`. | `app.js` |
-| **Mobile-First & Touch** | Hitboxes mínimas de `44px × 44px`, quebra responsiva do composer e fonte `16px` no input para dispositivos móveis. | `styles.css` |
+| **Moodle IFSP → WhatsApp & Repositórios** | Aba **Moodle** no padrão visual do Fluxograma (cards `.node` + painel lateral), filtrada pelas matérias cursadas no SUAP, ignorando entregas enviadas e questionários com nota, com acesso direto aos arquivos locais em `Downloads`/GitHub e alertas via CallMeBot. | `moodle_import.py`, `moodle-export.js`, `app.py`, `app.js` |
+| **Base Oficial Drive IFSP (TokenOps)** | Sincroniza e indexa os 20 formulários e manuais da DDGA/SUAP (`EXAPE`, `RESAB`, substitutiva, abono de faltas, tutoriais) com injeção sob demanda na mensagem sem quebrar o cache do `system` prompt. | `ifsp_drive.py`, `ifsp_docs.json`, `knowledge_base.py`, `chat_service.py` |
+| **Persistência Local & Launcher `.exe`** | Salva automaticamente SUAP, Moodle e conversas em disco (`src/data/local/user_data.json`) e inicializa com 1 clique via `PPChat.exe`. | `app.py`, `app.js`, `PPChat.exe` |
+| **Reenvio & Devolução ao Chat** | Em erro de API ou cancelamento manual, restaura pergunta, documentos e chips `@` no composer com botões `Reenviar` e `Devolver ao chat`. | `app.js` |
+| **Mobile-First & Touch** | Hitboxes mínimas de `44px × 44px`, quebra responsiva do composer, painel lateral empilhado no Moodle e fonte `16px` no input. | `styles.css` |
 | **Diretriz Anti-Reasoning Leak** | Reforço no prompt de sistema para responder diretamente em português sem expor rascunhos em inglês. | `prompts.py` |
 
 ---
@@ -97,6 +99,11 @@ python main.py ingest --force         # Reprocessa o PDF do PPC (apenas se o PDF
 | `GET` | `/aluno/importar/{code}` | — | Dados do aluno (apagados após leitura) |
 | `POST` | `/moodle/importar` | `{"tasks", "notify_whatsapp"}` | `{"count", "token", "summary", "whatsapp"}` |
 | `GET` | `/moodle/resgatar/{token}` | — | `{"tasks"}` importadas do Moodle |
+| `GET` | `/moodle/repos` | — | Repositórios/pastas de disciplinas em `Downloads` |
+| `GET` | `/moodle/file` | `?folder=...&path=...` | Abre/baixa arquivo local da disciplina |
+| `GET` | `/local/state` | — | Restaura SUAP, Moodle e conversas do disco |
+| `POST` | `/local/state` | `{"aluno", "moodle_tasks", "conversations"}` | Persiste estado local em `user_data.json` |
+| `GET` | `/ifsp-docs` | — | Lista os 20 documentos indexados do Drive IFSP |
 
 ---
 

@@ -1,5 +1,6 @@
 import asyncio
 import json
+import re
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncIterator, Dict, List, Literal, Optional
@@ -296,13 +297,12 @@ def _scan_download_repos() -> List[dict]:
             github_url = None
             cfg = repo_dir / ".git" / "config"
             if cfg.exists():
-                import re as _re
-                m = _re.search(r"url\s*=\s*(https://[^\s]+)", cfg.read_text(encoding="utf-8", errors="ignore"))
+                m = re.search(r"url\s*=\s*(https://[^\s]+)", cfg.read_text(encoding="utf-8", errors="ignore"))
                 if m:
                     raw_u = m.group(1).rstrip("/")
                     if raw_u.endswith(".git"):
                         raw_u = raw_u[:-4]
-                    github_url = _re.sub(r"https://[^@]+@", "https://", raw_u)
+                    github_url = re.sub(r"https://[^@]+@", "https://", raw_u)
             files = []
             for p in repo_dir.rglob("*"):
                 if any(part in skip_dirs for part in p.parts):
@@ -332,7 +332,7 @@ async def moodle_open_file(folder: str, path: str) -> FileResponse:
     """Abre/baixa um arquivo local de uma pasta de disciplina em Downloads."""
     downloads = (Path.home() / "Downloads").resolve()
     target = (downloads / folder / path).resolve()
-    if not str(target).startswith(str(downloads)) or not target.is_file():
+    if not target.is_relative_to(downloads) or not target.is_file():
         raise HTTPException(status_code=404, detail="Arquivo não encontrado.")
     return FileResponse(target, filename=target.name)
 

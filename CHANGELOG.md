@@ -20,3 +20,10 @@ Todas as alterações notáveis adicionadas neste fork durante o Workshop BES23 
 - `CHAT_EFFORT` ajustado para `low` e diretriz em `prompts.py` reforçada para evitar exposição de raciocínio interno em inglês e orientar importação via SUAP.
 - CORS em `app.py` garantindo inclusão de `https://moodle.scl.ifsp.edu.br`.
 - `.env-example` e `requirements.txt` atualizados.
+
+### Polimento & Expansão (17/11/2026 - noite)
+- **Persistência local em disco (`GET/POST /local/state`):** salva e restaura automaticamente dados do SUAP, tarefas do Moodle e conversas em `src/data/local/user_data.json`.
+- **Launcher nativo `PPChat.exe`:** inicialização automática do servidor em segundo plano e abertura no navegador padrão.
+- **Filtros inteligentes do Moodle (`moodle-export.js` e `app.js`):** ignora tarefas já enviadas (`/mod/assign/`), questionários já avaliados (`/mod/quiz/`) e restringe a visualização às disciplinas cursadas no SUAP.
+- **Aba Moodle no padrão Fluxograma:** cards `.node` clicáveis + painel lateral `#moodle-info` integrado aos repositórios GitHub e arquivos locais em `Downloads` (`GET /moodle/repos`, `GET /moodle/file`, com proteção `is_relative_to` e layout responsivo no mobile).
+- **Base oficial Drive IFSP (`ifsp_drive.py` + `ifsp_docs.json` + `GET /ifsp-docs`):** 20 formulários e manuais DDGA/SUAP indexados com injeção sob demanda (TokenOps).
