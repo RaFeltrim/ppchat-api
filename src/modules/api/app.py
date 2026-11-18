@@ -222,6 +222,37 @@ def curriculum() -> dict:
 moodle_store = ImportStore()
 
 
+LOCAL_STATE_FILE = get_settings().processed_dir.parent / "local" / "user_data.json"
+
+
+@app.get("/local/state")
+async def get_local_state() -> dict:
+    """Restaura dados locais salvos em disco (SUAP, Moodle e conversas)."""
+    if not LOCAL_STATE_FILE.exists():
+        return {}
+    try:
+        return json.loads(LOCAL_STATE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+@app.post("/local/state")
+async def save_local_state(payload: dict) -> dict:
+    """Salva localmente em disco os dados do aluno (SUAP, Moodle e conversas)."""
+    LOCAL_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    existing = {}
+    if LOCAL_STATE_FILE.exists():
+        try:
+            existing = json.loads(LOCAL_STATE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            existing = {}
+    for key in ("aluno", "moodle_tasks", "conversations"):
+        if key in payload and payload[key] is not None:
+            existing[key] = payload[key]
+    LOCAL_STATE_FILE.write_text(json.dumps(existing, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": True}
+
+
 @app.post("/moodle/importar")
 async def moodle_importar(payload: MoodleImport) -> dict:
     """Recebe tarefas do Moodle via bookmarklet e dispara alerta no WhatsApp (CallMeBot)."""
@@ -233,6 +264,7 @@ async def moodle_importar(payload: MoodleImport) -> dict:
             send_whatsapp_callmebot, payload.tasks, s.callmebot_phone or "", s.callmebot_apikey or ""
         )
     token = moodle_store.put([t.model_dump() for t in payload.tasks])
+    await save_local_state({"moodle_tasks": [t.model_dump() for t in payload.tasks]})
     return {"count": len(payload.tasks), "token": token, "summary": summary, "whatsapp": whatsapp}
 
 

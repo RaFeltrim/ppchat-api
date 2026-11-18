@@ -1190,6 +1190,7 @@ function persist() {
   conv.updated = Date.now();
   conversations.list = [conv, ...conversations.list.filter((c) => c !== conv)].slice(0, MAX_CONVS);
   saveConversations();
+  window.__syncLocalDisk?.({ conversations: conversations.list });
   renderConversations();
 }
 
@@ -1217,6 +1218,7 @@ function openConversation(id) {
   renderContext();
   renderHistory();
   saveConversations();
+  window.__syncLocalDisk?.({ conversations: conversations.list });
   renderConversations();
   closeDrawer();
   closeSidebarOnMobile();
@@ -1246,6 +1248,7 @@ function renameConversation(id, title) {
   const conv = conversations.list.find((c) => c.id === id);
   if (conv && title.trim()) conv.title = titleFrom(title);
   saveConversations();
+  window.__syncLocalDisk?.({ conversations: conversations.list });
   renderConversations();
 }
 
@@ -1602,6 +1605,7 @@ function setAluno(aluno) {
   state.aluno = aluno;
   if (aluno) aluno.contexto = alunoContext(aluno);
   aluno ? storage.set(ALUNO_KEY, aluno) : storage.remove(ALUNO_KEY);
+  if (aluno) window.__syncLocalDisk?.({ aluno });
   $("#suap-status").classList.toggle("is-on", !!aluno);
   $("#suap-status").title = aluno ? "SUAP conectado" : "SUAP não conectado";
   if ($(".node", $("#tree-inner"))) { renderTree({ animate: false }); renderInfo(state.focus); }
@@ -2362,4 +2366,56 @@ new ResizeObserver(([entry]) => {
       toast(`${(d.tasks || []).length} tarefa(s) do Moodle carregada(s)!`);
     })
     .catch(() => toast("Link do Moodle expirado ou inválido."));
+})();
+
+// --- Persistência local em disco (/local/state) ---
+(() => {
+  function syncToDisk(patch) {
+    fetch("/local/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    }).catch(() => {});
+  }
+
+  // Restaura do disco caso o navegador esteja vazio
+  fetch("/local/state")
+    .then((r) => (r.ok ? r.json() : {}))
+    .then((disk) => {
+      let changed = false;
+      if (!storage.get(ALUNO_KEY) && disk.aluno?.status) {
+        storage.set(ALUNO_KEY, disk.aluno);
+        setAluno(disk.aluno);
+        changed = true;
+      }
+      if (!localStorage.getItem("ppchat_moodle_tasks") && Array.isArray(disk.moodle_tasks) && disk.moodle_tasks.length) {
+        localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(disk.moodle_tasks));
+        changed = true;
+      }
+      if (!storage.get(CONVS_KEY) && Array.isArray(disk.conversations) && disk.conversations.length) {
+        storage.set(CONVS_KEY, disk.conversations);
+        loadConversations();
+        renderConversations();
+        changed = true;
+      }
+      if (changed) toast("Dados locais restaurados do disco.");
+    })
+    .catch(() => {});
+
+  // Salva periodicamente / antes de fechar se houver dados no navegador
+  window.addEventListener("beforeunload", () => {
+    const patch = {};
+    const a = storage.get(ALUNO_KEY);
+    if (a) patch.aluno = a;
+    const c = storage.get(CONVS_KEY);
+    if (c) patch.conversations = c;
+    try {
+      const m = JSON.parse(localStorage.getItem("ppchat_moodle_tasks") || "null");
+      if (m) patch.moodle_tasks = m;
+    } catch {}
+    if (Object.keys(patch).length) {
+      navigator.sendBeacon?.("/local/state", new Blob([JSON.stringify(patch)], { type: "application/json" }));
+    }
+  });
+  window.__syncLocalDisk = syncToDisk;
 })();
