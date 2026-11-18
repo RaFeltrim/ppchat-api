@@ -276,6 +276,13 @@ async def moodle_resgatar(token: str) -> dict:
     return {"tasks": tasks}
 
 
+@app.get("/ifsp-docs")
+async def list_ifsp_docs() -> dict:
+    """Lista os formulários e tutoriais oficiais indexados do Drive IFSP."""
+    kb = get_knowledge_base()
+    return {"count": len(kb.ifsp_docs), "docs": [{"name": d["name"], "url": d["url"]} for d in kb.ifsp_docs]}
+
+
 @app.post("/documents/extract")
 async def extract_document(file: UploadFile = File(...)) -> dict:
     """Extrai texto de PDFs ou arquivos de texto para anexar ao contexto do chat."""
