@@ -200,6 +200,7 @@ class KnowledgeBase:
         triggers = (
             "repo", "reposit", "github", "projeto", "pratic", "codigo", "código",
             "evidenc", "equival", "abater", "aproveit", "disciplina", "usp", "ssc", "scl",
+            "web", "mobile", "capacitor", "sibisc", "apoo",
         )
         if not focus and not any(t in q_low for t in triggers):
             return ""
@@ -246,7 +247,7 @@ class KnowledgeBase:
                 + (f"- Manifestos/config encontrados: {', '.join(manifests)}\n" if manifests else "")
                 + (f"- README.md (resumo):\n{readme_txt}" if readme_txt else "")
             )
-            if len(blocks) >= 6:
+            if len(blocks) >= 15:
                 break
         return "\n\n".join(blocks)
 
