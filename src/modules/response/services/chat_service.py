@@ -103,6 +103,14 @@ class ChatSession:
                 "Cite o nome do formulário e inclua o link oficial quando aplicável:\n"
                 f"<documentos_ifsp>\n{ifsp_sheet}\n</documentos_ifsp>",
             })
+        repo_sheet = self.knowledge_base.render_repo_evidences(question, focus)
+        if repo_sheet:
+            blocks.append({
+                "type": "text",
+                "text": "Evidências práticas coletadas diretamente dos repositórios locais/GitHub das disciplinas "
+                "(READMEs, frameworks e manifestos de projeto):\n"
+                f"<repositorios_disciplinas>\n{repo_sheet}\n</repositorios_disciplinas>",
+            })
         if not blocks:
             return question
         return [*blocks, {"type": "text", "text": question}]

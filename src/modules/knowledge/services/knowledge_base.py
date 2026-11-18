@@ -194,6 +194,62 @@ class KnowledgeBase:
             blocks.append(f"### {d['name']}\nLink oficial: {d['url']}\n{body}")
         return "\n\n".join(blocks)
 
+    def render_repo_evidences(self, question: str, focus: Sequence[str] = ()) -> str:
+        """Lê READMEs, stacks e estrutura dos repositórios de disciplinas em Downloads/GitHub."""
+        q_low = question.lower()
+        triggers = (
+            "repo", "reposit", "github", "projeto", "pratic", "codigo", "código",
+            "evidenc", "equival", "abater", "aproveit", "disciplina", "usp", "ssc", "scl",
+        )
+        if not focus and not any(t in q_low for t in triggers):
+            return ""
+        downloads = Path.home() / "Downloads"
+        if not downloads.exists():
+            return ""
+
+        repo_dirs: List[Path] = []
+        for folder in sorted(downloads.iterdir()):
+            if not folder.is_dir():
+                continue
+            if (folder / ".git").is_dir():
+                repo_dirs.append(folder)
+            else:
+                for sub in folder.iterdir():
+                    if sub.is_dir() and (sub / ".git").is_dir():
+                        repo_dirs.append(sub)
+
+        blocks: List[str] = []
+        skip = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
+        for rdir in repo_dirs:
+            label = f"{rdir.parent.name}/{rdir.name}" if rdir.parent != downloads else rdir.name
+            cfg = rdir / ".git" / "config"
+            gh = ""
+            if cfg.exists():
+                m = re.search(r"url\s*=\s*(https://[^\s]+)", cfg.read_text(encoding="utf-8", errors="ignore"))
+                if m:
+                    gh = re.sub(r"https://[^@]+@", "https://", m.group(1).rstrip("/").removesuffix(".git"))
+            readme = rdir / "README.md"
+            hay = f"{label} {gh}".lower()
+            if not any(k in hay for k in ("usp", "apoo", "web e mobile", "ifsp", "taed", "tcdd", "ttec", "redes", "ax2", "sustent")):
+                continue
+            readme_txt = readme.read_text(encoding="utf-8", errors="ignore")[:1800] if readme.exists() else ""
+            manifests = []
+            for p in rdir.rglob("*"):
+                if any(part in skip for part in p.parts):
+                    continue
+                if p.is_file() and p.name.lower() in {"package.json", "capacitor.config.json", "requirements.txt", "pom.xml"}:
+                    manifests.append(p.relative_to(rdir).as_posix())
+                    if len(manifests) >= 6:
+                        break
+            blocks.append(
+                f"### {label}" + (f" ({gh})" if gh else "") + "\n"
+                + (f"- Manifestos/config encontrados: {', '.join(manifests)}\n" if manifests else "")
+                + (f"- README.md (resumo):\n{readme_txt}" if readme_txt else "")
+            )
+            if len(blocks) >= 6:
+                break
+        return "\n\n".join(blocks)
+
     @cached_property
     def full_context(self) -> str:
         return (

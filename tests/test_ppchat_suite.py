@@ -127,6 +127,8 @@ class TestUnitComponents(unittest.TestCase):
         self.assertIn("SSC0124", txt)
         docs_txt = kb.render_ifsp_docs("aproveitamento exape")
         self.assertIn("Link oficial", docs_txt)
+        repo_txt = kb.render_repo_evidences("analise meus repositorios e projetos github da usp")
+        self.assertIn("usp", repo_txt.lower())
 
     def test_slm_first_router_matrix(self):
         s = get_settings()
