@@ -31,10 +31,28 @@ MAX_HISTORY = 30  # mensagens anteriores reenviadas pelo navegador
 MAX_TEXT = 20_000  # caracteres por mensagem do histórico
 
 
+async def _auto_sync_usp_on_startup() -> None:
+    """Atualiza JupiterWeb + e-Disciplinas USP em segundo plano na inicialização."""
+    try:
+        s = get_settings()
+        if not s.usp_user or not s.usp_password:
+            return
+        kb = get_knowledge_base()
+        await asyncio.to_thread(sync_usp_student_data, s.usp_user, s.usp_password, kb.processed_dir, True)
+        get_knowledge_base.cache_clear()
+        get_knowledge_base()
+    except Exception:
+        pass
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     get_knowledge_base()  # falha cedo se a base processada não existir
-    yield
+    usp_task = asyncio.create_task(_auto_sync_usp_on_startup())
+    try:
+        yield
+    finally:
+        usp_task.cancel()
 
 
 app = FastAPI(title="PPChat API", lifespan=lifespan)

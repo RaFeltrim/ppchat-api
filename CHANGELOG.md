@@ -11,6 +11,7 @@ Todas as alterações notáveis adicionadas neste fork durante o Workshop BES23 
   - Login SAML automático via `idpcafe.usp.br` no **e-Disciplinas USP** (`edisciplinas.usp.br`), listando disciplinas matriculadas, tarefas (`/mod/assign`, `/mod/quiz`) e materiais (`/mod/resource`, `/mod/url`).
   - Exibição completa nas abas **Fluxograma** (badge/cor de concluída/cursando e notas + inclusão automática das cursadas em todas as grades USP), **Meu Percurso** (trilha interativa `#trail` + `#stop-detail` dos semestres cursados/atuais na USP) e **Moodle** (`renderUspMoodle` combinando histórico e e-Disciplinas com repositórios locais em `Downloads` como `APOO - USP` e `Web e Mobile - USP` + links GitHub).
   - Persistência e cache local deduplicado (`usp_aluno` em `/local/state` e `ppchat-usp-aluno-v1` com proteção contra chamadas simultâneas).
+  - Auto-login e sincronização automática em segundo plano na inicialização do servidor (`_auto_sync_usp_on_startup` em `app.py` via `USP_USER` / `USP_PASSWORD`).
 - **Integração USP São Carlos (CAASO) — JupiterWeb (`usp_jupiter.py`):**
   - Sincronização das grades curriculares do ICMC/USP São Carlos (`55051/4` BSI, `55041/0` BCI/BCC e `55071/4` Estatística e Ciência de Dados) em `src/data/processed/usp_curriculos.json`.
   - Consulta e cache local de ementas/conteúdo programático do JupiterWeb em `GET /usp/disciplina/{sgldis}` (`src/data/processed/usp_ementas.json`).
