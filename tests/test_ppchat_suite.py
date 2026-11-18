@@ -44,6 +44,7 @@ class _FakeUsage:
 class _FakeMessage:
     model = "deepseek/deepseek-v4.1-flash"
     usage = _FakeUsage()
+    stop_reason = "end_turn"
     content = [type("Block", (), {"type": "text", "text": "Resposta simulada com [Página 48]."})()]
 
 
