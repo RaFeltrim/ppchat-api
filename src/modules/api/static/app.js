@@ -972,7 +972,7 @@ function errorMessage(status, body) {
   return `Erro ${status}`;
 }
 
-async function streamAnswer(question, disciplinas, ui) {
+async function streamAnswer(question, disciplinas, ui, docs = []) {
   state.controller = new AbortController();
   state.requestId = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const response = await fetchWithWake("/chat/stream", {
@@ -981,7 +981,7 @@ async function streamAnswer(question, disciplinas, ui) {
     body: JSON.stringify({
       question, disciplinas, history: historyPayload(), request_id: state.requestId,
       perfil: state.aluno?.contexto || null, // dados do SUAP, guardados só neste navegador
-      documentos: state.docs || [],
+      documentos: docs,
       model: document.getElementById("model-select")?.value || null,
     }),
     signal: state.controller.signal,
@@ -1054,7 +1054,10 @@ async function ask(question) {
   question = question.trim();
   if (!question || state.busy) return;
   const disciplinas = [...state.context];
+  const docs = [...(state.docs || [])];
   state.context = [];
+  state.docs = [];
+  window.__renderDocChips?.();
   renderContext();
   closePicker();
   input.value = "";
@@ -1074,6 +1077,10 @@ async function ask(question) {
     if (disciplinas.length) {
       state.context = [...new Set([...state.context, ...disciplinas])];
       renderContext();
+    }
+    if (docs.length) {
+      state.docs = [...(state.docs || []), ...docs].slice(0, 5);
+      window.__renderDocChips?.();
     }
     if (removeBubbles) {
       userMsgEl?.remove();
@@ -1095,6 +1102,10 @@ async function ask(question) {
         state.context = [...new Set([...state.context, ...disciplinas])];
         renderContext();
       }
+      if (docs.length) {
+        state.docs = [...(state.docs || []), ...docs].slice(0, 5);
+        window.__renderDocChips?.();
+      }
       ask(question);
     });
     bar.querySelector('[data-act="edit"]').addEventListener("click", () => restoreToComposer(true));
@@ -1102,7 +1113,7 @@ async function ask(question) {
   }
 
   try {
-    const entry = await streamAnswer(question, disciplinas, ui);
+    const entry = await streamAnswer(question, disciplinas, ui, docs);
     renderMarkdown(ui.answer, entry.text || (entry.stopped ? "_Envio cancelado._" : "_Sem resposta._"));
     renderReasoning(ui, entry, { live: false });
     renderFooter(ui.footer, entry);
@@ -2196,8 +2207,9 @@ new ResizeObserver(([entry]) => {
       });
       ctx.appendChild(chip);
     });
-    if (state.docs.length) ctx.hidden = false;
+    ctx.hidden = !state.context.length && !state.docs.length;
   }
+  window.__renderDocChips = renderDocChips;
 
   btn.addEventListener("click", () => inp.click());
   inp.addEventListener("change", async () => {

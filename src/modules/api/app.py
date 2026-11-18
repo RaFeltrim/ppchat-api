@@ -219,9 +219,7 @@ def curriculum() -> dict:
     }
 
 
-import secrets
-
-_moodle_store: Dict[str, List[dict]] = {}
+moodle_store = ImportStore()
 
 
 @app.post("/moodle/importar")
@@ -231,15 +229,16 @@ async def moodle_importar(payload: MoodleImport) -> dict:
     summary = format_moodle_summary(payload.tasks)
     whatsapp = {"sent": False, "reason": "notificação desativada"}
     if payload.notify_whatsapp:
-        whatsapp = send_whatsapp_callmebot(payload.tasks, s.callmebot_phone or "", s.callmebot_apikey or "")
-    token = secrets.token_urlsafe(12)
-    _moodle_store[token] = [t.model_dump() for t in payload.tasks]
+        whatsapp = await asyncio.to_thread(
+            send_whatsapp_callmebot, payload.tasks, s.callmebot_phone or "", s.callmebot_apikey or ""
+        )
+    token = moodle_store.put([t.model_dump() for t in payload.tasks])
     return {"count": len(payload.tasks), "token": token, "summary": summary, "whatsapp": whatsapp}
 
 
 @app.get("/moodle/resgatar/{token}")
 async def moodle_resgatar(token: str) -> dict:
-    tasks = _moodle_store.pop(token, None)
+    tasks = moodle_store.take(token)
     if tasks is None:
         raise HTTPException(status_code=404, detail="Token expirado ou inválido.")
     return {"tasks": tasks}
