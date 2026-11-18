@@ -219,7 +219,8 @@ class KnowledgeBase:
                     if sub.is_dir() and (sub / ".git").is_dir():
                         repo_dirs.append(sub)
 
-        blocks: List[str] = []
+        q_terms = {w for w in re.findall(r"[a-z0-9]{3,}", q_low)} | {f.lower() for f in focus}
+        scored: List[tuple[int, str]] = []
         skip = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
         for rdir in repo_dirs:
             label = f"{rdir.parent.name}/{rdir.name}" if rdir.parent != downloads else rdir.name
@@ -242,14 +243,16 @@ class KnowledgeBase:
                     manifests.append(p.relative_to(rdir).as_posix())
                     if len(manifests) >= 6:
                         break
-            blocks.append(
+            block = (
                 f"### {label}" + (f" ({gh})" if gh else "") + "\n"
                 + (f"- Manifestos/config encontrados: {', '.join(manifests)}\n" if manifests else "")
                 + (f"- README.md (resumo):\n{readme_txt}" if readme_txt else "")
             )
-            if len(blocks) >= 15:
-                break
-        return "\n\n".join(blocks)
+            full_hay = f"{hay} {readme_txt.lower()} {' '.join(manifests).lower()}"
+            score = sum(1 for t in q_terms if t in full_hay)
+            scored.append((score, block))
+        scored.sort(key=lambda item: item[0], reverse=True)
+        return "\n\n".join(b for _, b in scored)
 
     @cached_property
     def full_context(self) -> str:
