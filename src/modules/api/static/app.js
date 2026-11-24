@@ -119,21 +119,27 @@ async function fetchWithWake(url, options = {}) {
   }
 }
 
-const isUsp = () => state.inst !== "ifsp_bes";
-const activeAluno = () => (isUsp() ? state.uspAluno : state.aluno);
+const isUsp = () => state.inst.startsWith("usp_");
+const isUfscar = () => state.inst.startsWith("ufscar_");
+const isExternal = () => state.inst !== "ifsp_bes";
+const activeAluno = () => (isUsp() ? state.uspAluno : isUfscar() ? null : state.aluno);
 
 function syncStatusDot() {
   const a = activeAluno();
   $("#suap-status").classList.toggle("is-on", !!a);
-  $("#suap-status").title = a
-    ? (isUsp() ? "JupiterWeb USP conectado" : "SUAP conectado")
-    : (isUsp() ? "JupiterWeb não conectado" : "SUAP não conectado");
+  $("#suap-status").title = isUfscar()
+    ? "UFSCar (sem vínculo local configurado)"
+    : a
+      ? (isUsp() ? "JupiterWeb USP conectado" : "SUAP conectado")
+      : (isUsp() ? "JupiterWeb não conectado" : "SUAP não conectado");
 }
 
 function syncOrgAndInstSelectors(inst) {
-  const org = inst === "ifsp_bes" ? "ifsp" : "usp";
+  const org = inst.startsWith("usp_") ? "usp" : inst.startsWith("ufscar_") ? "ufscar" : "ifsp";
   if (org === "usp") {
     try { localStorage.setItem("ppchat_last_usp", inst); } catch {}
+  } else if (org === "ufscar") {
+    try { localStorage.setItem("ppchat_last_ufscar", inst); } catch {}
   }
   const orgSel = $("#org-select");
   const instSel = $("#inst-select");
@@ -209,9 +215,11 @@ async function loadCurriculum(inst = state.inst) {
 /* ───────────── Estado vazio ───────────── */
 function renderEmpty(eyebrow) {
   const isIfsp = state.inst === "ifsp_bes";
+  const isUf = isUfscar();
+  const orgLabel = isIfsp ? "IFSP" : isUf ? "UFSCar São Carlos" : "USP São Carlos (CAASO)";
   const resolvedEyebrow = eyebrow || (isIfsp
     ? "PPC · IFSP Câmpus São Carlos"
-    : `PPC · ${state.curriculum.campus || "USP São Carlos (CAASO)"} · Aluno Especial`);
+    : `PPC · ${state.curriculum.campus || orgLabel} · Aluno Especial`);
   const { disciplinas, gargalos } = state.curriculum;
   const deepest = [...disciplinas].sort((a, b) => b.profundidade - a.profundidade || b.indice_complexidade - a.indice_complexidade)
     .find((d) => d.tipo === "obrigatoria" && !/extens/i.test(d.nome)) || disciplinas[0];
@@ -231,17 +239,17 @@ function renderEmpty(eyebrow) {
     { icon: ICON.gauge, tag: "Dificuldade", text: "Quais são as disciplinas mais difíceis do curso e por quê?" },
     { icon: ICON.rules, tag: "Planejamento", text: `Reprovei em ${titleCase(gate.nome)}. Como fica o resto do meu curso?` },
   ] : [
-    { icon: ICON.route, tag: "Equivalência USP ↔ IFSP", text: `Quais disciplinas de ${state.curriculum.curso} na USP São Carlos têm maior equivalência com Engenharia de Software no IFSP?` },
-    { icon: ICON.rules, tag: "Aluno Especial · SUAP", text: `Quero cursar disciplinas de ${state.curriculum.curso} como Aluno Especial na USP (CAASO) e aproveitar no IFSP: gere um plano e os critérios de requerimento no SUAP.` },
-    { icon: ICON.chain, tag: "Dependências", text: `Quais são todos os pré-requisitos de ${titleCase(deepest.nome)} (${deepest.codigo}) no JupiterWeb?` },
+    { icon: ICON.route, tag: `Equivalência ${isUf ? "UFSCar" : "USP"} ↔ IFSP`, text: `Quais disciplinas de ${state.curriculum.curso} na ${orgLabel} têm maior equivalência com Engenharia de Software no IFSP?` },
+    { icon: ICON.rules, tag: "Aluno Especial · SUAP", text: `Quero cursar disciplinas de ${state.curriculum.curso} como Aluno Especial na ${orgLabel} e aproveitar no IFSP: gere um plano e os critérios de requerimento no SUAP.` },
+    { icon: ICON.chain, tag: "Dependências", text: `Quais são todos os pré-requisitos de ${titleCase(deepest.nome)} (${deepest.codigo})?` },
     { icon: ICON.gauge, tag: "Com disciplinas no contexto", text: "Compare estas disciplinas com as equivalentes do BES/IFSP para aproveitamento.", context: pair },
   ];
   const heading = isIfsp
     ? "Pergunte qualquer coisa sobre <em>Engenharia de Software no IFSP.</em>"
-    : `Explore <em>${escapeHtml(state.curriculum.curso)} (USP São Carlos)</em> e aproveite no IFSP.`;
+    : `Explore <em>${escapeHtml(state.curriculum.curso)} (${orgLabel})</em> e aproveite no IFSP.`;
   const lede = isIfsp
     ? "Respostas baseadas no Projeto Pedagógico inteiro, com a página de cada informação. Digite <kbd>@</kbd> para colocar disciplinas no contexto da pergunta."
-    : "Grade do JupiterWeb para Aluno Especial no CAASO com análise automática de equivalência para Engenharia de Software (IFSP) e geração de requerimento SUAP. Digite <kbd>@</kbd> para mencionar disciplinas.";
+    : `Fluxograma e PPC da ${orgLabel} com análise automática de equivalência para Engenharia de Software (IFSP) e geração de requerimento SUAP. Digite <kbd>@</kbd> para mencionar disciplinas.`;
   $("#messages").innerHTML = `
     <div class="empty" id="empty">
       <p class="eyebrow">${escapeHtml(resolvedEyebrow)}</p>
@@ -821,6 +829,13 @@ function renderCourseInfo() {
       <h4>Mais travam o curso se reprovadas</h4>
       ${goChips(gargalos.slice(0, 6), (c) => ` <b>${disc(c).libera_transitivamente.length}</b>`)}
     </div>
+    ${state.curriculum.requisitos_gerais?.length ? `<div class="info-section">
+      <h4>Estrutura & Regras do PPC</h4>
+      <ul class="topics">${state.curriculum.requisitos_gerais.slice(0, 4).map((r) => `<li><b>${escapeHtml(r.item)}:</b> ${escapeHtml(r.descricao)}</li>`).join("")}</ul>
+    </div>` : ""}
+    ${state.curriculum.mermaid ? `<div class="info-section">
+      <button type="button" class="btn btn-sm" data-ask="Compare o fluxograma completo em Mermaid de ${escapeHtml(state.curriculum.curso)} com o meu histórico do SUAP e liste todas as equivalências para as matérias que faltam no BES.">${ICON.ask}Comparar fluxograma no Chat</button>
+    </div>` : ""}
     ${isolated.length ? `<div class="info-section">
       <p class="small-note">${isolated.length} disciplinas não exigem nem liberam nenhuma outra: aparecem com
         <b>borda tracejada</b> no fim de cada semestre e podem ser cursadas sem travar nada.</p>
@@ -956,7 +971,7 @@ $("#tree-info").addEventListener("click", (event) => {
   else if (target.dataset.act === "context") toggleContext(state.focus);
   else if (target.dataset.act === "back") showTree(state.focusHistory.pop() ?? null);
   else if (target.dataset.ask) {
-    toggleContext(state.focus, { force: true });
+    if (state.focus) toggleContext(state.focus, { force: true });
     closeDrawer();
     ask(target.dataset.ask);
   }
@@ -2563,7 +2578,7 @@ async function switchInstitution(nextInst) {
     else if (state.view === "me") renderMe();
     else if (state.view === "moodle") window.__renderMoodle?.();
     renderSettings();
-    toast(`Currículo ativo: ${data.curso} (${nextInst === "ifsp_bes" ? "IFSP" : "USP CAASO"})`);
+    toast(`Currículo ativo: ${data.curso} (${nextInst === "ifsp_bes" ? "IFSP" : nextInst.startsWith("ufscar_") ? "UFSCar" : "USP CAASO"})`);
   } catch (error) {
     toast(error.message || "Falha ao trocar instituição.");
     syncOrgAndInstSelectors(prevInst);
@@ -2579,7 +2594,9 @@ if (orgSelect) {
     const org = event.target.value;
     const nextInst = org === "usp"
       ? ((() => { try { return localStorage.getItem("ppchat_last_usp") || "usp_bsi"; } catch { return "usp_bsi"; } })())
-      : "ifsp_bes";
+      : org === "ufscar"
+        ? ((() => { try { return localStorage.getItem("ppchat_last_ufscar") || "ufscar_bcc"; } catch { return "ufscar_bcc"; } })())
+        : "ifsp_bes";
     switchInstitution(nextInst);
   });
 }

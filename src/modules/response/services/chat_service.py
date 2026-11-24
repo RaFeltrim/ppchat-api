@@ -91,9 +91,17 @@ class ChatSession:
         if usp_sheet:
             blocks.append({
                 "type": "text",
-                "text": "Dados oficiais do JupiterWeb USP São Carlos (BSI, BCI/BCC, Estatística) e análise de "
-                "equivalência para Aluno Especial e Requerimento SUAP:\n"
+                "text": "Dados oficiais da USP São Carlos (BSI, BCI/BCC, Estatística) e UFSCar São Carlos (BCC, ENC, IA/Pós), "
+                "ementas, calendário de Aluno Especial e análise de equivalência para Requerimento SUAP:\n"
                 f"<usp_equivalencias>\n{usp_sheet}\n</usp_equivalencias>",
+            })
+        mermaid_sheet = self.knowledge_base.render_mermaid_fluxogramas(question, inst=inst)
+        if mermaid_sheet:
+            blocks.append({
+                "type": "text",
+                "text": "Fluxogramas curriculares completos e compactados em Mermaid por instituto de ensino "
+                "(IFSP São Carlos, USP ICMC/CAASO e UFSCar DC/CCET), com semestres, cargas horárias e pré-requisitos:\n"
+                f"<fluxogramas_mermaid_ppcs>\n{mermaid_sheet}\n</fluxogramas_mermaid_ppcs>",
             })
         ifsp_sheet = self.knowledge_base.render_ifsp_docs(question)
         if ifsp_sheet:

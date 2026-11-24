@@ -8,7 +8,10 @@ from src.modules.ingestion.services.ingestion_pipeline import CURRICULUM_FILE, D
 from src.modules.knowledge.services.curriculum_graph import CurriculumGraph
 from src.modules.knowledge.services.ifsp_drive import load_ifsp_docs, search_ifsp_docs
 from src.modules.knowledge.services.usp_jupiter import (
+    CALENDARIO_ALUNO_ESPECIAL_2026_2027,
     USP_COURSES,
+    build_all_institutes_mermaid,
+    build_course_mermaid,
     compute_equivalences,
     fetch_usp_ementa,
     load_usp_aluno,
@@ -46,6 +49,11 @@ class KnowledgeBase:
         self.usp_curricula = load_usp_curricula(processed_dir)
         self.usp_graphs = {k: CurriculumGraph(c) for k, c in self.usp_curricula.items()}
         self.usp_equivalences = compute_equivalences(self.curriculo, self.usp_curricula)
+        self.mermaids = {
+            "ifsp_bes": build_course_mermaid(self.curriculo, "ifsp_bes"),
+            **{k: build_course_mermaid(c, k) for k, c in self.usp_curricula.items()},
+        }
+        self.all_institutes_mermaid = build_all_institutes_mermaid(self.curriculo, self.usp_curricula)
 
     def _names(self, codes: List[str]) -> str:
         return "; ".join(f"{self.graph.by_code[c].nome} ({c})" for c in codes) or "nenhuma"
@@ -124,64 +132,109 @@ class KnowledgeBase:
         return "\n\n".join(parts)
 
     def render_usp_equivalencias(self, question: str, focus: Sequence[str] = (), inst: str = "ifsp_bes") -> str:
-        """Injeta contexto da USP São Carlos (BSI/BCI/Estatística) e equivalências para Aluno Especial."""
+        """Injeta contexto da USP/UFSCar São Carlos, ementas, equivalências e calendário de Aluno Especial."""
         if not self.usp_curricula:
             return ""
         q_low = question.lower()
-        usp_codes = set(re.findall(r"\b(?:SSC|SCC|SMA|SME|5500)\d{3,4}\b", question.upper()))
+        usp_codes = set(
+            re.findall(
+                r"\b(?:(?:SSC|SCC|SMA|SME|5500)\d{3,4}|(?:UFSCAR|ENC|PPGCC|LATO|IA27)-[A-Z0-9]+)\b",
+                question.upper(),
+            )
+        )
         for fc in focus:
             if any(fc in g.by_code for g in self.usp_graphs.values()):
                 usp_codes.add(fc.upper())
 
         triggers = (
             "usp", "caaso", "bsi", "bci", "bcc", "estat", "especial", "equival", "abater",
-            "aproveit", "requerimento", "jupiter", "puxar", "ufscar", "externa", "disciplina", "materia", "curso",
+            "aproveit", "requerimento", "jupiter", "puxar", "ufscar", "externa", "disciplina",
+            "materia", "curso", "fluxograma", "grade", "mermaid", "ppc", "seguranca", "movel",
+            "mobile", "vvts", "teste", "calendario", "matricula", "edital",
         )
         if inst == "ifsp_bes" and not usp_codes and not any(t in q_low for t in triggers):
             return ""
 
-        # Inclui automaticamente as disciplinas do estudante na USP para detalhamento completo
+        # Inclui automaticamente as disciplinas do estudante na USP + candidatas de pendências críticas
         student_usp_codes = {c.upper() for c in (self.usp_aluno or {}).get("status", {}).keys()}
+        key_candidates = {"SCC0225", "SSC0524", "SSC0959", "SSC0547", "SSC0900", "SSC0901", "SSC0725", "UFSCAR-DMOV", "UFSCAR-ES2", "UFSCAR-SEGCIB", "UFSCAR-ASP"}
+        if any(w in q_low for w in ("equival", "puxar", "especial", "aproveit", "abater", "ppc", "grade", "fluxograma", "falt", "pend", "rest")):
+            usp_codes |= key_candidates
         usp_codes |= student_usp_codes
 
         lines = []
         if inst in self.usp_curricula:
             uc = self.usp_curricula[inst]
-            lines.append(f"Curso selecionado na interface: {uc.curso} ({uc.campus}) — {len(uc.disciplinas)} disciplinas no JupiterWeb.")
+            meta = USP_COURSES.get(inst, {})
+            lines.append(
+                f"Curso selecionado na interface: {uc.curso} ({uc.campus}) — {len(uc.disciplinas)} disciplinas. "
+                + (f"PPC: {meta.get('ppc_resumo', '')}" if meta.get("ppc_resumo") else "")
+            )
 
-        # Ementas oficiais de códigos USP citados ou cursados pelo aluno
-        for code in sorted(usp_codes)[:6]:
+        # Resumo oficial dos PPCs de todos os cursos externos disponíveis
+        lines.append("PPCs oficiais indexados (USP ICMC & UFSCar São Carlos):")
+        for k, meta in USP_COURSES.items():
+            cur = self.usp_curricula.get(k)
+            cnt = len(cur.disciplinas) if cur else 0
+            lines.append(f"- `{k}` ({meta['label']}, {cnt} disc.): {meta.get('ppc_resumo', '')} | PPC URL: {meta.get('ppc_url', '')}")
+
+        # Ementas oficiais de códigos USP/UFSCar citados ou cursados pelo aluno
+        ordered_codes = sorted(student_usp_codes | (usp_codes - key_candidates)) + sorted(key_candidates & usp_codes)
+        seen_em = set()
+        for code in ordered_codes:
+            if code in seen_em:
+                continue
+            seen_em.add(code)
+            if len(seen_em) > 12:
+                break
             try:
                 em = fetch_usp_ementa(code, self.processed_dir)
                 prog = em.get("programa") or em.get("programa_resumido") or ""
                 obj = em.get("objetivos") or ""
                 bib = em.get("bibliografia") or ""
                 lines.append(
-                    f"Ementa JupiterWeb `{code}` ({em.get('titulo')}, {em.get('carga_horaria')}):\n"
-                    + (f"- Objetivos: {obj[:600]}\n" if obj else "")
-                    + (f"- Programa/Conteúdo: {prog[:1400]}\n" if prog else "")
-                    + (f"- Bibliografia: {bib[:600]}\n" if bib else "")
+                    f"Ementa Oficial `{code}` ({em.get('titulo')}, {em.get('carga_horaria')}):\n"
+                    + (f"- Objetivos: {obj[:500]}\n" if obj else "")
+                    + (f"- Programa/Conteúdo: {prog[:1100]}\n" if prog else "")
+                    + (f"- Bibliografia: {bib[:400]}\n" if bib else "")
                     + f"- URL: {em.get('url')}"
                 )
             except Exception:
                 pass
 
-        # Equivalências: garante todas as do foco/aluno primeiro, depois top 25 gerais
-        focus_set = {f.upper() for f in focus} | usp_codes
-        scoped = [e for e in self.usp_equivalences if inst == "ifsp_bes" or e["usp_curso"] == inst]
-        prioritized = [e for e in scoped if e["ifsp_codigo"] in focus_set or e["usp_codigo"] in focus_set]
+        # Equivalências: nunca oculta outros cursos; prioriza matérias pendentes/cursando e foco
+        pending_priority = {"SCLPRDM", "SCLDMDM", "SCLVVTS", "SCLASEG", "SCLARSW", "SCLAPOO", "SCLMATC", "SCLRCO2", "SCLTAED", "SCLTTEC"}
+        focus_set = {f.upper() for f in focus} | usp_codes | pending_priority
+        prioritized = [e for e in self.usp_equivalences if e["ifsp_codigo"] in focus_set or e["usp_codigo"] in focus_set]
+        if inst != "ifsp_bes":
+            prioritized.sort(key=lambda e: (0 if e["usp_curso"] == inst else 1, 0 if e["equivalencia"] == "Alta" else 1, -e["similaridade_pct"]))
         seen_pairs = {(e["usp_curso"], e["usp_codigo"], e["ifsp_codigo"]) for e in prioritized}
-        rest = [e for e in scoped if (e["usp_curso"], e["usp_codigo"], e["ifsp_codigo"]) not in seen_pairs]
-        relevant = prioritized + rest[: max(0, 25 - len(prioritized))]
+        rest = [e for e in self.usp_equivalences if (e["usp_curso"], e["usp_codigo"], e["ifsp_codigo"]) not in seen_pairs]
+        relevant = prioritized[:55] + rest[: max(0, 65 - len(prioritized[:55]))]
 
         if relevant:
-            lines.append("Equivalências candidatas USP São Carlos (BSI/BCI/Estatística) ↔ IFSP BES (Aluno Especial):")
-            for e in relevant[:35]:
+            lines.append("Equivalências candidatas (USP ICMC & UFSCar São Carlos ↔ IFSP BES — todas as grades):")
+            for e in relevant:
                 lines.append(
                     f"- [{e['equivalencia']} {e['similaridade_pct']}% · CH {e['usp_ch']:.0f}h/{e['ifsp_ch']:.0f}h] "
                     f"{e['usp_curso_label']} `{e['usp_codigo']}` ({e['usp_nome']}) ↔ IFSP `{e['ifsp_codigo']}` ({e['ifsp_nome']})"
                 )
+
+        lines.append(CALENDARIO_ALUNO_ESPECIAL_2026_2027)
         return "\n".join(lines)
+
+    def render_mermaid_fluxogramas(self, question: str, inst: str = "ifsp_bes") -> str:
+        """Retorna fluxogramas Mermaid compactos por instituto de ensino para economia de tokens."""
+        q_low = question.lower()
+        triggers = (
+            "fluxograma", "grade", "mermaid", "ppc", "curso", "outro", "instituto",
+            "usp", "ufscar", "bsi", "bci", "bcc", "estat", "engenharia", "equival",
+            "aproveit", "especial", "puxar", "materia", "disciplina", "comp", "falt",
+        )
+        if inst == "ifsp_bes" and not any(t in q_low for t in triggers):
+            return ""
+        # Sempre envia a visão completa dos institutos quando o assunto envolver grades/cursos/equivalências
+        return self.all_institutes_mermaid
 
     def render_ifsp_docs(self, question: str) -> str:
         """Seleciona até 3 documentos relevantes do Drive IFSP (TokenOps)."""

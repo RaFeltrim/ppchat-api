@@ -2,6 +2,14 @@
 
 Todas as alterações notáveis adicionadas neste fork durante o Workshop BES23 (17–18/11/2026).
 
+## [Unreleased] — 2026-11-24
+
+### Added
+- **UFSCar São Carlos (BCC 2025, ENC 2025 e IA 2027 / PPGCC / Especialização DC):** inclusão integral das matrizes curriculares, pré-requisitos e ementas da UFSCar em `usp_jupiter.py`, `#org-select` (`ufscar`) e `#inst-select` (`ufscar_bcc`, `ufscar_enc`, `ufscar_ia_pos`), além dos resumos oficiais dos PPCs da USP (BSI 2026-2, BCI/BCC 4.732h, Estatística).
+- **Fluxogramas Completos em Mermaid por Instituto (`build_course_mermaid`, `GET /curriculum/mermaid`, `docs/fluxogramas-mermaid-cursos.md`):** geração compacta de diagramas `flowchart LR` agrupados por instituto (IFSP, USP ICMC/CAASO, UFSCar DC/CCET) e injeção automática em `<fluxogramas_mermaid_ppcs>` no chat para economia de tokens.
+- **Motor Semântico de Equivalências & Correção de Visibilidade Multi-Curso:** corrigido o filtro de `render_usp_equivalencias` que ocultava outros cursos e truncava resultados após 25 pares; `compute_equivalences()` agora utiliza sinônimos semânticos e mapeamento validado por ementas (`SSC0959`, `SCC0225`, `SSC0547`, `SSC0900`, `SSC0901`, `UFSCAR-DMOV`, `UFSCAR-ES2`, `UFSCAR-SEGCIB`, `UFSCAR-ASP`).
+- **Calendário Oficial de Aluno Especial 2026/2027 & Alerta WhatsApp (`POST /whatsapp/aluno-especial`):** consolidação das datas oficiais do ICMC/USP (CoG 3757) e UFSCar (ProGrad/DiGRA CoG nº 554/2026, PPGCC e Especialização DC Turma 2027) com envio direto via CallMeBot (`send_text_whatsapp_callmebot`).
+
 ## [Unreleased] — 2026-11-18
 
 ### Added

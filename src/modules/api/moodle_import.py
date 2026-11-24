@@ -29,15 +29,20 @@ def format_moodle_summary(tasks: List[MoodleTask]) -> str:
     return "\n".join(lines)
 
 
-def send_whatsapp_callmebot(tasks: List[MoodleTask], phone: str, apikey: str) -> dict:
-    """Envia resumo das tarefas do Moodle para o WhatsApp via CallMeBot."""
-    if not phone or not apikey:
+def send_text_whatsapp_callmebot(msg: str, phone: str, apikey: str) -> dict:
+    """Envia uma mensagem de texto para o WhatsApp via CallMeBot."""
+    clean_phone = re.sub(r"[^\d+]", "", phone or "")
+    if not clean_phone or not apikey:
         return {"sent": False, "reason": "CALLMEBOT_PHONE ou CALLMEBOT_APIKEY não configurados."}
-    msg = format_moodle_summary(tasks)
-    url = f"https://api.callmebot.com/whatsapp.php?phone={quote_plus(phone)}&text={quote_plus(msg)}&apikey={quote_plus(apikey)}"
-    with urlopen(url, timeout=15) as resp:
+    url = f"https://api.callmebot.com/whatsapp.php?phone={quote_plus(clean_phone)}&text={quote_plus(msg)}&apikey={quote_plus(apikey)}"
+    with urlopen(url, timeout=20) as resp:
         body = resp.read().decode("utf-8", errors="ignore")
         clean = re.sub(r"<[^>]+>", " ", body).strip()
         if resp.status == 200 and "error" not in clean.lower():
-            return {"sent": True, "status": resp.status}
+            return {"sent": True, "status": resp.status, "response": clean[:180]}
         return {"sent": False, "status": resp.status, "reason": clean[:180] or f"HTTP {resp.status}"}
+
+
+def send_whatsapp_callmebot(tasks: List[MoodleTask], phone: str, apikey: str) -> dict:
+    """Envia resumo das tarefas do Moodle para o WhatsApp via CallMeBot."""
+    return send_text_whatsapp_callmebot(format_moodle_summary(tasks), phone, apikey)

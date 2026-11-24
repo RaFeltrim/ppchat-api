@@ -172,6 +172,25 @@ class TestUnitComponents(unittest.TestCase):
         eqs = compute_equivalences(kb.curriculo, kb.usp_curricula, curso_filter="usp_bsi")
         self.assertGreater(len(eqs), 0)
         self.assertEqual(eqs[0]["equivalencia"], "Alta")
+        all_eqs = compute_equivalences(kb.curriculo, kb.usp_curricula)
+        targets = {(e["ifsp_codigo"], e["usp_codigo"]) for e in all_eqs if e["equivalencia"] == "Alta"}
+        for expected in (
+            ("SCLVVTS", "SSC0524"),
+            ("SCLVVTS", "SSC0959"),
+            ("SCLPRDM", "SCC0225"),
+            ("SCLPRDM", "UFSCAR-DMOV"),
+            ("SCLASEG", "SSC0547"),
+            ("SCLASEG", "UFSCAR-SEGCIB"),
+            ("SCLARSW", "SSC0725"),
+            ("SCLARSW", "UFSCAR-ASP"),
+        ):
+            self.assertIn(expected, targets)
+        merm = kb.render_mermaid_fluxogramas("Compare as grades da USP e UFSCar no fluxograma", inst="usp_est")
+        self.assertIn("ufscar_bcc", merm)
+        self.assertIn("```mermaid", merm)
+        eq_ctx = kb.render_usp_equivalencias("Quais materias puxar na USP ou UFSCar?", inst="usp_est")
+        self.assertIn("SSC0524", eq_ctx)
+        self.assertIn("UFSCAR-SEGCIB", eq_ctx)
         ifsp_d = kb.graph.by_code["SCLARCO"]
         usp_d = kb.usp_graphs["usp_bsi"].by_code["SSC0513"]
         req = build_suap_requerimento(ifsp_d, usp_d, {"programa_resumido": "Arquitetura", "url": "https://uspdigital.usp.br"}, "USP · BSI", "Aluno", "SC123")
@@ -203,10 +222,25 @@ class TestSmokeAndIntegrationAPI(unittest.TestCase):
         self.assertEqual(rh.status_code, 200)
         self.assertEqual(rh.json()["disciplinas"], 43)
 
-        for inst, min_count in (("ifsp_bes", 43), ("usp_bsi", 80), ("usp_bci", 130), ("usp_est", 70)):
+        for inst, min_count in (
+            ("ifsp_bes", 43),
+            ("usp_bsi", 80),
+            ("usp_bci", 130),
+            ("usp_est", 70),
+            ("ufscar_bcc", 45),
+            ("ufscar_enc", 45),
+            ("ufscar_ia_pos", 10),
+        ):
             rc = self.client.get(f"/curriculum?inst={inst}")
             self.assertEqual(rc.status_code, 200)
-            self.assertGreaterEqual(len(rc.json()["disciplinas"]), min_count)
+            body = rc.json()
+            self.assertGreaterEqual(len(body["disciplinas"]), min_count)
+            self.assertIn("```mermaid", body.get("mermaid", ""))
+
+        rm = self.client.get("/curriculum/mermaid")
+        self.assertEqual(rm.status_code, 200)
+        self.assertIn("IFSP São Carlos", rm.json()["mermaid_por_instituto"])
+        self.assertIn("UFSCar São Carlos", rm.json()["mermaid_por_instituto"])
 
         r_fb = self.client.get("/curriculum?inst=invalido")
         self.assertEqual(r_fb.status_code, 200)

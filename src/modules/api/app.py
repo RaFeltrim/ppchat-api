@@ -12,11 +12,12 @@ from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 
-from src.modules.api.moodle_import import MoodleImport, format_moodle_summary, send_whatsapp_callmebot
+from src.modules.api.moodle_import import MoodleImport, format_moodle_summary, send_text_whatsapp_callmebot, send_whatsapp_callmebot
 from src.modules.api.rate_limit import RateLimiter, client_ip
 from src.modules.api.suap_import import ImportStore, SuapImport
 from src.modules.knowledge.services.knowledge_base import get_knowledge_base
 from src.modules.knowledge.services.usp_jupiter import (
+    CALENDARIO_ALUNO_ESPECIAL_2026_2027,
     USP_COURSES,
     USP_STUDENT_FILE,
     build_suap_requerimento,
@@ -262,6 +263,7 @@ def curriculum(inst: str = "ifsp_bes") -> dict:
 
     return {
         "inst": inst,
+        "org": USP_COURSES.get(inst, {}).get("org", "ifsp"),
         "curso": c.curso,
         "campus": c.campus,
         "vigencia": c.vigencia,
@@ -270,6 +272,7 @@ def curriculum(inst: str = "ifsp_bes") -> dict:
         "cadeia_critica": graph.critical_path,
         "gargalos": graph.bottlenecks(),
         "requisitos_gerais": [r.model_dump() for r in c.requisitos_gerais],
+        "mermaid": kb.mermaids.get(inst, ""),
         "disciplinas": [
             {
                 **d.model_dump(),
@@ -279,6 +282,52 @@ def curriculum(inst: str = "ifsp_bes") -> dict:
             for d in sorted(c.disciplinas, key=lambda d: (d.semestre or 99, d.nome))
         ],
     }
+
+
+@app.get("/curriculum/mermaid")
+def curriculum_mermaid(inst: str = "all") -> dict:
+    """Retorna os fluxogramas completos em Mermaid por instituto de ensino para economia de tokens."""
+    kb = get_knowledge_base()
+    if inst != "all" and inst in kb.mermaids:
+        return {
+            "inst": inst,
+            "mermaid": kb.mermaids[inst],
+            "cursos": USP_COURSES,
+            "calendario_aluno_especial": CALENDARIO_ALUNO_ESPECIAL_2026_2027,
+        }
+    return {
+        "inst": "all",
+        "mermaid_por_instituto": kb.all_institutes_mermaid,
+        "mermaids": kb.mermaids,
+        "cursos": USP_COURSES,
+        "calendario_aluno_especial": CALENDARIO_ALUNO_ESPECIAL_2026_2027,
+    }
+
+
+class WhatsappAlertRequest(BaseModel):
+    phone: Optional[str] = Field(default=None, max_length=32)
+    message: Optional[str] = Field(default=None, max_length=3500)
+
+
+@app.post("/whatsapp/aluno-especial")
+async def whatsapp_aluno_especial(payload: Optional[WhatsappAlertRequest] = None) -> dict:
+    """Envia datas oficiais de matrícula (Aluno Especial USP & UFSCar) ao WhatsApp via CallMeBot."""
+    s = get_settings()
+    target_phone = (payload.phone if payload and payload.phone else s.callmebot_phone) or ""
+    msg = (
+        payload.message.strip()
+        if payload and payload.message and payload.message.strip()
+        else (
+            "PPChat - Datas Aluno Especial (USP & UFSCar):\n"
+            "1) UFSCar Pos Lato Sensu Dev. Software (Turma 2027): inscricoes ATE 30/11/2026 (aceitos 05/12, inicio 13/02/2027).\n"
+            "2) UFSCar Graduacao 2027/1 (CoG 554/2026): Edital Estudante Especial 05/02/2027 | aulas 01/03 a 03/07/2027.\n"
+            "3) UFSCar Graduacao 2027/2: Edital 08/07/2027 | aulas 02/08 a 15/12/2027.\n"
+            "4) UFSCar Mestrado PPGCC (Aluno Especial graduando): janela jan-fev (1o sem) e jun-ago (2o sem).\n"
+            "5) USP ICMC Graduacao (CoG 3757, ate 2 disc.): aulas 2027/1 em 01/03/2027 (janela tipica na 2a quinzena de fev); 2027/2 em jul (ref. 27-28/07).\n"
+            "Alvos pendentes BES: SSC0524/SSC0959 (VVTS), SCC0225/UFSCAR-DMOV (Mobile), SSC0547/SSC0900/UFSCAR-SEGCIB (Seguranca), SSC0725/UFSCAR-ASP (Arq. SW)."
+        )
+    )
+    return await asyncio.to_thread(send_text_whatsapp_callmebot, msg, target_phone, s.callmebot_apikey or "")
 
 
 @app.get("/usp/equivalencias")
