@@ -9,6 +9,10 @@ Todas as alterações notáveis adicionadas neste fork durante o Workshop BES23 
 - **Fluxogramas Completos em Mermaid por Instituto (`build_course_mermaid`, `GET /curriculum/mermaid`, `docs/fluxogramas-mermaid-cursos.md`):** geração compacta de diagramas `flowchart LR` agrupados por instituto (IFSP, USP ICMC/CAASO, UFSCar DC/CCET) e injeção automática em `<fluxogramas_mermaid_ppcs>` no chat para economia de tokens.
 - **Motor Semântico de Equivalências & Correção de Visibilidade Multi-Curso:** corrigido o filtro de `render_usp_equivalencias` que ocultava outros cursos e truncava resultados após 25 pares; `compute_equivalences()` agora utiliza sinônimos semânticos e mapeamento validado por ementas (`SSC0959`, `SCC0225`, `SSC0547`, `SSC0900`, `SSC0901`, `UFSCAR-DMOV`, `UFSCAR-ES2`, `UFSCAR-SEGCIB`, `UFSCAR-ASP`).
 - **Calendário Oficial de Aluno Especial 2026/2027 & Alerta WhatsApp (`POST /whatsapp/aluno-especial`):** consolidação das datas oficiais do ICMC/USP (CoG 3757) e UFSCar (ProGrad/DiGRA CoG nº 554/2026, PPGCC e Especialização DC Turma 2027) com envio direto via CallMeBot (`send_text_whatsapp_callmebot`).
+- **Ponte Bidirecional WhatsApp ↔ OpenClaw ↔ PPChat (`whatsapp_bridge.py`, `scripts/ppchat_openclaw_bridge.py`, `docs/openclaw-whatsapp-bridge.md`):**
+  - Recepção de mensagens via OpenClaw (`selfChatMode: true`) com menu visual no padrão WhatsApp, gravação em `user_data.json` sob a tag `[MOBILE Conversation:<tópico>]` e troca/seleção entre chats existentes ou novo chat.
+  - Fluxo offline → boot automático do OpenClaw + servidor PPChat (`PPCHAT_IDLE_SHUTDOWN_SECONDS=300`) e desligamento automático após 5 min em standby com aviso CallMeBot.
+  - Sincronização/merge de conversas mobile na Web UI (`app.js`).
 
 ## [Unreleased] — 2026-11-18
 

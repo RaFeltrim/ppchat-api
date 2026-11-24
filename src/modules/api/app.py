@@ -1,6 +1,9 @@
 import asyncio
 import json
+import os
 import re
+import signal
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncIterator, Dict, List, Literal, Optional
@@ -15,6 +18,7 @@ from pydantic import BaseModel, Field, field_validator
 from src.modules.api.moodle_import import MoodleImport, format_moodle_summary, send_text_whatsapp_callmebot, send_whatsapp_callmebot
 from src.modules.api.rate_limit import RateLimiter, client_ip
 from src.modules.api.suap_import import ImportStore, SuapImport
+from src.modules.api.whatsapp_bridge import handle_whatsapp_message, load_user_state
 from src.modules.knowledge.services.knowledge_base import get_knowledge_base
 from src.modules.knowledge.services.usp_jupiter import (
     CALENDARIO_ALUNO_ESPECIAL_2026_2027,
@@ -31,6 +35,56 @@ from src.modules.shared.services.settings import get_settings
 STATIC_DIR = Path(__file__).parent / "static"
 MAX_HISTORY = 30  # mensagens anteriores reenviadas pelo navegador
 MAX_TEXT = 20_000  # caracteres por mensagem do histórico
+
+_last_activity_ts = time.monotonic()
+
+
+def _standby_timeout_seconds() -> int:
+    try:
+        return max(0, int(os.getenv("PPCHAT_IDLE_SHUTDOWN_SECONDS", "0")))
+    except ValueError:
+        return 0
+
+
+def _standby_remaining_seconds() -> Optional[int]:
+    timeout_s = _standby_timeout_seconds()
+    if timeout_s <= 0:
+        return None
+    return max(0, int(timeout_s - (time.monotonic() - _last_activity_ts)))
+
+
+def _schedule_shutdown(delay_s: float = 1.0) -> None:
+    async def _stop():
+        await asyncio.sleep(delay_s)
+        try:
+            os.kill(os.getpid(), signal.SIGTERM)
+        except Exception:
+            os._exit(0)
+
+    asyncio.create_task(_stop())
+
+
+async def _idle_shutdown_watchdog() -> None:
+    """Encerra automaticamente o servidor após N segundos em standby (padrão 300s quando via OpenClaw)."""
+    while True:
+        await asyncio.sleep(15)
+        timeout_s = _standby_timeout_seconds()
+        if timeout_s <= 0:
+            continue
+        if (time.monotonic() - _last_activity_ts) >= timeout_s:
+            try:
+                s = get_settings()
+                if s.callmebot_phone and s.callmebot_apikey:
+                    await asyncio.to_thread(
+                        send_text_whatsapp_callmebot,
+                        "💤 PPChat encerrado automaticamente após 5 min em standby (OpenClaw). Envie uma mensagem no WhatsApp para ligar novamente.",
+                        s.callmebot_phone,
+                        s.callmebot_apikey,
+                    )
+            except Exception:
+                pass
+            _schedule_shutdown(0.5)
+            return
 
 
 async def _auto_sync_usp_on_startup() -> None:
@@ -49,15 +103,27 @@ async def _auto_sync_usp_on_startup() -> None:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    global _last_activity_ts
+    _last_activity_ts = time.monotonic()
     get_knowledge_base()  # falha cedo se a base processada não existir
     usp_task = asyncio.create_task(_auto_sync_usp_on_startup())
+    watchdog_task = asyncio.create_task(_idle_shutdown_watchdog())
     try:
         yield
     finally:
         usp_task.cancel()
+        watchdog_task.cancel()
 
 
 app = FastAPI(title="PPChat API", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def _track_activity(request: Request, call_next):
+    global _last_activity_ts
+    if request.url.path not in {"/health", "/whatsapp/status"}:
+        _last_activity_ts = time.monotonic()
+    return await call_next(request)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 settings = get_settings()
@@ -307,6 +373,80 @@ def curriculum_mermaid(inst: str = "all") -> dict:
 class WhatsappAlertRequest(BaseModel):
     phone: Optional[str] = Field(default=None, max_length=32)
     message: Optional[str] = Field(default=None, max_length=3500)
+
+
+class WhatsappIncomingRequest(BaseModel):
+    sender: str = Field(default="+5519997775596", max_length=32)
+    text: str = Field(min_length=1, max_length=4000)
+    deliver_callmebot: bool = False
+
+
+@app.get("/whatsapp/status")
+def whatsapp_status() -> dict:
+    """Retorna estado do servidor, standby de 5 min e conversa ativa do WhatsApp."""
+    data = load_user_state(LOCAL_STATE_FILE)
+    convs = data.get("conversations") or []
+    wa_sess = data.get("whatsapp_session") or {}
+    active_id = wa_sess.get("active_conv_id")
+    active = next((c for c in convs if c.get("id") == active_id), None)
+    return {
+        "online": True,
+        "idle_seconds": round(time.monotonic() - _last_activity_ts, 1),
+        "standby_timeout_seconds": _standby_timeout_seconds(),
+        "standby_remaining_seconds": _standby_remaining_seconds(),
+        "active_conv_id": active_id if active else None,
+        "active_conv_title": active.get("title") if active else None,
+        "total_conversations": len(convs),
+        "menu_state": wa_sess.get("menu_state") or "idle",
+    }
+
+
+@app.post("/whatsapp/incoming")
+async def whatsapp_incoming(payload: WhatsappIncomingRequest, http_request: Request) -> dict:
+    """Recebe mensagens do WhatsApp (via OpenClaw), processa menus/chat `[MOBILE Conversation: ...]` e responde."""
+    _check_rate_limit(http_request)
+
+    async def _ask_ppchat(question: str, history: list, perfil: Optional[str], inst: str) -> str:
+        decision = route_inference(
+            question,
+            has_docs=False,
+            history_len=len(history),
+            requested_model="auto",
+            settings=settings,
+        )
+        session = ChatSession(
+            history=history,
+            model=decision.model,
+            effort=decision.effort,
+        )
+        return await session.ask(question, (), perfil, inst=inst)
+
+    result = await handle_whatsapp_message(
+        LOCAL_STATE_FILE,
+        payload.sender,
+        payload.text,
+        _ask_ppchat,
+        idle_remaining_sec=_standby_remaining_seconds(),
+    )
+
+    if payload.deliver_callmebot and result.get("reply"):
+        s = get_settings()
+        target_phone = s.callmebot_phone or payload.sender
+        result["callmebot"] = await asyncio.to_thread(
+            send_text_whatsapp_callmebot, str(result["reply"]), target_phone, s.callmebot_apikey or ""
+        )
+
+    if result.get("action") == "shutdown":
+        _schedule_shutdown(1.0)
+
+    return result
+
+
+@app.post("/whatsapp/shutdown")
+async def whatsapp_shutdown() -> dict:
+    """Solicita encerramento imediato do servidor local PPChat."""
+    _schedule_shutdown(0.8)
+    return {"shutting_down": True}
 
 
 @app.post("/whatsapp/aluno-especial")

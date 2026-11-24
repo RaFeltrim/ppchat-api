@@ -6,6 +6,7 @@ import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 import fitz
@@ -284,6 +285,74 @@ class TestSmokeAndIntegrationAPI(unittest.TestCase):
         self.assertEqual(self.client.get("/local/state").status_code, 200)
         self.assertEqual(self.client.get("/moodle/repos").status_code, 200)
         self.assertEqual(self.client.post("/chat/cancel/no-such-id").status_code, 204)
+
+        from src.modules.api.whatsapp_bridge import format_mobile_title, md_to_whatsapp, render_offline_menu
+        self.assertEqual(format_mobile_title("Quais matérias faltam no BES?"), "[MOBILE Conversation:Quais matérias faltam no BES?]")
+        self.assertIn("*Título*", md_to_whatsapp("## Título\n**negrito**"))
+        self.assertIn("*negrito*", md_to_whatsapp("## Título\n**negrito**"))
+        self.assertIn("Servidor Offline", render_offline_menu("Quais matérias?"))
+
+    def test_whatsapp_openclaw_bridge_offline_and_online_menus(self):
+        import src.modules.api.app as app_module
+        from scripts.ppchat_openclaw_bridge import process_bridge_message
+
+        with TemporaryDirectory() as tmpdir:
+            state_path = Path(tmpdir) / "user_data.json"
+            # 1. Simula servidor offline -> exibe card offline + fila pergunta
+            with patch("scripts.ppchat_openclaw_bridge._is_ppchat_online", return_value=False):
+                out_off = process_bridge_message(
+                    "+5519997775596",
+                    "Quais disciplinas de segurança batem com SCLASEG?",
+                    state_file=state_path,
+                )
+                self.assertIn("Servidor Offline", out_off)
+                self.assertIn("Quais disciplinas de segurança", out_off)
+
+            # 1b. Simula usuário respondendo "1" para iniciar servidor via OpenClaw + responder pergunta pendente
+            with patch("scripts.ppchat_openclaw_bridge._is_ppchat_online", side_effect=[False, True, True]), \
+                 patch("scripts.ppchat_openclaw_bridge._ensure_openclaw_gateway", return_value=True), \
+                 patch("scripts.ppchat_openclaw_bridge._post_incoming", return_value={"reply": "Resposta automatizada SCLASEG", "action": "answered"}):
+                out_boot = process_bridge_message(
+                    "+5519997775596",
+                    "1",
+                    state_file=state_path,
+                    starter_fn=lambda url, sb: True,
+                )
+                self.assertIn("PPChat iniciado via", out_boot)
+                self.assertIn("Resposta automatizada SCLASEG", out_boot)
+
+            # 2. Fluxo online completo via /whatsapp/incoming: menu -> 1 (novo chat) -> pergunta ([MOBILE Conversation:...]) -> 2 (lista chats) -> 1 (seleciona) -> 3 (status) -> 4 (shutdown)
+            with patch.object(app_module, "LOCAL_STATE_FILE", state_path), \
+                 patch.object(app_module, "_schedule_shutdown") as mock_stop, \
+                 patch("src.modules.response.services.chat_service.get_async_llm_client", return_value=_FakeAsyncClient()):
+                r_menu = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "menu"})
+                self.assertEqual(r_menu.status_code, 200)
+                self.assertIn("Servidor Online", r_menu.json()["reply"])
+
+                r_new = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "1"})
+                self.assertEqual(r_new.json()["action"], "new_chat_ready")
+
+                r_q = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "Equivalência para SCLVVTS"})
+                self.assertEqual(r_q.status_code, 200)
+                self.assertEqual(r_q.json()["conv_title"], "[MOBILE Conversation:Equivalência para SCLVVTS]")
+
+                r_list = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "menu"})
+                self.assertEqual(r_list.json()["action"], "menu")
+                r_sel_menu = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "2"})
+                self.assertIn("[MOBILE Conversation:Equivalência para SCLVVTS]", r_sel_menu.json()["reply"])
+
+                r_pick = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "1"})
+                self.assertEqual(r_pick.json()["action"], "selected_chat")
+
+                r_st = self.client.get("/whatsapp/status")
+                self.assertEqual(r_st.status_code, 200)
+                self.assertTrue(r_st.json()["online"])
+                self.assertEqual(r_st.json()["active_conv_title"], "[MOBILE Conversation:Equivalência para SCLVVTS]")
+
+                self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "menu"})
+                r_shut = self.client.post("/whatsapp/incoming", json={"sender": "+5519997775596", "text": "4"})
+                self.assertEqual(r_shut.json()["action"], "shutdown")
+                mock_stop.assert_called_once()
 
     def test_usp_endpoints_and_requerimento(self):
         re_list = self.client.get("/usp/equivalencias?curso=usp_bsi")

@@ -3121,10 +3121,23 @@ new ResizeObserver(([entry]) => {
         localStorage.setItem("ppchat_moodle_tasks", JSON.stringify(disk.moodle_tasks));
         window.__renderMoodle?.();
       }
-      if (!storage.get(CONVS_KEY) && Array.isArray(disk.conversations) && disk.conversations.length) {
-        storage.set(CONVS_KEY, disk.conversations);
-        loadConversations();
-        renderConversations();
+      if (Array.isArray(disk.conversations) && disk.conversations.length) {
+        const local = storage.get(CONVS_KEY);
+        const byId = new Map((Array.isArray(local?.list) ? local.list : []).map((c) => [c.id, c]));
+        let merged = false;
+        for (const dc of disk.conversations) {
+          const prev = byId.get(dc.id);
+          if (!prev || (dc.updated || 0) > (prev.updated || 0) || (dc.history?.length || 0) > (prev.history?.length || 0)) {
+            byId.set(dc.id, dc);
+            merged = true;
+          }
+        }
+        if (merged || !local) {
+          const mergedList = [...byId.values()].sort((a, b) => (b.updated || 0) - (a.updated || 0)).slice(0, MAX_CONVS);
+          storage.set(CONVS_KEY, { current: state.convId ?? local?.current ?? null, list: mergedList });
+          loadConversations();
+          renderConversations();
+        }
       }
     })
     .catch(() => {});
