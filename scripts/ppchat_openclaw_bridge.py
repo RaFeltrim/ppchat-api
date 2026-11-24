@@ -65,13 +65,20 @@ def _ensure_openclaw_gateway() -> bool:
     """Garante que o OpenClaw Gateway (:18789) esteja ativo no computador."""
     if _is_port_open("127.0.0.1", 18789):
         return True
+    clawd_entry = Path.home() / "clawd" / "node_modules" / "openclaw" / "dist" / "index.js"
     gw_cmd = Path.home() / ".openclaw" / "gateway.cmd"
-    if not gw_cmd.exists():
-        return False
     flags = getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+    if clawd_entry.exists():
+        cmd = ["node", str(clawd_entry), "gateway", "--port", "18789"]
+        cwd = str(clawd_entry.parents[3])
+    elif gw_cmd.exists():
+        cmd = ["cmd.exe", "/c", str(gw_cmd)]
+        cwd = str(gw_cmd.parent)
+    else:
+        return False
     subprocess.Popen(
-        ["cmd.exe", "/c", str(gw_cmd)],
-        cwd=str(gw_cmd.parent),
+        cmd,
+        cwd=cwd,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         creationflags=flags,
